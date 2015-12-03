@@ -13,6 +13,7 @@
 
 #include "BasicAPI.h"
 #include "MouseAPI.h"
+#include "ExtAPI.h"
 
 #include "NaMacro.h"
 
@@ -53,6 +54,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		// init Modules that needs global context
 		InitMouseAPI(global_template);
+		InitExtAPI(global_template);
 	}
 
 	v8::Handle<v8::Script> script;

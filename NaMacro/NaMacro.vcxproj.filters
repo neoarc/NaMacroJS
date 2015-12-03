@@ -36,6 +36,9 @@
     <ClCompile Include="MouseAPI.cpp">
       <Filter>Source Files\API</Filter>
     </ClCompile>
+    <ClCompile Include="ExtAPI.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -51,6 +54,9 @@
       <Filter>Header Files\API</Filter>
     </ClInclude>
     <ClInclude Include="MouseAPI.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="ExtAPI.h">
       <Filter>Header Files\API</Filter>
     </ClInclude>
   </ItemGroup>

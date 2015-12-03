@@ -5,8 +5,6 @@
 
 #include "Windows.h"
 
-#define MOUSECLICK_SLEEP	10
-
 void InitMouseAPI(v8::Handle<v8::ObjectTemplate>& global_template)
 {
 	v8::HandleScope handle_scope;

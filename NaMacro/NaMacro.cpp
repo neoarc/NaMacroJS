@@ -10,7 +10,10 @@
 #include <stdlib.h>
 
 #include "Common.h"
+
 #include "BasicAPI.h"
+#include "MouseAPI.h"
+
 #include "NaMacro.h"
 
 // Prototype
@@ -34,13 +37,24 @@ int _tmain(int argc, _TCHAR* argv[])
 	}
 	
 	v8::Handle<v8::ObjectTemplate> global_template = v8::ObjectTemplate::New();
-	global_template->Set(v8::String::New("print"), v8::FunctionTemplate::New(Print));
-	global_template->Set(v8::String::New("exit"), v8::FunctionTemplate::New(Exit));
+
+	// TODO modulize
+	{
+		// init Modules that doesn't need global context
+		InitBasicAPI(global_template);
+	}	
 
 	v8::Handle<v8::Context> context = v8::Context::New(NULL, global_template);
 
 	// Enter the newly created execution environment.
 	v8::Context::Scope context_scope(context);
+
+	// TODO modulize
+	{
+		// init Modules that needs global context
+		InitMouseAPI(global_template);
+	}
+
 	v8::Handle<v8::Script> script;
 	{
 		// Compile script in try/catch context.
@@ -59,7 +73,7 @@ int _tmain(int argc, _TCHAR* argv[])
 
 		script->Run();
 		if (try_catch.HasCaught()) {
-			if (report_exceptions)     
+			if (report_exceptions)
 				ReportException(&try_catch);
 			return 1;
 		}
@@ -68,27 +82,29 @@ int _tmain(int argc, _TCHAR* argv[])
 	// Find main()
 	v8::Handle<v8::Object> global = v8::Context::GetCurrent()->Global();
 	v8::Local<v8::String> main_name = v8::String::New("main");
-	
-	// TODO main 함수가 없는지 체크하는 방법 잘못됨 
-// 	if (!global->Get(main_name) || global->Get(main_name)->IsNull())
-// 	{
-// 		printf("Cannot find main function\n");
-// 		return 0;
-// 	}
+	v8::Local<v8::Value> main_value = global->Get(main_name);
+ 	if (main_value.IsEmpty() || main_value->IsUndefined())
+ 	{
+		// error
+ 		printf("Cannot find main function\n");
+ 		return 0;
+ 	}
 
-	v8::Local<v8::Function> main_fn = v8::Local<v8::Function>::Cast(global->Get(main_name));
-
-	if (main_fn.IsEmpty())
+	if (!main_value->IsFunction())
 	{
 		// error
-		printf("Cannot find main function\n");
+		printf("main is not function!\n");
 		return 0;
 	}
 
-	const int argc2 = 1;
-	v8::Handle<v8::Value> argv2[argc2] = { v8::String::New("test") };
-	main_fn->Call(v8::Context::GetCurrent()->Global(), argc2, argv2);
+	v8::Local<v8::Function> main_fn = v8::Local<v8::Function>::Cast(global->Get(main_name));
 
+	// main arguments
+	const int js_argc = 1;
+	v8::Handle<v8::Value> js_argv[js_argc] = { v8::String::New("hello :)") };
+	main_fn->Call(v8::Context::GetCurrent()->Global(), js_argc, js_argv);
+
+	// infinite loop 
 	while (!g_bExit)
 	{
 

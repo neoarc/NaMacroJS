@@ -13,12 +13,15 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Header Files\API">
+      <UniqueIdentifier>{175da0d8-722f-42e5-ab2b-38af994d34b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\API">
+      <UniqueIdentifier>{f016f62b-b212-487e-a093-e2efacfe2cef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="BasicAPI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Common.cpp">
@@ -27,12 +30,15 @@
     <ClCompile Include="NaMacro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="BasicAPI.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
+    <ClCompile Include="MouseAPI.cpp">
+      <Filter>Source Files\API</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="BasicAPI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
@@ -41,8 +47,19 @@
     <ClInclude Include="NaMacro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BasicAPI.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
+    <ClInclude Include="MouseAPI.h">
+      <Filter>Header Files\API</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Output\Debug\NaMacro.js">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

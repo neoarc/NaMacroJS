@@ -1,18 +1,28 @@
-var Neoarc = {};
+//
+// Tester code
+// 2015.12.02 neoarc (neoarcturus@gmail.com)
+//
 
-print("init js");
+print("init NaMacro.js");
 
 function main()
 {
-	var a = 2;
-	var b = 1;
-	for (; a<9; a++)
-	{
-		for (b=1; b<9; b++)
-		{
-			print(a + "x" + b + "=" + (a*b));
-		}
-	}
+    mouse_test();
 	
-	  exit();
+	alert("Press a any key to exit", "End :)", 0);
+	exit();
+}
+
+function mouse_test()
+{
+    // mouse api test
+    var mouse = system.mouse;
+    for (var i = 1; i < 100; i++) {
+        var xy = i * 10;
+
+        print(xy + ", " + xy);
+        mouse.move(xy, xy);
+
+        sleep(10);
+    }
 }

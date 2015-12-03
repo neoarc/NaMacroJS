@@ -93,6 +93,7 @@
   <ItemGroup>
     <ClCompile Include="BasicAPI.cpp" />
     <ClCompile Include="Common.cpp" />
+    <ClCompile Include="MouseAPI.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -102,11 +103,15 @@
   <ItemGroup>
     <ClInclude Include="BasicAPI.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="MouseAPI.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Output\Debug\NaMacro.js" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

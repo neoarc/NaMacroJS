@@ -1,4 +1,4 @@
-// SimpleJS.cpp : Defines the entry point for the console application.
+// NaMacro.cpp : Defines the entry point for the console application.
 //
 
 #include "stdafx.h"
@@ -60,7 +60,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		// Compile script in try/catch context.
 		v8::TryCatch try_catch;
 		script = v8::Script::Compile(script_source, script_name);
-		if (script.IsEmpty()) {
+		if (script.IsEmpty())
+		{
 			// Print errors that happened during compilation.
 			//if (report_exceptions)
 			//	ReportException(&try_catch);
@@ -72,7 +73,8 @@ int _tmain(int argc, _TCHAR* argv[])
 		v8::TryCatch try_catch;
 
 		script->Run();
-		if (try_catch.HasCaught()) {
+		if (try_catch.HasCaught())
+		{
 			if (report_exceptions)
 				ReportException(&try_catch);
 			return 1;

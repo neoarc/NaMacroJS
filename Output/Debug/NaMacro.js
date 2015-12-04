@@ -7,10 +7,17 @@ print("init NaMacro.js");
 
 function main()
 {
-    mouse_test();
+    //mouse_test();
+    convGMacro_test();
 	
 	alert("Press a any key to exit", "End :)", 0);
 	exit();
+}
+
+function convGMacro_test()
+{
+    var str = convGMacroToNaMacro("GMacro.gmc");
+    alert(str);
 }
 
 function mouse_test()

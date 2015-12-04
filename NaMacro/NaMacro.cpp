@@ -43,6 +43,7 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		// init Modules that doesn't need global context
 		InitBasicAPI(global_template);
+		InitExtAPI(global_template);
 	}	
 
 	v8::Handle<v8::Context> context = v8::Context::New(NULL, global_template);
@@ -54,7 +55,6 @@ int _tmain(int argc, _TCHAR* argv[])
 	{
 		// init Modules that needs global context
 		InitMouseAPI(global_template);
-		InitExtAPI(global_template);
 	}
 
 	v8::Handle<v8::Script> script;

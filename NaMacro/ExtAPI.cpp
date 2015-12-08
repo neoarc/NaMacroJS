@@ -7,7 +7,13 @@
 #include <vector>
 #include <sstream>
 
+//#using <mscorlib.dll>
+#include "sapi.h"           // SAPI includes
+#include "sphelper.h"
+#include "spuihelp.h"
+
 using namespace std;
+//using namespace SpeechLib;
 
 void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
@@ -18,6 +24,7 @@ void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_temp
 	);
 
 	ADD_GLOBAL_API(convGMacroToNaMacro, ConvGMacroToNaMacro);
+	ADD_GLOBAL_API(ttsSpeak, TTSSpeak);
 
 	// TODO make extapi object
 	// TODO bind apis to extapi object
@@ -167,4 +174,30 @@ void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 
 	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, strNaScript.data(), v8::NewStringType::kNormal, strNaScript.length()).ToLocalChecked();
 	args.GetReturnValue().Set(result);
+}
+
+// description: text to speech
+// syntax:		ttsSpeak(text)
+void TTSSpeak(V8_FUNCTION_ARGS)
+{
+	CoInitialize(0);
+
+	ISpVoice * pVoice = NULL;
+	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
+
+	if (SUCCEEDED(hr))
+	{
+		v8::String::Utf8Value str(args[0]);
+
+		int nChars = MultiByteToWideChar(CP_ACP, 0, *str, -1, NULL, 0);
+		const WCHAR *pwcsName;
+		pwcsName = new WCHAR[nChars];
+		MultiByteToWideChar(CP_ACP, 0, *str, -1, (LPWSTR)pwcsName, nChars);
+
+		hr = pVoice->Speak(pwcsName, SPF_IS_XML, NULL);
+		pVoice->Release();
+		pVoice = NULL;
+	}
+
+	::CoUninitialize();
 }

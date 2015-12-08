@@ -8,8 +8,10 @@ print("init NaMacro.js");
 function main()
 {
     //mouse_test();
-    convGMacro_test();
-	
+    //convGMacro_test();
+    
+    tts_test();
+
 	alert("Press a any key to exit", "End :)", 0);
 	exit();
 }
@@ -18,6 +20,26 @@ function convGMacro_test()
 {
     var str = convGMacroToNaMacro("GMacro.gmc");
     print(str);
+}
+
+function tts_test()
+{
+    //ttsSpeak("Hello");
+
+    /*
+    for (var i = 0; i < 3; i++)
+    {
+        var str = "... " + (1 + i) + " ...";
+        ttsSpeak(str);
+    }
+    */
+
+    //ttsSpeak("<rate speed='-4'>Press a any key to exit");
+
+    for (var i=-10; i<10; i++)
+    {
+        ttsSpeak("<rate speed='" + i + "'>Hello ");
+    }
 }
 
 function mouse_test()

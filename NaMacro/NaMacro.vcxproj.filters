@@ -19,6 +19,12 @@
     <Filter Include="Source Files\API">
       <UniqueIdentifier>{f016f62b-b212-487e-a093-e2efacfe2cef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Release">
+      <UniqueIdentifier>{c0bbc88b-27d1-4816-ab5f-4bfbce14b924}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Debug">
+      <UniqueIdentifier>{9ae96669-e1f9-45ed-8929-1f8c3790b53c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -65,7 +71,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js">
-      <Filter>Resource Files</Filter>
+      <Filter>Resource Files\Debug</Filter>
+    </None>
+    <None Include="..\Output\Release\NaMacro.js">
+      <Filter>Resource Files\Release</Filter>
     </None>
   </ItemGroup>
 </Project>

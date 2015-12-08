@@ -17,7 +17,7 @@ function main()
 function convGMacro_test()
 {
     var str = convGMacroToNaMacro("GMacro.gmc");
-    alert(str);
+    print(str);
 }
 
 function mouse_test()

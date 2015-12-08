@@ -5,23 +5,28 @@
 
 #include "Windows.h"
 
-void InitBasicAPI(v8::Handle<v8::ObjectTemplate> &global_template)
+void InitBasicAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template)
 {
-#define ADD_GLOBAL_API(_js_func, _c_func) global_template->Set(v8::String::New(#_js_func), v8::FunctionTemplate::New(_c_func));
-	ADD_GLOBAL_API(sleep, Sleep);
-	ADD_GLOBAL_API(alert, Alert);
-	ADD_GLOBAL_API(print, Print);
-	ADD_GLOBAL_API(exit, Exit);
+#define ADD_GLOBAL_API(_js_func, _c_func) \
+	global_template->Set( \
+		v8::String::NewFromUtf8(isolate, #_js_func, v8::NewStringType::kNormal).ToLocalChecked(), \
+		v8::FunctionTemplate::New(isolate, _c_func) \
+	);
+
+	ADD_GLOBAL_API(sleep,	Sleep);
+	ADD_GLOBAL_API(alert,	Alert);
+	ADD_GLOBAL_API(print,	Print);
+	ADD_GLOBAL_API(exit,	Exit);
 }
 
 // description: Print message to console
 // syxtax:		print(message) 
-v8::Handle<v8::Value> Print(const v8::Arguments& args)
+void Print(V8_FUNCTION_ARGS)
 {
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++)
 	{
-		v8::HandleScope handle_scope;
+		v8::HandleScope handle_scope(args.GetIsolate());
 		if (first) {
 			first = false;
 		}
@@ -34,12 +39,11 @@ v8::Handle<v8::Value> Print(const v8::Arguments& args)
 	}
 	printf("\n");
 	fflush(stdout);
-	return v8::Undefined();
 }
 
 // description: show MessageBox with message
 // syntax:		alert(message, title, type)
-v8::Handle<v8::Value> Alert(const v8::Arguments& args) 
+void Alert(V8_FUNCTION_ARGS)
 {
 	v8::String::Utf8Value msg(args[0]);
 	v8::String::Utf8Value title(args[1]);
@@ -51,25 +55,21 @@ v8::Handle<v8::Value> Alert(const v8::Arguments& args)
 		args.Length() >= 2 ? *title : "Alert", 
 		args.Length() >= 3 ? nType : MB_OK
 		);
-
-	return v8::Undefined();
 }
 
-v8::Handle<v8::Value> Sleep(const v8::Arguments& args)
+void Sleep(V8_FUNCTION_ARGS)
 {
 	int nTime = args[0]->Int32Value();
 
 	::Sleep(args.Length() > 0 ? nTime : 1);
-
-	return v8::Undefined();
 }
 
 // Reads a file into a v8 string.
-v8::Handle<v8::String> ReadFile(const char* name)
+v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
 {
 	FILE* file = fopen(name, "rb");
 	if (file == NULL) 
-		return v8::Handle<v8::String>();
+		return v8::Local<v8::String>();
 
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
@@ -84,13 +84,12 @@ v8::Handle<v8::String> ReadFile(const char* name)
 	}
 
 	fclose(file);
-	v8::Handle<v8::String> result = v8::String::New(chars, size);
+	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, chars, v8::NewStringType::kNormal/*, size*/).ToLocalChecked();
 	delete[] chars;
 	return result;
 }
 
-v8::Handle<v8::Value> Exit(const v8::Arguments& args)
+void Exit(V8_FUNCTION_ARGS)
 {
 	g_bExit = true;
-	return v8::Undefined();
 }

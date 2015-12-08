@@ -9,9 +9,14 @@
 
 using namespace std;
 
-void InitExtAPI(v8::Handle<v8::ObjectTemplate>& global_template)
+void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
-#define ADD_GLOBAL_API(_js_func, _c_func) global_template->Set(v8::String::New(#_js_func), v8::FunctionTemplate::New(_c_func));
+#define ADD_GLOBAL_API(_js_func, _c_func) \
+	global_template->Set( \
+		v8::String::NewFromUtf8(isolate, #_js_func, v8::NewStringType::kNormal).ToLocalChecked(), \
+		v8::FunctionTemplate::New(isolate, _c_func) \
+	);
+
 	ADD_GLOBAL_API(convGMacroToNaMacro, ConvGMacroToNaMacro);
 
 	// TODO make extapi object
@@ -20,9 +25,10 @@ void InitExtAPI(v8::Handle<v8::ObjectTemplate>& global_template)
 
 // description: Convert GMacro data to NaMacro script
 // syxtax:		convGMacroToNaMacro(filename)
-v8::Handle<v8::Value> ConvGMacroToNaMacro(const v8::Arguments& args)
+void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
+	v8::Isolate *isolate = args.GetIsolate();
 
 	// Load GMacro Data
 	v8::String::Utf8Value arg0(args[0]);
@@ -30,8 +36,11 @@ v8::Handle<v8::Value> ConvGMacroToNaMacro(const v8::Arguments& args)
 
 	ifstream file;
 	file.open(filename, ios::binary || ios::in || ios::ate);
-	if (file == NULL)
-		return v8::Handle<v8::String>();
+	if (!file.is_open())
+	{
+		// v8::Local<v8::String>();
+		return;
+	}
 
 #define MAKE_BUFFER(_name) char *_name = new char[1024]; memset(_name, 0, 1024);
 	MAKE_BUFFER(buf);
@@ -156,6 +165,6 @@ v8::Handle<v8::Value> ConvGMacroToNaMacro(const v8::Arguments& args)
 		strNaScript += str;
 	}
 
-	v8::Handle<v8::String> result = v8::String::New(strNaScript.data(), strNaScript.length());
-	return result;
+	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, strNaScript.data(), v8::NewStringType::kNormal, strNaScript.length()).ToLocalChecked();
+	args.GetReturnValue().Set(result);
 }

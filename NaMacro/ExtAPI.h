@@ -1,7 +1,8 @@
 #pragma once
 
 #include <v8.h>
+#include "Common.h"
 
-void InitExtAPI(v8::Handle<v8::ObjectTemplate> &global_template);
+void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
 
-v8::Handle<v8::Value> ConvGMacroToNaMacro(const v8::Arguments& args);
+void ConvGMacroToNaMacro(V8_FUNCTION_ARGS);

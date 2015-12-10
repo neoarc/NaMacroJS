@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "ExtAPI.h"
+#include "ExtModule.h"
 
 #include <fstream>
 #include <iostream>
@@ -15,7 +15,7 @@
 using namespace std;
 //using namespace SpeechLib;
 
-void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_API(_js_func, _c_func) \
 	global_template->Set( \
@@ -28,6 +28,10 @@ void InitExtAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_temp
 
 	// TODO make extapi object
 	// TODO bind apis to extapi object
+}
+
+void NaExtModule::Release()
+{
 }
 
 // description: Convert GMacro data to NaMacro script
@@ -180,10 +184,13 @@ void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 // syntax:		ttsSpeak(text)
 void TTSSpeak(V8_FUNCTION_ARGS)
 {
+	// TODO Move to NaExtModule::Init
+	// {
 	CoInitialize(0);
 
 	ISpVoice * pVoice = NULL;
 	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
+	// }
 
 	if (SUCCEEDED(hr))
 	{
@@ -195,9 +202,13 @@ void TTSSpeak(V8_FUNCTION_ARGS)
 		MultiByteToWideChar(CP_ACP, 0, *str, -1, (LPWSTR)pwcsName, nChars);
 
 		hr = pVoice->Speak(pwcsName, SPF_IS_XML, NULL);
+
+		// TODO Move to NaExtModule::Release
+		// {
 		pVoice->Release();
 		pVoice = NULL;
 	}
 
 	::CoUninitialize();
+	// }
 }

@@ -2,8 +2,14 @@
 
 #include <v8.h>
 #include "Common.h"
+#include "NaModuleBase.h"
 
-void InitBasicAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+class NaBasicModule : public NaModuleBase
+{
+public:
+	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+	virtual void Release();
+};
 
 v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name);
 

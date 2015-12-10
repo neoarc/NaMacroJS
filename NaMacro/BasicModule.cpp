@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
 #include "Common.h"
-#include "BasicAPI.h"
+#include "BasicModule.h"
 
 #include "Windows.h"
 
-void InitBasicAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template)
+void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_API(_js_func, _c_func) \
 	global_template->Set( \
@@ -13,10 +13,15 @@ void InitBasicAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_te
 		v8::FunctionTemplate::New(isolate, _c_func) \
 	);
 
-	ADD_GLOBAL_API(sleep,	Sleep);
-	ADD_GLOBAL_API(alert,	Alert);
-	ADD_GLOBAL_API(print,	Print);
-	ADD_GLOBAL_API(exit,	Exit);
+	ADD_GLOBAL_API(sleep, Sleep);
+	ADD_GLOBAL_API(alert, Alert);
+	ADD_GLOBAL_API(print, Print);
+	ADD_GLOBAL_API(exit, Exit);
+}
+
+void NaBasicModule::Release()
+{
+
 }
 
 // description: Print message to console

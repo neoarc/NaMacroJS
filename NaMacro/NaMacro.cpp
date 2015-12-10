@@ -13,31 +13,14 @@
 
 #include "Common.h"
 
-#include "BasicAPI.h"
-#include "MouseAPI.h"
-#include "ExtAPI.h"
+#include "BasicModule.h"
+#include "MouseModule.h"
+#include "KeyboardModule.h"
+#include "ExtModule.h"
 
 #include "NaMacro.h"
 
-// Prototype
-void ReportException(v8::Isolate *isolate, v8::TryCatch* handler);
-bool report_exceptions = true;
-
 using namespace v8;
-
-class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
-public:
-	virtual void* Allocate(size_t length) {
-		void* data = AllocateUninitialized(length);
-		return data == NULL ? data : memset(data, 0, length);
-	}
-	virtual void* AllocateUninitialized(size_t length) {
-		return malloc(length);
-	}
-	virtual void Free(void* data, size_t) {
-		free(data);
-	}
-};
 
 // Main
 int main(int argc, char* argv[])
@@ -76,22 +59,15 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
-		// TODO modulize
-		{
-			// init Modules that doesn't need global context
-			InitBasicAPI(isolate, global_template);
-			InitExtAPI(isolate, global_template);
-		}
-
+		// Initialize Modules 1
+		InitModules(isolate, global_template, 0);
+		
 		// Enter the newly created execution environment.
 		v8::Local<v8::Context> context = v8::Context::New(isolate, NULL, global_template);
 		v8::Context::Scope context_scope(context);
 
-		// TODO modulize
-		{
-			// init Modules that needs global context
-			InitMouseAPI(isolate, global_template);
-		}
+		// Initialize Modules 2 (Access global context)
+		InitModules(isolate, global_template, 1);
 
 		v8::Local<v8::Script> script;
 		{
@@ -146,8 +122,11 @@ int main(int argc, char* argv[])
 		v8::Local<v8::Value> js_argv[js_argc] = { v8::String::NewFromUtf8(isolate, "hello :)", String::kNormalString) };
 		main_fn->Call(isolate->GetCurrentContext()->Global(), js_argc, js_argv);
 
-		// infinite loop 
+		// Infinite loop 
 		while (!g_bExit) { }
+
+		// Release Modules
+		ReleaseModules();
 	}
 
 	// Dispose the isolate and tear down V8.
@@ -198,4 +177,38 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 		}
 		printf("\n");
 	}
+}
+
+void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template, int nPhase)
+{
+	NaModuleBase *pModule;
+#define INIT_MODULE(_class) \
+	pModule = new _class; \
+	pModule->Init(isolate, global_template); \
+	g_ModuleList.push_back(pModule);
+
+	if (nPhase == 0)
+	{
+		INIT_MODULE(NaBasicModule);
+		INIT_MODULE(NaExtModule);
+	}
+	else if (nPhase == 1)
+	{
+		INIT_MODULE(NaMouseModule);
+		INIT_MODULE(NaKeyboardModule);
+	}
+
+}
+
+void ReleaseModules()
+{
+	vector<NaModuleBase*>::iterator it = g_ModuleList.begin();
+	for (; it != g_ModuleList.end(); ++it)
+	{
+		NaModuleBase *pModule = *it;
+		pModule->Release();
+		delete pModule;
+	}
+
+	g_ModuleList.clear();
 }

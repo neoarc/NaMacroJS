@@ -1,11 +1,11 @@
 #include "stdafx.h"
 
-#include "MouseAPI.h"
+#include "MouseModule.h"
 #include "Common.h"
 
 #include "Windows.h"
 
-void InitMouseAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaMouseModule::Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 	v8::HandleScope handle_scope(isolate);
 
@@ -28,8 +28,12 @@ void InitMouseAPI(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_te
 	ADD_MOUSE_API(wheelUp,		MouseWheelUp);
 }
 
+void NaMouseModule::Release()
+{
+}
+
 // description: return 'system.mouse'
-v8::Local<v8::Object> GetMouseObject(v8::Isolate *isolate)
+v8::Local<v8::Object> NaMouseModule::GetMouseObject(v8::Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 

@@ -66,7 +66,7 @@
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..;..\include;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Include</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>false</MinimalRebuild>
+      <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -76,6 +76,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <DisableSpecificWarnings>4091;4127;4351;4355;4503;4589;4611;4100;4121;4244;4302;4309;4311;4312;4481;4505;4510;4512;4610;4800;4838;4995;4996;4456;4457;4458;4459;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <AdditionalDependencies>ws2_32.lib;winmm.lib;$(SolutionDir)\Build\$(Configuration)\v8_libplatform.lib;$(SolutionDir)\Build\$(Configuration)\icui18n.lib;$(SolutionDir)\Build\$(Configuration)\icuuc.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_0.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_1.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_2.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_3.lib;$(SolutionDir)\Build\$(Configuration)\v8_libbase.lib;$(SolutionDir)\Build\$(Configuration)\v8_external_snapshot.lib;%(AdditionalDependencies);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
@@ -114,22 +115,28 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BasicAPI.cpp" />
+    <ClCompile Include="BasicModule.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="ExtAPI.cpp" />
-    <ClCompile Include="MouseAPI.cpp" />
+    <ClCompile Include="ExtModule.cpp" />
+    <ClCompile Include="KeyboardModule.cpp" />
+    <ClCompile Include="MouseModule.cpp" />
     <ClCompile Include="NaMacro.cpp" />
+    <ClCompile Include="NaModuleBase.cpp" />
+    <ClCompile Include="NaWindow.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicAPI.h" />
+    <ClInclude Include="BasicModule.h" />
     <ClInclude Include="Common.h" />
-    <ClInclude Include="ExtAPI.h" />
-    <ClInclude Include="MouseAPI.h" />
+    <ClInclude Include="ExtModule.h" />
+    <ClInclude Include="KeyboardModule.h" />
+    <ClInclude Include="MouseModule.h" />
     <ClInclude Include="NaMacro.h" />
+    <ClInclude Include="NaModuleBase.h" />
+    <ClInclude Include="NaWindow.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

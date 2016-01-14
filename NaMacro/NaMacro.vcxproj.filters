@@ -42,9 +42,6 @@
     <ClCompile Include="NaMacro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NaModuleBase.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
     <ClCompile Include="BasicModule.cpp">
       <Filter>Source Files\Module</Filter>
     </ClCompile>
@@ -60,6 +57,12 @@
     <ClCompile Include="NaWindow.cpp">
       <Filter>Source Files\Window</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenModule.cpp">
+      <Filter>Source Files\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="ModuleBase.cpp">
+      <Filter>Source Files\Module</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -70,9 +73,6 @@
     </ClInclude>
     <ClInclude Include="NaMacro.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NaModuleBase.h">
-      <Filter>Header Files\Module</Filter>
     </ClInclude>
     <ClInclude Include="BasicModule.h">
       <Filter>Header Files\Module</Filter>
@@ -88,6 +88,12 @@
     </ClInclude>
     <ClInclude Include="NaWindow.h">
       <Filter>Header Files\Window</Filter>
+    </ClInclude>
+    <ClInclude Include="ScreenModule.h">
+      <Filter>Header Files\Module</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleBase.h">
+      <Filter>Header Files\Module</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "vector"
-#include "NaModuleBase.h"
+#include "ModuleBase.h"
 
 using namespace std;
 
@@ -13,7 +13,7 @@ extern bool g_bExit;
 // Modulize
 void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template, int nPhase);
 void ReleaseModules();
-vector<NaModuleBase*> g_ModuleList;
+vector<ModuleBase*> g_ModuleList;
 
 // Buffer Allocator
 class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {

@@ -7,11 +7,11 @@ print("init NaMacro.js");
 
 function main()
 {
-    tts_test();
-
-    mouse_test();
-
+    //tts_test();
+    //mouse_test();
     //convGMacro_test();
+
+    screen_test();
 
 	alert("Press a any key to exit", "End :)", 0);
 	exit();
@@ -56,5 +56,25 @@ function mouse_test()
         mouse.move(xy, xy);
 
         sleep(10);
+    }
+}
+
+
+function screen_test()
+{
+    var mouse = system.mouse;
+    var screen = system.screen;
+    for (var i = 1; i < 100; i++) {
+        var xy = i * 10;
+
+        mouse.move(xy, xy);
+        var col = screen.getPixel(xy, xy);
+        var r = parseInt(col / 256 / 256 % 256);
+        var g = parseInt(col / 256 % 256);
+        var b = parseInt(col % 256);
+
+        print(xy + ", " + xy + ": " + r + "," + g + "," + b);
+
+        sleep(1000);
     }
 }

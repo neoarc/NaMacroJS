@@ -17,6 +17,7 @@
 #include "MouseModule.h"
 #include "KeyboardModule.h"
 #include "ExtModule.h"
+#include "ScreenModule.h"
 
 #include "NaMacro.h"
 
@@ -181,7 +182,7 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 
 void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template, int nPhase)
 {
-	NaModuleBase *pModule;
+	ModuleBase *pModule;
 #define INIT_MODULE(_class) \
 	pModule = new _class; \
 	pModule->Init(isolate, global_template); \
@@ -196,16 +197,17 @@ void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_tem
 	{
 		INIT_MODULE(NaMouseModule);
 		INIT_MODULE(NaKeyboardModule);
+		INIT_MODULE(NaScreenModule);
 	}
 
 }
 
 void ReleaseModules()
 {
-	vector<NaModuleBase*>::iterator it = g_ModuleList.begin();
+	vector<ModuleBase*>::iterator it = g_ModuleList.begin();
 	for (; it != g_ModuleList.end(); ++it)
 	{
-		NaModuleBase *pModule = *it;
+		ModuleBase *pModule = *it;
 		pModule->Release();
 		delete pModule;
 	}

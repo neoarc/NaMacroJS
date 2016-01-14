@@ -4,12 +4,13 @@
 #include "Common.h"
 #include "ModuleBase.h"
 
-class NaExtModule : public ModuleBase
+class NaScreenModule : public ModuleBase
 {
 public:
 	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
 	virtual void Release();
+
+	v8::Local<v8::Object> GetScreenObject(v8::Isolate *isolate);
 };
 
-void ConvGMacroToNaMacro(V8_FUNCTION_ARGS);
-void TTSSpeak(V8_FUNCTION_ARGS);
+void ScreenGetPixel(V8_FUNCTION_ARGS);

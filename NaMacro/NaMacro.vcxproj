@@ -121,8 +121,9 @@
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
     <ClCompile Include="NaMacro.cpp" />
-    <ClCompile Include="NaModuleBase.cpp" />
+    <ClCompile Include="ModuleBase.cpp" />
     <ClCompile Include="NaWindow.cpp" />
+    <ClCompile Include="ScreenModule.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -135,8 +136,9 @@
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />
     <ClInclude Include="NaMacro.h" />
-    <ClInclude Include="NaModuleBase.h" />
+    <ClInclude Include="ModuleBase.h" />
     <ClInclude Include="NaWindow.h" />
+    <ClInclude Include="ScreenModule.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>

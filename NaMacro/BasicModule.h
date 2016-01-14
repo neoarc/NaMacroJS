@@ -2,9 +2,9 @@
 
 #include <v8.h>
 #include "Common.h"
-#include "NaModuleBase.h"
+#include "ModuleBase.h"
 
-class NaBasicModule : public NaModuleBase
+class NaBasicModule : public ModuleBase
 {
 public:
 	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);

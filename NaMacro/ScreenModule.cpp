@@ -78,7 +78,7 @@ void ScreenGetPixel(V8_FUNCTION_ARGS)
 	::SelectObject(hMemoryDC, hBmp);
 	::BitBlt(hMemoryDC, 0, 0, 1, 1, hDC, x, y, SRCCOPY);
 
-	COLORREF color = ::GetPixel(hDC, 0, 0);
+	COLORREF color = ::GetPixel(hMemoryDC, 0, 0);
 #else
 	COLORREF color = ::GetPixel(hDC, x, y);
 #endif

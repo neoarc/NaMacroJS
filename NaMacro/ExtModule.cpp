@@ -4,16 +4,12 @@
 
 #include <fstream>
 #include <iostream>
-#include <vector>
 #include <sstream>
 
-//#using <mscorlib.dll>
-#include "sapi.h"           // SAPI includes
-#include "sphelper.h"
-#include "spuihelp.h"
-
 using namespace std;
-//using namespace SpeechLib;
+
+bool NaExtModule::s_bInitTTS = false;
+vector<ISpVoice*> NaExtModule::s_vecVoices;
 
 void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
@@ -32,6 +28,22 @@ void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& glo
 
 void NaExtModule::Release()
 {
+	if (NaExtModule::s_bInitTTS == true) 
+	{
+		vector<ISpVoice*>::iterator it = NaExtModule::s_vecVoices.begin();
+		for (; it != NaExtModule::s_vecVoices.end(); )
+		{
+			// NaExtModule::s_vecVoices.erase(it);
+			ISpVoice* pVoice = (*it);
+			pVoice->Release();
+			pVoice = NULL;
+
+			++it;
+		}
+
+		NaExtModule::s_vecVoices.clear();
+		::CoUninitialize();
+	}
 }
 
 // description: Convert GMacro data to NaMacro script
@@ -181,34 +193,38 @@ void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 }
 
 // description: text to speech
-// syntax:		ttsSpeak(text)
+// syntax:		ttsSpeak(text, [async=false])
 void TTSSpeak(V8_FUNCTION_ARGS)
 {
-	// TODO Move to NaExtModule::Init
-	// {
-	CoInitialize(0);
+	if (NaExtModule::s_bInitTTS == false)
+	{
+		CoInitialize(0);
+		NaExtModule::s_bInitTTS = true;
+	}
 
-	ISpVoice * pVoice = NULL;
+	ISpVoice *pVoice = NULL;
 	HRESULT hr = CoCreateInstance(CLSID_SpVoice, NULL, CLSCTX_ALL, IID_ISpVoice, (void **)&pVoice);
-	// }
 
 	if (SUCCEEDED(hr))
 	{
 		v8::String::Utf8Value str(args[0]);
+		bool bAsync = false;
+		if (args.Length() >= 2)
+		{
+			bAsync = args[1]->BooleanValue();
+		}
 
 		int nChars = MultiByteToWideChar(CP_ACP, 0, *str, -1, NULL, 0);
 		const WCHAR *pwcsName;
 		pwcsName = new WCHAR[nChars];
 		MultiByteToWideChar(CP_ACP, 0, *str, -1, (LPWSTR)pwcsName, nChars);
 
-		hr = pVoice->Speak(pwcsName, SPF_IS_XML, NULL);
+		DWORD dwFlag = SPF_IS_XML;
+		if (bAsync)
+			dwFlag |= SPF_ASYNC;
 
-		// TODO Move to NaExtModule::Release
-		// {
-		pVoice->Release();
-		pVoice = NULL;
+		hr = pVoice->Speak(pwcsName, dwFlag, NULL);
+
+		NaExtModule::s_vecVoices.push_back(pVoice);
 	}
-
-	::CoUninitialize();
-	// }
 }

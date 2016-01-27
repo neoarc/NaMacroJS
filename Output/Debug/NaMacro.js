@@ -7,13 +7,41 @@ print("init NaMacro.js");
 
 function main()
 {
-    tts_test();
+    key_test();
+
+    //tts_test();
     //mouse_test();
     //convGMacro_test();
     //screen_test();
 
 	alert("Press a any key to exit", "End :)", 0);
 	exit();
+}
+
+function key_test()
+{
+    print("Open notepad and set focus in 10 seconds.");
+    for (var i = 10; i > 0; i--)
+    {
+        print(i + "...");
+        sleep(1000);
+    }
+
+    var k = system.keyboard;
+    k.down(0x20); // VK_SPACE
+    k.up(0x20);
+
+    // type a to z
+    for (var i=0x41; i<=0x5a; i++)
+    {
+        print(i);
+
+        k.down(i);
+        sleep(10);
+
+        k.up(i);
+        sleep(10);
+    }
 }
 
 function convGMacro_test()

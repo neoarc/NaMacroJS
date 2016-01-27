@@ -24,6 +24,7 @@ void NaKeyboardModule::Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>&
 
 void NaKeyboardModule::Release()
 {
+	VK_SPACE;
 }
 
 // description: return 'system.keyboard'
@@ -49,14 +50,34 @@ v8::Local<v8::Object> NaKeyboardModule::GetKeyboardObject(v8::Isolate *isolate)
 // syntax:		
 void KeyboardDown(V8_FUNCTION_ARGS)
 {
-	
+	if (args.Length() <= 0)
+		return;
+
+	int nKey = args[0]->Int32Value();
+
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = nKey;
+	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+	::SendInput(1, &input, sizeof(INPUT));
 }
 
 // description: 
 // syntax:		
 void KeyboardUp(V8_FUNCTION_ARGS)
 {
+	if (args.Length() <= 0)
+		return;
 
+	int nKey = args[0]->Int32Value();
+
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = nKey;
+	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+	::SendInput(1, &input, sizeof(INPUT));
 }
 
 // description: 

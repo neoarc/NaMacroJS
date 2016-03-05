@@ -142,6 +142,7 @@
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Architecture.txt" />
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>

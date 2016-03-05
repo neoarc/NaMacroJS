@@ -4,6 +4,9 @@
 #include "BasicModule.h"
 
 #include "Windows.h"
+#include "NaWindow.h"
+
+#include <iostream>
 
 void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
@@ -17,6 +20,9 @@ void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 	ADD_GLOBAL_API(alert, Alert);
 	ADD_GLOBAL_API(print, Print);
 	ADD_GLOBAL_API(exit, Exit);
+	ADD_GLOBAL_API(findWindows, FindWindows);
+	ADD_GLOBAL_API(findProcesses, FindProcesses);
+	ADD_GLOBAL_API(findTrays, FindTrays);
 }
 
 void NaBasicModule::Release()
@@ -38,9 +44,9 @@ void Print(V8_FUNCTION_ARGS)
 		else {
 			printf(" ");
 		}
-		v8::String::Utf8Value str(args[i]);
-		const char* cstr = ToCString(str);
-		printf("%s", cstr);
+
+		v8::String::Value str(args[i]);
+		wprintf(_T("%s"), (const wchar_t*)*str);
 	}
 	printf("\n");
 	fflush(stdout);
@@ -50,14 +56,13 @@ void Print(V8_FUNCTION_ARGS)
 // syntax:		alert(message, title, type)
 void Alert(V8_FUNCTION_ARGS)
 {
-	v8::String::Utf8Value msg(args[0]);
-	v8::String::Utf8Value title(args[1]);
+	v8::String::Value msg(args[0]);
+	v8::String::Value title(args[1]);
 	int nType = args[2]->Int32Value();
 
-	//const char* cstr = (const char*)*str;
-	::MessageBoxA(NULL, 
-		*msg, 
-		args.Length() >= 2 ? *title : "Alert", 
+	::MessageBoxW(NULL,
+		(const wchar_t*)*msg,
+		args.Length() >= 2 ? (const wchar_t*)*title : L"Alert",
 		args.Length() >= 3 ? nType : MB_OK
 		);
 }
@@ -97,4 +102,37 @@ v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
 void Exit(V8_FUNCTION_ARGS)
 {
 	g_bExit = true;
+}
+
+void FindWindows(V8_FUNCTION_ARGS)
+{
+	v8::Isolate *isolate = args.GetIsolate();
+
+	v8::String::Value str(args[0]);
+	v8::Local<v8::Array> results = v8::Array::New(isolate);
+
+	NaWindow::FindWindows(isolate, (const wchar_t*)*str, results);
+	args.GetReturnValue().Set(results);
+
+	/*
+	// Not Impl
+	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
+	args.GetReturnValue().Set(result);
+	*/
+}
+
+void FindProcesses(V8_FUNCTION_ARGS)
+{
+	// Not Impl
+	v8::Isolate *isolate = args.GetIsolate();
+	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
+	args.GetReturnValue().Set(result);
+}
+
+void FindTrays(V8_FUNCTION_ARGS)
+{
+	// Not Impl
+	v8::Isolate *isolate = args.GetIsolate();
+	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
+	args.GetReturnValue().Set(result);
 }

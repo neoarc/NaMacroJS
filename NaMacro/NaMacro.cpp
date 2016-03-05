@@ -26,7 +26,28 @@ using namespace v8;
 // Main
 int main(int argc, char* argv[])
 {
-	// Initialize V8.
+	// Console output problem fix (temp)
+	_wsetlocale(0, L"korean"); // LC_ALL
+
+	// Move console window to right-bottom of screen
+	{
+		RECT rcConsole, rcTray;
+		wchar_t ConsolWindowTitle[1024];
+		GetConsoleTitle(ConsolWindowTitle, _countof(ConsolWindowTitle));
+		HWND hConsol = ::FindWindow(nullptr, ConsolWindowTitle);
+		GetWindowRect(hConsol, &rcConsole);
+		GetWindowRect(FindWindow(L"Shell_TrayWnd", nullptr), &rcTray); 
+		
+		MoveWindow(
+			hConsol, 
+			rcTray.right - (rcConsole.right - rcConsole.left), 
+			rcTray.top - (rcConsole.bottom - rcConsole.top), 
+			(rcConsole.right - rcConsole.left),
+			(rcConsole.bottom - rcConsole.top),
+			TRUE);
+	}
+
+	// Initialize V8
 	V8::InitializeICU();
 	V8::InitializeExternalStartupData(argv[0]);
 	Platform* platform = platform::CreateDefaultPlatform();
@@ -143,7 +164,7 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 {
 	v8::HandleScope handle_scope(isolate);
 	v8::String::Utf8Value exception(try_catch->Exception());
-	const char* exception_string = ToCString(exception);
+	const char* exception_string = *exception;
 	v8::Local<v8::Message> message = try_catch->Message();
 	if (message.IsEmpty()) 
 	{
@@ -155,13 +176,13 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 	{
 		// Print (filename):(line number): (message).
 		v8::String::Utf8Value filename(message->GetScriptResourceName());
-		const char* filename_string = ToCString(filename);
+		const char* filename_string = *filename;
 		int linenum = message->GetLineNumber();
 		printf("%s:%i: %s\n", filename_string, linenum, exception_string);
 
 		// Print line of source code.
 		v8::String::Utf8Value sourceline(message->GetSourceLine());
-		const char* sourceline_string = ToCString(sourceline);
+		const char* sourceline_string = *sourceline;
 		printf("%s\n", sourceline_string);
 
 		// Print wavy underline (GetUnderline is deprecated).

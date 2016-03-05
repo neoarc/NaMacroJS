@@ -1,0 +1,51 @@
+--- Modules ---
+Basic
+	Sleep
+	Alert
+	Print
+	Exit
+	FindWindow
+	FindProcess
+	FindTray
+Ext
+	ConvGMacroToNaMacro
+	TTSSpeak
+Mouse
+	MouseMove
+	MouseClick
+	MouseLButtonDown
+	MouseLButtonUp
+	MouseRButtonDown
+	MouseRButtonUp
+	MouseWheelDown
+	MouseWheelUp
+Keyboard
+	KeyboardDown
+	KeyboardUp
+	KeyboardRegisterHotkey
+	KeyboardUnregisterHotkey
+Screen
+	ScreenGetPixel
+	ScreenSetAero
+Window
+	WindowCreate
+	WindowFind
+	WindowMove
+
+--- Objects ---
+Global
++- system
+	+- keyboard
+		+- (m)down
+		+- (m)up
+	+- mouse
+		+- (m)move
+		+- (m)click
+		+- (m)lbuttonDown
+		+- (m)lbuttonUp
+		+- ..
+	+- screen
+		+- (m)getPixel
+		+- (m)setAero
++- window
+	+- (m)move

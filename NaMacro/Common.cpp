@@ -23,9 +23,3 @@ v8::Local<v8::Object> GetSystemObject(v8::Isolate *isolate)
 	v8::Local<v8::Object> system_obj = system_value->ToObject();
 	return system_obj;
 }
-
-// Util
-const char* ToCString(const v8::String::Utf8Value& value)
-{
-	return *value ? *value : "<string conversion failed>";
-}

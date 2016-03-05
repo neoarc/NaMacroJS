@@ -7,8 +7,9 @@ print("init NaMacro.js");
 
 function main()
 {
-    key_test();
+    window_test();
 
+    //key_test();
     //tts_test();
     //mouse_test();
     //convGMacro_test();
@@ -16,6 +17,20 @@ function main()
 
 	alert("Press a any key to exit", "End :)", 0);
 	exit();
+}
+
+function window_test()
+{
+    var name = "Microsoft Visual Studio";
+    //var name = "Firefox";
+
+    var results = findWindows(name);
+    if (results.length > 0) {
+        var win = results[0];
+        win.move(0, 0);
+    } else {
+        alert("Cannot find Window :(");
+    }
 }
 
 function key_test()

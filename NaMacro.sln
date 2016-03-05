@@ -5,18 +5,37 @@ VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacro", "NaMacro\NaMacro.vcxproj", "{3336ACF4-2208-432F-816F-40B9E4B47A08}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{F202E423-B150-45F0-83DB-F3BE60A519E9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodePage", "UnitTest\CodePage\CodePage.vcxproj", "{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
 		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Debug|Win32.ActiveCfg = Debug|Win32
 		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Debug|Win32.Build.0 = Debug|Win32
+		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Debug|x64.ActiveCfg = Debug|Win32
 		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Release|Win32.ActiveCfg = Release|Win32
 		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Release|Win32.Build.0 = Release|Win32
+		{3336ACF4-2208-432F-816F-40B9E4B47A08}.Release|x64.ActiveCfg = Release|Win32
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|Win32.Build.0 = Debug|Win32
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|x64.ActiveCfg = Debug|x64
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|x64.Build.0 = Debug|x64
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|Win32.ActiveCfg = Release|Win32
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|Win32.Build.0 = Release|Win32
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|x64.ActiveCfg = Release|x64
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
 	EndGlobalSection
 EndGlobal

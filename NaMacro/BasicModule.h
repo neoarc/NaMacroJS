@@ -17,3 +17,6 @@ void Sleep(V8_FUNCTION_ARGS);
 void Alert(V8_FUNCTION_ARGS);
 void Print(V8_FUNCTION_ARGS);
 void Exit(V8_FUNCTION_ARGS);
+void FindWindows(V8_FUNCTION_ARGS);
+void FindProcesses(V8_FUNCTION_ARGS);
+void FindTrays(V8_FUNCTION_ARGS);

@@ -10,9 +10,11 @@ bool report_exceptions = true;
 
 extern bool g_bExit;
 
-// Modulize
-void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template, int nPhase);
+// prototypes
+void CreateDefaultModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
 void ReleaseModules();
+
 vector<ModuleBase*> g_ModuleList;
 
 // Buffer Allocator

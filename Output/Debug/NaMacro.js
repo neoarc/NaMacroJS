@@ -1,4 +1,4 @@
-//
+﻿//
 // Tester code (debug build)
 // 2015.12.02 neoarc (neoarcturus@gmail.com)
 //
@@ -7,18 +7,43 @@ print("init NaMacro.js");
 
 function main()
 {
-    record_test();
+    consolewindow_test();
 
+    //record_test();
     //window_test();
-
     //key_test();
     //tts_test();
     //mouse_test();
     //convGMacro_test();
     //screen_test();
 
-	alert("Press a any key to exit", "End :)", 0);
+	alert("Press a any key to exit", "End of demo script :)", 0);
 	exit();
+}
+
+function consolewindow_test()
+{
+    var c = consolewindow;
+    c.setVisible(true);
+    c.move(0, 0);
+    print("this is console window.");
+    print("1.moving test");
+    print("2.toggle visible test");
+
+    for (var i = 0; i < 400; i++)
+    {
+        sleep(1);
+        c.move(i, i);
+    }
+
+    var v = false;
+    for (var i = 0; i < 5; i++)
+    {
+        c.setVisible(v);
+        v = !v;
+
+        sleep(500);
+    }
 }
 
 function window_test()
@@ -29,7 +54,19 @@ function window_test()
     var results = findWindows(name);
     if (results.length > 0) {
         var win = results[0];
-        win.move(0, 0);
+
+        // move test
+        //win.move(0, 0);
+
+        // visible teset
+        win.setVisible(false);
+        sleep(1000);
+        win.setVisible(true);
+        sleep(1000);
+        win.setVisible(false);
+        sleep(1000);
+        win.setVisible(true);
+        sleep(1000);
     } else {
         alert("Cannot find Window :(");
     }
@@ -141,6 +178,35 @@ function screen_test()
         print(xy + ", " + xy + ": " + r + "," + g + "," + b);
 
         sleep(1000);
+    }
+}
+
+// for debug
+function isFunction(obj)
+{
+    return !!(obj && obj.constructor && obj.call && obj.apply);
+}
+
+// for debug
+function showObjProperties(obj, level)
+{
+    if (!obj) return;
+    if (level === undefined) level = 0;
+    if (level > 1) return;
+
+    for (var prop in obj) {
+        for (var i = 0, space = ""; i < level; i++) space += "   ";
+
+        if (this.isFunction(obj[prop])) continue;
+        trace(space + prop + " : " + obj[prop]);
+
+        try {
+            if (typeof obj[prop] == "object") {
+                this.showObjProperties(obj[prop], level + 1);
+            }
+        } catch (e) {
+            trace(space + "   !!Exception!!");
+        }
     }
 }
 

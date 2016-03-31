@@ -13,6 +13,7 @@
 class NaExtModule : public ModuleBase
 {
 public:
+	virtual void Create(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template);
 	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
 	virtual void Release();
 

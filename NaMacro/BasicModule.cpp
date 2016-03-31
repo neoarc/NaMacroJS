@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaBasicModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_API(_js_func, _c_func) \
 	global_template->Set( \
@@ -19,10 +19,35 @@ void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 	ADD_GLOBAL_API(sleep, Sleep);
 	ADD_GLOBAL_API(alert, Alert);
 	ADD_GLOBAL_API(print, Print);
+	ADD_GLOBAL_API(trace, Print);
 	ADD_GLOBAL_API(exit, Exit);
 	ADD_GLOBAL_API(findWindows, FindWindows);
 	ADD_GLOBAL_API(findProcesses, FindProcesses);
 	ADD_GLOBAL_API(findTrays, FindTrays);
+}
+
+void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+{
+	// add global object
+	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
+	{
+		v8::Local<v8::String> consolewindow_name = v8::String::NewFromUtf8(isolate, "consolewindow", v8::NewStringType::kNormal).ToLocalChecked();
+		v8::Local<v8::Value> consolewindow_value = global->Get(consolewindow_name);
+		if (!consolewindow_value.IsEmpty() && consolewindow_value->IsUndefined())
+		{
+			// InitConsoleWindow
+
+			// create empty handle window
+			v8::Local<v8::Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
+			consolewindow_value = consolewindow_object;
+			
+			consolewindow_object->Set(
+				v8::String::NewFromUtf8(isolate, "_type", v8::NewStringType::kNormal).ToLocalChecked(),
+				v8::Number::New(isolate, (double)(long)NaWindow::NA_WINDOW_CONSOLE)
+				);
+			global->Set(consolewindow_name, consolewindow_value);
+		}
+	}
 }
 
 void NaBasicModule::Release()
@@ -113,12 +138,6 @@ void FindWindows(V8_FUNCTION_ARGS)
 
 	NaWindow::FindWindows(isolate, (const wchar_t*)*str, results);
 	args.GetReturnValue().Set(results);
-
-	/*
-	// Not Impl
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
-	args.GetReturnValue().Set(result);
-	*/
 }
 
 void FindProcesses(V8_FUNCTION_ARGS)

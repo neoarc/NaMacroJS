@@ -24,36 +24,20 @@
 using namespace v8;
 
 // Main
-int main(int argc, char* argv[])
+
+// 16.03.31 changed console to windows application 
+//int main(int argc, char* argv[])
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
 {
-	// Console output problem fix (temp)
-	_wsetlocale(0, L"korean"); // LC_ALL
-
-	// Move console window to right-bottom of screen
-	{
-		RECT rcConsole, rcTray;
-		wchar_t ConsolWindowTitle[1024];
-		GetConsoleTitle(ConsolWindowTitle, _countof(ConsolWindowTitle));
-		HWND hConsol = ::FindWindow(nullptr, ConsolWindowTitle);
-		GetWindowRect(hConsol, &rcConsole);
-		GetWindowRect(FindWindow(L"Shell_TrayWnd", nullptr), &rcTray); 
-		
-		MoveWindow(
-			hConsol, 
-			rcTray.right - (rcConsole.right - rcConsole.left), 
-			rcTray.top - (rcConsole.bottom - rcConsole.top), 
-			(rcConsole.right - rcConsole.left),
-			(rcConsole.bottom - rcConsole.top),
-			TRUE);
-	}
-
 	// Initialize V8
 	V8::InitializeICU();
-	V8::InitializeExternalStartupData(argv[0]);
+	V8::InitializeExternalStartupData(__argv[0]);
 	Platform* platform = platform::CreateDefaultPlatform();
 	V8::InitializePlatform(platform);
 	V8::Initialize();
-	v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
+
+	// 16.03.31 disabled
+	//v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
 
 	// Create a new Isolate and make it the current one.
 	Isolate::CreateParams create_params;
@@ -81,15 +65,15 @@ int main(int argc, char* argv[])
 			return 1;
 		}
 
-		// Initialize Modules 1
-		InitModules(isolate, global_template, 0);
-		
+		// Create Default Modules (Register FunctionTemplate)
+		CreateDefaultModules(isolate, global_template);
+
 		// Enter the newly created execution environment.
 		v8::Local<v8::Context> context = v8::Context::New(isolate, NULL, global_template);
 		v8::Context::Scope context_scope(context);
 
-		// Initialize Modules 2 (Access global context)
-		InitModules(isolate, global_template, 1);
+		// Initialize Modules (Access global context)
+		InitModules(isolate, global_template);
 
 		v8::Local<v8::Script> script;
 		{
@@ -201,26 +185,29 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 	}
 }
 
-void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template, int nPhase)
+void CreateDefaultModules(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 	ModuleBase *pModule;
-#define INIT_MODULE(_class) \
+#define CREATE_MODULE(_class) \
 	pModule = new _class; \
-	pModule->Init(isolate, global_template); \
+	pModule->Create(isolate, global_template); \
 	g_ModuleList.push_back(pModule);
 
-	if (nPhase == 0)
-	{
-		INIT_MODULE(NaBasicModule);
-		INIT_MODULE(NaExtModule);
-	}
-	else if (nPhase == 1)
-	{
-		INIT_MODULE(NaMouseModule);
-		INIT_MODULE(NaKeyboardModule);
-		INIT_MODULE(NaScreenModule);
-	}
+	CREATE_MODULE(NaBasicModule);
+	CREATE_MODULE(NaExtModule);
+	CREATE_MODULE(NaMouseModule);
+	CREATE_MODULE(NaKeyboardModule);
+	CREATE_MODULE(NaScreenModule);
+}
 
+void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template)
+{
+	vector<ModuleBase*>::iterator it = g_ModuleList.begin();
+	for (; it != g_ModuleList.end(); ++it)
+	{
+		ModuleBase *pModule = *it;
+		pModule->Init(isolate, global_template);
+	}
 }
 
 void ReleaseModules()

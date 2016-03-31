@@ -11,7 +11,7 @@ using namespace std;
 bool NaExtModule::s_bInitTTS = false;
 vector<ISpVoice*> NaExtModule::s_vecVoices;
 
-void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaExtModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_API(_js_func, _c_func) \
 	global_template->Set( \
@@ -21,7 +21,10 @@ void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& glo
 
 	ADD_GLOBAL_API(convGMacroToNaMacro, ConvGMacroToNaMacro);
 	ADD_GLOBAL_API(ttsSpeak, TTSSpeak);
+}
 
+void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+{
 	// TODO make extapi object
 	// TODO bind apis to extapi object
 }

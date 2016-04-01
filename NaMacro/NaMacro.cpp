@@ -57,7 +57,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		v8::Local<v8::String> script_source;
 		v8::MaybeLocal<v8::String> script_name;
 
-		const char *str = "NaMacro.js";
+		char *str = "NaMacro.js";
+		if (__argc > 1)
+			str = __argv[1];
+
 		script_source = ReadFile(isolate, str);
 		script_name = v8::String::NewFromUtf8(isolate, str, v8::NewStringType::kNormal);
 		if (script_source.IsEmpty()) {

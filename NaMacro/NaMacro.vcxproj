@@ -149,6 +149,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\Output\Debug\Demo_mspaint.js" />
     <None Include="..\Output\Debug\NaMacro.js" />
     <None Include="..\Output\Release\NaMacro.js" />
   </ItemGroup>

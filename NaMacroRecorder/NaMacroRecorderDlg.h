@@ -21,6 +21,12 @@ enum ActionTypes {
 	ACTION_KEYLAST,
 };
 
+enum RecordMouseMoveOptions {
+	RECORD_MOUSEMOVE_NONE,
+	RECORD_MOUSEMOVE_CLICKED, 
+	RECORD_MOUSEMOVE_ALL,	
+};
+
 union ActionRecord {
 	// mouse action
 	struct {
@@ -68,15 +74,19 @@ public:
 	afx_msg void OnBnClickedBtnRec();
 	afx_msg void OnBnClickedBtnStop();
 
+	BOOL IsMouseClicked();
 	void RecordStart();
 	void RecordStop();
+	void RecordToNaMacroScript(CString& strOutput);
+	CString GetKeyName(unsigned int nKey);
+
 	afx_msg void OnRawInput(UINT nInputcode, HRAWINPUT hRawInput);
 
 	// recording state
 	BOOL m_bRecording;
 
 	// recording options
-	BOOL m_bRecordJustMove;
+	RecordMouseMoveOptions m_enRecordMove;
 	BOOL m_bRecordDelay;
 
 	// recording data
@@ -86,4 +96,6 @@ public:
 	std::vector<ActionRecord> m_vecActionRecords;
 	
 	void ToggleUIEnable(BOOL bRecording);
+	afx_msg void OnBnClickedChkRecMousemove();
+	afx_msg void OnBnClickedChkRecClickmove();
 };

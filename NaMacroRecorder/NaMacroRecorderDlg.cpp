@@ -70,6 +70,8 @@ BEGIN_MESSAGE_MAP(CNaMacroRecorderDlg, CDialogEx)
 	ON_BN_CLICKED(IDC_BTN_REC, &CNaMacroRecorderDlg::OnBnClickedBtnRec)
 	ON_BN_CLICKED(IDC_BTN_STOP, &CNaMacroRecorderDlg::OnBnClickedBtnStop)
 	ON_WM_INPUT()
+	ON_BN_CLICKED(IDC_CHK_REC_MOUSEMOVE, &CNaMacroRecorderDlg::OnBnClickedChkRecMousemove)
+	ON_BN_CLICKED(IDC_CHK_REC_CLICKMOVE, &CNaMacroRecorderDlg::OnBnClickedChkRecClickmove)
 END_MESSAGE_MAP()
 
 
@@ -107,6 +109,7 @@ BOOL CNaMacroRecorderDlg::OnInitDialog()
 	// Custom
 	RegisterHotKey(m_hWnd, 0, 0, VK_F7);
 	RegisterHotKey(m_hWnd, 1, 0, VK_F8);
+	((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(TRUE);
 	((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->SetCheck(TRUE);
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
@@ -201,6 +204,16 @@ void CNaMacroRecorderDlg::OnBnClickedBtnStop()
 	RecordStop();
 }
 
+BOOL CNaMacroRecorderDlg::IsMouseClicked()
+{
+	if (GetKeyState(VK_LBUTTON) & 0x8000 ||
+		GetKeyState(VK_RBUTTON) & 0x8000 ||
+		GetKeyState(VK_MBUTTON) & 0x8000)
+		return TRUE;
+
+	return FALSE;
+}
+
 void CNaMacroRecorderDlg::RecordStart()
 {
 	if (m_bRecording)
@@ -238,7 +251,14 @@ void CNaMacroRecorderDlg::RecordStart()
 	m_ptLastMousePos = m_ptCurMousePos;
 
 	m_bRecording = TRUE;
-	m_bRecordJustMove = ((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck();
+
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
+		m_enRecordMove = RECORD_MOUSEMOVE_ALL;
+	else if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
+		m_enRecordMove = RECORD_MOUSEMOVE_CLICKED;
+	else
+		m_enRecordMove = RECORD_MOUSEMOVE_NONE;
+
 	m_bRecordDelay = ((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->GetCheck();
 
 	ToggleUIEnable(m_bRecording);
@@ -279,76 +299,8 @@ void CNaMacroRecorderDlg::RecordStop()
 	ToggleUIEnable(m_bRecording);
 
 	// For Test
-	POINT ptLastPos;
-	ptLastPos.x = -1;
-	ptLastPos.y = -1;
-
-	DWORD dwLastTick = -1;
-
 	CString strOutput;
-	std::vector<ActionRecord>::iterator it = m_vecActionRecords.begin();
-	for (; it != m_vecActionRecords.end(); ++it)
-	{
-		ActionRecord ar = *it;
-
-		CString str;
-		CString strJs;
-		str.Format(L"TimeStamp: %ld, Action: %d, ", ar.dwTimeStamp, ar.enType);
-
-		if (m_bRecordDelay &&
-			dwLastTick != -1 && dwLastTick != ar.dwTimeStamp)
-		{
-			strJs.Format(L"sleep(%d);\n", ar.dwTimeStamp - dwLastTick);
-			strOutput += strJs;
-		}
-		dwLastTick = ar.dwTimeStamp;
-
-		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
-		{
-			str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
-
-			BOOL bMoved = FALSE;
-			if (ar.enType == ACTION_MOUSEMOVE || (!m_bRecordJustMove))
-			{
-				if (ar.ptPos.x != ptLastPos.x || ar.ptPos.y != ptLastPos.y)
-					bMoved = TRUE;
-			}
-
-			if (bMoved)
-			{
-				strJs.Format(L"system.mouse.move(%d,%d);\n", ar.ptPos.x, ar.ptPos.y);
-				strOutput += strJs;
-
-				ptLastPos = ar.ptPos;
-			}
-
-			switch (ar.enType)
-			{
-			case ACTION_MOUSEMOVE:
-				break;
-			case ACTION_MOUSELBUTTONDOWN:
-				strJs.Format(L"system.mouse.lbuttonDown();\n");
-				strOutput += strJs;
-				break;
-			case ACTION_MOUSELBUTTONUP:
-				strJs.Format(L"system.mouse.lbuttonUp();\n");
-				strOutput += strJs;
-				break;
-			}
-		}
-		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
-		{
-			str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
-			strJs.Format(L"system.keyboard.%s(%d);\n", 
-				(ar.enType == ACTION_KEYDOWN) ? L"down" : L"up",
-				ar.nKeyCode);
-			strOutput += strJs;
-		}
-		str.Format(L"%s\n", str);
-		TRACE(str);
-	}
-
-	m_vecActionRecords.clear();
+	RecordToNaMacroScript(strOutput);
 	MessageBox(strOutput);
 
 	// Copy to clipboard
@@ -374,6 +326,157 @@ void CNaMacroRecorderDlg::RecordStop()
 	}
 }
 
+void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
+{
+	POINT ptLastPos;
+	ptLastPos.x = -1;
+	ptLastPos.y = -1;
+
+	DWORD dwLastTick = -1;
+	BOOL bUseMouse = FALSE, bUseKey = FALSE;
+	CString strJs;
+
+	std::vector<ActionRecord>::iterator it = m_vecActionRecords.begin();
+	for (; it != m_vecActionRecords.end(); ++it)
+	{
+		ActionRecord ar = *it;
+		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
+			bUseMouse = TRUE;
+		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
+			bUseKey = TRUE;
+
+		if (bUseKey && bUseMouse)
+			break;
+	}
+
+	CTime time = CTime::GetCurrentTime();	
+	strOutput.Format(
+		L"// Auto generated script by NaMacroRecorder\n"
+		L"// %04d.%02d.%02d\n"
+		L"main() {\n",
+		time.GetYear(), time.GetMonth(), time.GetDay()
+	);
+
+#define VAR_MOUSE		L"_m"
+#define VAR_KEYBOARD	L"_k"
+#define STR_TAB			L"   "
+
+	if (bUseMouse)
+	{
+		strJs.Format(L"%svar %s = system.mouse;\n", STR_TAB, VAR_MOUSE);
+		strOutput += strJs;
+	}
+	if (bUseKey)
+	{
+		strJs.Format(L"%svar %s = system.keyboard;\n", STR_TAB, VAR_KEYBOARD);
+		strOutput += strJs;
+	}
+
+	it = m_vecActionRecords.begin();
+	for (; it != m_vecActionRecords.end(); ++it)
+	{
+		ActionRecord ar = *it;
+
+		// for debug
+		/*
+		CString str;
+		str.Format(L"TimeStamp: %ld, Action: %d, ", ar.dwTimeStamp, ar.enType);
+		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
+		{
+			str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
+		}
+		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
+		{
+			str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
+		}
+		str.Format(L"%s\n", str);
+		TRACE(str);
+		*/
+
+		
+
+		if (m_bRecordDelay && dwLastTick != -1 && dwLastTick != ar.dwTimeStamp)
+		{
+			strJs.Format(L"%ssleep(%d);\n", STR_TAB, ar.dwTimeStamp - dwLastTick);
+			strOutput += strJs;
+		}
+		dwLastTick = ar.dwTimeStamp;
+
+		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
+		{
+			BOOL bMoved = FALSE;
+			if (ar.enType == ACTION_MOUSEMOVE || (m_enRecordMove != RECORD_MOUSEMOVE_ALL))
+			{
+				if (ar.ptPos.x != ptLastPos.x || ar.ptPos.y != ptLastPos.y)
+					bMoved = TRUE;
+			}
+
+			if (bMoved)
+			{
+				strJs.Format(L"%s%s.move(%d,%d);\n", STR_TAB, VAR_MOUSE, ar.ptPos.x, ar.ptPos.y);
+				strOutput += strJs;
+
+				ptLastPos = ar.ptPos;
+			}
+
+			switch (ar.enType)
+			{
+			case ACTION_MOUSEMOVE:
+				break;
+			case ACTION_MOUSELBUTTONDOWN:
+				strJs.Format(L"%s%s.lbuttonDown();\n", STR_TAB, VAR_MOUSE);
+				strOutput += strJs;
+				break;
+			case ACTION_MOUSELBUTTONUP:
+				strJs.Format(L"%s%s.lbuttonUp();\n", STR_TAB, VAR_MOUSE);
+				strOutput += strJs;
+				break;
+			}
+		}
+		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
+		{
+			strJs.Format(L"%s%s.%s(%d); // '%s'\n",
+				STR_TAB, VAR_KEYBOARD, 
+				(ar.enType == ACTION_KEYDOWN) ? L"down" : L"up", ar.nKeyCode,
+				GetKeyName(ar.nKeyCode)
+				);
+			strOutput += strJs;
+		}		
+	}
+
+	strOutput += L"}\n";
+
+	m_vecActionRecords.clear();
+}
+
+CString CNaMacroRecorderDlg::GetKeyName(unsigned int nKey)
+{
+	unsigned int scanCode = MapVirtualKey(nKey, MAPVK_VK_TO_VSC);
+
+	// because MapVirtualKey strips the extended bit for some keys
+	switch (nKey)
+	{
+	case VK_LEFT: case VK_UP: case VK_RIGHT: case VK_DOWN: // arrow keys
+	case VK_PRIOR: case VK_NEXT: // page up and page down
+	case VK_END: case VK_HOME:
+	case VK_INSERT: case VK_DELETE:
+	case VK_DIVIDE: // numpad slash
+	case VK_NUMLOCK:
+		scanCode |= 0x100; // set extended bit
+		break;
+	}
+
+	wchar_t keyName[50];
+	if (GetKeyNameText(scanCode << 16, keyName, sizeof(keyName)) != 0)
+	{
+		return keyName;
+	}
+	else
+	{
+		return L"[Error]";
+	}
+}
+
 void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 {
 	// 이 기능을 사용하려면 Windows XP 이상이 필요합니다.
@@ -391,8 +494,6 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 	case RIM_TYPEKEYBOARD:
 		{
 			RAWKEYBOARD &rk = RawInput.data.keyboard;
-			TRACE(L"OnRawInput.Keyboard) %d\n", rk.Flags);
-			
 			if (rk.Flags == RI_KEY_MAKE) // 0
 			{
 				ar.enType = ACTION_KEYDOWN;
@@ -413,12 +514,6 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 			// -> cannot check real position
 
 			GetCursorPos(&m_ptCurMousePos);
-
-			TRACE(L"OnRawInput.Mouse) flag: %d, btn-flag: %d, rel: (%d,%d), abs: (%d,%d)\n",
-				rm.usFlags, rm.usButtonFlags,
-				rm.lLastX, rm.lLastY,
-				m_ptCurMousePos.x, m_ptCurMousePos.y
-				);
 
 			if (rm.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
 			{
@@ -450,7 +545,8 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 					m_ptLastMousePos.y == m_ptCurMousePos.y)
 					bIgnore = TRUE;
 
-				if (!m_bRecordJustMove)
+				if (m_enRecordMove == RECORD_MOUSEMOVE_NONE ||
+					(m_enRecordMove == RECORD_MOUSEMOVE_CLICKED && !IsMouseClicked()))
 					bIgnore = TRUE;
 
 				m_ptLastMousePos = m_ptCurMousePos;
@@ -478,5 +574,20 @@ void CNaMacroRecorderDlg::ToggleUIEnable(BOOL bRecording)
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(bRecording);
 
 	GetDlgItem(IDC_CHK_REC_MOUSEMOVE)->EnableWindow(!bRecording);
+	GetDlgItem(IDC_CHK_REC_CLICKMOVE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_DELAY)->EnableWindow(!bRecording);
+}
+
+// all mousemove
+void CNaMacroRecorderDlg::OnBnClickedChkRecMousemove()
+{
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
+		((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(0);
+}
+
+// clicked mousemove only
+void CNaMacroRecorderDlg::OnBnClickedChkRecClickmove()
+{
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
+		((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->SetCheck(0);
 }

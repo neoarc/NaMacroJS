@@ -107,8 +107,5 @@
     <None Include="..\Output\Release\NaMacro.js">
       <Filter>Resource Files\Release</Filter>
     </None>
-    <None Include="..\Output\Debug\Demo_mspaint.js">
-      <Filter>Resource Files\Debug</Filter>
-    </None>
   </ItemGroup>
 </Project>

@@ -59,6 +59,7 @@ CNaMacroRecorderDlg::CNaMacroRecorderDlg(CWnd* pParent /*=NULL*/)
 void CNaMacroRecorderDlg::DoDataExchange(CDataExchange* pDX)
 {
 	CDialogEx::DoDataExchange(pDX);
+	DDX_Control(pDX, IDC_LIST_FILES, m_listFiles);
 }
 
 BEGIN_MESSAGE_MAP(CNaMacroRecorderDlg, CDialogEx)
@@ -72,6 +73,8 @@ BEGIN_MESSAGE_MAP(CNaMacroRecorderDlg, CDialogEx)
 	ON_WM_INPUT()
 	ON_BN_CLICKED(IDC_CHK_REC_MOUSEMOVE, &CNaMacroRecorderDlg::OnBnClickedChkRecMousemove)
 	ON_BN_CLICKED(IDC_CHK_REC_CLICKMOVE, &CNaMacroRecorderDlg::OnBnClickedChkRecClickmove)
+	ON_BN_CLICKED(IDC_BTN_RUN, &CNaMacroRecorderDlg::OnBnClickedBtnRun)
+	ON_NOTIFY(LVN_ITEMCHANGED, IDC_LIST_FILES, &CNaMacroRecorderDlg::OnLvnItemchangedListFiles)
 END_MESSAGE_MAP()
 
 
@@ -111,6 +114,14 @@ BOOL CNaMacroRecorderDlg::OnInitDialog()
 	RegisterHotKey(m_hWnd, 1, 0, VK_F8);
 	((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(TRUE);
 	((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->SetCheck(TRUE);
+
+	m_listFiles.ModifyStyle(0, LVS_SHOWSELALWAYS);
+	m_listFiles.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_HEADERINALLVIEWS);
+	RECT rcList;
+	m_listFiles.GetClientRect(&rcList);
+	m_listFiles.InsertColumn(0, L"File", 0, rcList.right - rcList.left, -1);
+
+	LoadFiles();
 
 	return TRUE;  // 포커스를 컨트롤에 설정하지 않으면 TRUE를 반환합니다.
 }
@@ -202,6 +213,20 @@ void CNaMacroRecorderDlg::OnBnClickedBtnRec()
 void CNaMacroRecorderDlg::OnBnClickedBtnStop()
 {
 	RecordStop();
+}
+
+// all mousemove
+void CNaMacroRecorderDlg::OnBnClickedChkRecMousemove()
+{
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
+		((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(0);
+}
+
+// clicked mousemove only
+void CNaMacroRecorderDlg::OnBnClickedChkRecClickmove()
+{
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
+		((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->SetCheck(0);
 }
 
 BOOL CNaMacroRecorderDlg::IsMouseClicked()
@@ -309,7 +334,7 @@ void CNaMacroRecorderDlg::RecordStop()
 
 		if (!OpenClipboard())
 		{
-			AfxMessageBox(_T("클립보드를 열 수 없습니다."));
+			AfxMessageBox(_T("Failed to open clipboard."));
 			return;
 		}
 		EmptyClipboard();
@@ -392,8 +417,6 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 		str.Format(L"%s\n", str);
 		TRACE(str);
 		*/
-
-		
 
 		if (m_bRecordDelay && dwLastTick != -1 && dwLastTick != ar.dwTimeStamp)
 		{
@@ -573,21 +596,124 @@ void CNaMacroRecorderDlg::ToggleUIEnable(BOOL bRecording)
 	GetDlgItem(IDC_BTN_REC)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_BTN_STOP)->EnableWindow(bRecording);
 
+	POSITION pos = m_listFiles.GetFirstSelectedItemPosition();
+	int nSelectedIdx = m_listFiles.GetNextSelectedItem(pos);
+	if (nSelectedIdx < 0)
+	{
+		GetDlgItem(IDC_BTN_RUN)->EnableWindow(FALSE);
+	}
+	else
+	{
+		GetDlgItem(IDC_BTN_RUN)->EnableWindow(TRUE);
+	}
+
 	GetDlgItem(IDC_CHK_REC_MOUSEMOVE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_CLICKMOVE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_DELAY)->EnableWindow(!bRecording);
 }
 
-// all mousemove
-void CNaMacroRecorderDlg::OnBnClickedChkRecMousemove()
+void CNaMacroRecorderDlg::LoadFiles()
 {
-	if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
-		((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(0);
+	wchar_t buf[1024];
+	GetCurrentDirectory(1024, buf);
+	CString strConfigFile = buf;
+	strConfigFile += L"\\";
+	strConfigFile += L"NaMacroRecorder.cfg";
+
+	//m_listFiles.InsertItem(0, L"File.js", 0);
+	CStdioFile file;
+	CFileException e;
+	if (file.Open(strConfigFile, CFile::modeRead | CFile::typeText, &e) == FALSE)
+	{
+		return;
+	}
+
+	CString str;
+	while (file.ReadString(str))
+	{
+		int nIdx = str.Find(L"=");
+		CString strId = str.Left(nIdx);
+		CString strVal = str.Right(str.GetLength() - nIdx - 1);
+
+		LoadConfig(strId, strVal);
+	}
+
+	file.Close();
 }
 
-// clicked mousemove only
-void CNaMacroRecorderDlg::OnBnClickedChkRecClickmove()
+void CNaMacroRecorderDlg::LoadConfig(CString & strId, CString & strVal)
 {
-	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
-		((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->SetCheck(0);
+	if (strId.CompareNoCase(L"file") == 0)
+	{
+		AddFile(strVal);
+	}
+	/*
+	else if (...)
+	{
+	}
+	*/
+	else
+	{
+		TRACE(L"Invalid Config Property: %s\n", strId);
+	}
+}
+
+void CNaMacroRecorderDlg::AddFile(CString & strFullPath)
+{
+	int nListIdx = m_listFiles.GetItemCount();
+	
+	FileInfo *pInfo = new FileInfo;
+	pInfo->strFullPath = strFullPath;
+	int nIdx = strFullPath.ReverseFind(L'\\');
+	if (nIdx != -1)
+	{
+		pInfo->strPath = strFullPath.Left(nIdx);
+		pInfo->strFileName = strFullPath.Right(strFullPath.GetLength() - nIdx - 1);
+	}
+
+	m_listFiles.InsertItem(nListIdx, pInfo->strFileName);
+	m_listFiles.SetItemData(nListIdx, (DWORD)pInfo);
+}
+
+void CNaMacroRecorderDlg::SaveFiles()
+{
+	// Not Impl
+}
+
+void CNaMacroRecorderDlg::OnBnClickedBtnRun()
+{
+	CString strFile;
+	POSITION pos = m_listFiles.GetFirstSelectedItemPosition();
+	int nIdx = m_listFiles.GetNextSelectedItem(pos);
+	if (nIdx < 0)
+	{
+		ASSERT(0);
+		return;
+	}
+	strFile = m_listFiles.GetItemText(nIdx, 0);
+
+	// Must placed on same folder
+	SHELLEXECUTEINFO sei;
+	ZeroMemory(&sei, sizeof(SHELLEXECUTEINFO));
+	sei.cbSize = sizeof(SHELLEXECUTEINFO);
+	sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
+	sei.hwnd = ::GetActiveWindow();
+	sei.lpVerb = _T("runas");
+	sei.lpFile = L"NaMacro.exe";
+	sei.lpParameters = strFile;
+	sei.nShow = SW_SHOWDEFAULT;
+	
+	ShellExecuteEx(&sei);
+}
+
+void CNaMacroRecorderDlg::OnLvnItemchangedListFiles(NMHDR *pNMHDR, LRESULT *pResult)
+{
+	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
+	
+	//TRACE(L"LvnItemChanged: %d\n", pNMLV->iItem);
+	
+	int nIdx = pNMLV->iItem;
+	GetDlgItem(IDC_BTN_RUN)->EnableWindow(nIdx < 0 ? FALSE : TRUE);
+
+	*pResult = 0;
 }

@@ -5,6 +5,7 @@
 #pragma once
 
 #include <vector>
+#include "afxcmn.h"
 
 enum ActionTypes {
 	ACTION_MOUSEBEGIN,
@@ -42,6 +43,12 @@ union ActionRecord {
 	};
 };
 
+struct FileInfo {
+	CString strFullPath;
+	CString strPath;
+	CString strFileName;
+};
+
 // CNaMacroRecorderDlg 대화 상자
 class CNaMacroRecorderDlg : public CDialogEx
 {
@@ -73,6 +80,10 @@ public:
 	afx_msg void OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2);
 	afx_msg void OnBnClickedBtnRec();
 	afx_msg void OnBnClickedBtnStop();
+	afx_msg void OnBnClickedChkRecMousemove();
+	afx_msg void OnBnClickedChkRecClickmove();
+	afx_msg void OnBnClickedBtnRun();
+	afx_msg void OnLvnItemchangedListFiles(NMHDR *pNMHDR, LRESULT *pResult);
 
 	BOOL IsMouseClicked();
 	void RecordStart();
@@ -95,7 +106,14 @@ public:
 	POINT m_ptLastMousePos;
 	std::vector<ActionRecord> m_vecActionRecords;
 	
-	void ToggleUIEnable(BOOL bRecording);
-	afx_msg void OnBnClickedChkRecMousemove();
-	afx_msg void OnBnClickedChkRecClickmove();
+	void ToggleUIEnable(BOOL bRecording);	
+
+	// Control variable
+	CListCtrl m_listFiles;
+
+	// Config control
+	void LoadFiles();
+	void LoadConfig(CString &strId, CString &strVal);
+	void AddFile(CString &strFullPath);
+	void SaveFiles();
 };

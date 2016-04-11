@@ -7,6 +7,8 @@ print("init NaMacro.js");
 
 function main()
 {
+    //timer_test();
+
     consolewindow_test();
 
     //record_test();
@@ -19,6 +21,18 @@ function main()
 
 	alert("Press a any key to exit", "End of demo script :)", 0);
 	exit();
+}
+
+function timer_test()
+{
+    consolewindow.setVisible(true);
+
+    // not support
+    /*
+    setInterval(0, function() {
+        print("test.");
+    }, 1000);
+    */
 }
 
 function consolewindow_test()

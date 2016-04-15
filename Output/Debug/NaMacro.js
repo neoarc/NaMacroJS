@@ -9,7 +9,7 @@ function main()
 {
     //timer_test();
 
-    window_activate_test();
+    //window_activate_test();
     //consolewindow_test();
     //record_test();
     //window_test();
@@ -38,8 +38,12 @@ function timer_test()
 function window_activate_test()
 {
     var ar = findWindows("컴퓨터");
+    if (ar.length == 0) {
+        alert("Cannot find window.");
+        return;
+    }
     for (var i=0; i<10; i++) {
-        ar[i%3].activate();
+        ar[i%(ar.length)].activate();
         sleep(1000);
     }
 }

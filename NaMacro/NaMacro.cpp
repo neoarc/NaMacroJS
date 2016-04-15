@@ -83,7 +83,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			// Compile script in try/catch context.
 			v8::TryCatch try_catch(isolate);
 
-			v8::ScriptOrigin origin(script_source);
+			v8::ScriptOrigin origin(script_name.ToLocalChecked());
 			v8::Script::Compile(context, script_source, &origin).ToLocal(&script);
 			if (script.IsEmpty())
 			{
@@ -126,21 +126,20 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 
 		v8::Local<v8::Function> main_fn = v8::Local<v8::Function>::Cast(global->Get(main_name));
 
-		// main arguments
-		const int js_argc = 1;
-		v8::Local<v8::Value> js_argv[js_argc] = { v8::String::NewFromUtf8(isolate, "hello :)", String::kNormalString) };
-		main_fn->Call(isolate->GetCurrentContext()->Global(), js_argc, js_argv);
-
-		// Infinite loop 
+		// Run main function
 		{
-			//v8::TryCatch try_catch(isolate);
-			while (!g_bExit) {
-			//	if (try_catch.HasCaught())
-			//	{
-			//		if (report_exceptions)
-			//			ReportException(isolate, &try_catch);
-			//		return 1;
-			//	}
+			v8::TryCatch try_catch(isolate);
+
+			// main arguments
+			const int js_argc = 1;
+			v8::Local<v8::Value> js_argv[js_argc] = { v8::String::NewFromUtf8(isolate, "hello :)", String::kNormalString) };
+			main_fn->Call(isolate->GetCurrentContext()->Global(), js_argc, js_argv);
+			
+			if (try_catch.HasCaught())
+			{
+				if (report_exceptions)
+					ReportException(isolate, &try_catch);
+				return 1;
 			}
 		}
 

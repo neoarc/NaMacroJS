@@ -132,7 +132,17 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		main_fn->Call(isolate->GetCurrentContext()->Global(), js_argc, js_argv);
 
 		// Infinite loop 
-		while (!g_bExit) { }
+		{
+			//v8::TryCatch try_catch(isolate);
+			while (!g_bExit) {
+			//	if (try_catch.HasCaught())
+			//	{
+			//		if (report_exceptions)
+			//			ReportException(isolate, &try_catch);
+			//		return 1;
+			//	}
+			}
+		}
 
 		// Release Modules
 		ReleaseModules();

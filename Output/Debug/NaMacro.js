@@ -9,8 +9,8 @@ function main()
 {
     //timer_test();
 
-    consolewindow_test();
-
+    window_activate_test();
+    //consolewindow_test();
     //record_test();
     //window_test();
     //key_test();
@@ -33,6 +33,15 @@ function timer_test()
         print("test.");
     }, 1000);
     */
+}
+
+function window_activate_test()
+{
+    var ar = findWindows("컴퓨터");
+    for (var i=0; i<10; i++) {
+        ar[i%3].activate();
+        sleep(1000);
+    }
 }
 
 function consolewindow_test()

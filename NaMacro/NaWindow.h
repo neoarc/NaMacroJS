@@ -47,4 +47,5 @@ public:
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
 
 void WindowMove(V8_FUNCTION_ARGS);
+void WindowActivate(V8_FUNCTION_ARGS);
 void WindowSetVisible(V8_FUNCTION_ARGS);

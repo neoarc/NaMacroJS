@@ -31,6 +31,7 @@ Window
 	WindowCreate
 	WindowFind
 	WindowMove
+	WindowActivate
 
 --- Objects ---
 Global
@@ -47,5 +48,7 @@ Global
 	+- screen
 		+- (m)getPixel
 		+- (m)setAero
-+- window
++- window / consolewindow
 	+- (m)move
+	+- (m)activate
+

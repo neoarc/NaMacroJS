@@ -11,10 +11,13 @@ public:
 	virtual void Release();
 
 	v8::Local<v8::Object> GetKeyboardObject(v8::Isolate *isolate);
+
+	// accessors
+
+	// methods
+	DEFINE_CLASS_METHOD(Down);
+	DEFINE_CLASS_METHOD(Up);
+	DEFINE_CLASS_METHOD(RegisterHotkey);
+	DEFINE_CLASS_METHOD(UnregisterHotkey);
 };
 
-void KeyboardDown(V8_FUNCTION_ARGS);
-void KeyboardUp(V8_FUNCTION_ARGS);
-
-void KeyboardRegisterHotkey(V8_FUNCTION_ARGS);
-void KeyboardUnregisterHotkey(V8_FUNCTION_ARGS);

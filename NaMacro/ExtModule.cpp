@@ -13,14 +13,11 @@ vector<ISpVoice*> NaExtModule::s_vecVoices;
 
 void NaExtModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
-#define ADD_GLOBAL_API(_js_func, _c_func) \
-	global_template->Set( \
-		v8::String::NewFromUtf8(isolate, #_js_func, v8::NewStringType::kNormal).ToLocalChecked(), \
-		v8::FunctionTemplate::New(isolate, _c_func) \
-	);
+#define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
 
-	ADD_GLOBAL_API(convGMacroToNaMacro, ConvGMacroToNaMacro);
-	ADD_GLOBAL_API(ttsSpeak, TTSSpeak);
+	// methods
+	ADD_GLOBAL_METHOD(convGMacroToNaMacro,	ConvGMacroToNaMacro);
+	ADD_GLOBAL_METHOD(ttsSpeak,				TTSSpeak);
 }
 
 void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
@@ -51,7 +48,7 @@ void NaExtModule::Release()
 
 // description: Convert GMacro data to NaMacro script
 // syxtax:		convGMacroToNaMacro(filename)
-void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
+void NaExtModule::ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
 	v8::Isolate *isolate = args.GetIsolate();
@@ -87,7 +84,7 @@ void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 		delay = 6,
 		mouserbuttonclick = 7,
 		mouserbuttondown = 8
-	} MACRO_TYPES;
+	};
 
 	// macro data structure
 	union MacroData {
@@ -197,7 +194,7 @@ void ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 
 // description: text to speech
 // syntax:		ttsSpeak(text, [async=false])
-void TTSSpeak(V8_FUNCTION_ARGS)
+void NaExtModule::TTSSpeak(V8_FUNCTION_ARGS)
 {
 	if (NaExtModule::s_bInitTTS == false)
 	{

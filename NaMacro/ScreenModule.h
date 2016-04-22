@@ -31,7 +31,11 @@ public:
 	static HWND m_hDesktopWnd;
 	static HDC m_hDesktopDC;
 	static bool m_bAeroStatus;
+
+	// accessors
+
+	// methods
+	DEFINE_CLASS_METHOD(GetPixel);
+	DEFINE_CLASS_METHOD(SetAero);
 };
 
-void ScreenGetPixel(V8_FUNCTION_ARGS);
-void ScreenSetAero(V8_FUNCTION_ARGS);

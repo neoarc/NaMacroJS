@@ -11,13 +11,18 @@ public:
 	virtual void Release();
 
 	v8::Local<v8::Object> GetMouseObject(v8::Isolate *isolate);
-};
 
-void MouseMove(V8_FUNCTION_ARGS);
-void MouseClick(V8_FUNCTION_ARGS);
-void MouseLButtonDown(V8_FUNCTION_ARGS);
-void MouseLButtonUp(V8_FUNCTION_ARGS);
-void MouseRButtonDown(V8_FUNCTION_ARGS);
-void MouseRButtonUp(V8_FUNCTION_ARGS);
-void MouseWheelDown(V8_FUNCTION_ARGS);
-void MouseWheelUp(V8_FUNCTION_ARGS);
+	// accessors
+	DEFINE_CLASS_ACCESSOR(GetX, SetX);
+	DEFINE_CLASS_ACCESSOR(GetY, SetY);
+
+	// methods
+	DEFINE_CLASS_METHOD(Move);
+	DEFINE_CLASS_METHOD(Click);
+	DEFINE_CLASS_METHOD(LButtonDown);
+	DEFINE_CLASS_METHOD(LButtonUp);
+	DEFINE_CLASS_METHOD(RButtonDown);
+	DEFINE_CLASS_METHOD(RButtonUp);
+	DEFINE_CLASS_METHOD(WheelDown);
+	DEFINE_CLASS_METHOD(WheelUp);
+};

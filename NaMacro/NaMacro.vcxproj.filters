@@ -54,14 +54,14 @@
     <ClCompile Include="MouseModule.cpp">
       <Filter>Source Files\Module</Filter>
     </ClCompile>
-    <ClCompile Include="NaWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
     <ClCompile Include="ScreenModule.cpp">
       <Filter>Source Files\Module</Filter>
     </ClCompile>
     <ClCompile Include="ModuleBase.cpp">
       <Filter>Source Files\Module</Filter>
+    </ClCompile>
+    <ClCompile Include="NaWindow.cpp">
+      <Filter>Source Files\Window</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

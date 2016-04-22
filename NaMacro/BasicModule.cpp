@@ -10,20 +10,17 @@
 
 void NaBasicModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
 {
-#define ADD_GLOBAL_API(_js_func, _c_func) \
-	global_template->Set( \
-		v8::String::NewFromUtf8(isolate, #_js_func, v8::NewStringType::kNormal).ToLocalChecked(), \
-		v8::FunctionTemplate::New(isolate, _c_func) \
-	);
+#define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
 
-	ADD_GLOBAL_API(sleep, Sleep);
-	ADD_GLOBAL_API(alert, Alert);
-	ADD_GLOBAL_API(print, Print);
-	ADD_GLOBAL_API(trace, Print);
-	ADD_GLOBAL_API(exit, Exit);
-	ADD_GLOBAL_API(findWindows, FindWindows);
-	ADD_GLOBAL_API(findProcesses, FindProcesses);
-	ADD_GLOBAL_API(findTrays, FindTrays);
+	// methods
+	ADD_GLOBAL_METHOD(sleep,		Sleep);
+	ADD_GLOBAL_METHOD(alert,		Alert);
+	ADD_GLOBAL_METHOD(print,		Print);
+	ADD_GLOBAL_METHOD(trace,		Print);
+	ADD_GLOBAL_METHOD(exit,			Exit);
+	ADD_GLOBAL_METHOD(findWindows,	FindWindows);
+	ADD_GLOBAL_METHOD(findProcesses, FindProcesses);
+	ADD_GLOBAL_METHOD(findTrays,	FindTrays);
 }
 
 void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
@@ -38,12 +35,13 @@ void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 			// InitConsoleWindow
 
 			// create empty handle window
-			v8::Local<v8::Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
+			//v8::Local<v8::Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
+			v8::Local<v8::Object> consolewindow_object = NaWindow::CreateV8Window(isolate);
 			consolewindow_value = consolewindow_object;
 			
 			consolewindow_object->Set(
 				v8::String::NewFromUtf8(isolate, "_type", v8::NewStringType::kNormal).ToLocalChecked(),
-				v8::Number::New(isolate, (double)(long)NaWindow::NA_WINDOW_CONSOLE)
+				v8::Number::New(isolate, (double)(long)NA_WINDOW_CONSOLE)
 				);
 			global->Set(consolewindow_name, consolewindow_value);
 		}
@@ -52,12 +50,12 @@ void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 
 void NaBasicModule::Release()
 {
-
+	NaWindow::DestroyMap();
 }
 
 // description: Print message to console
 // syxtax:		print(message) 
-void Print(V8_FUNCTION_ARGS)
+void NaBasicModule::Print(V8_FUNCTION_ARGS)
 {
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++)
@@ -79,7 +77,7 @@ void Print(V8_FUNCTION_ARGS)
 
 // description: show MessageBox with message
 // syntax:		alert(message, title, type)
-void Alert(V8_FUNCTION_ARGS)
+void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 {
 	v8::String::Value msg(args[0]);
 	v8::String::Value title(args[1]);
@@ -92,44 +90,19 @@ void Alert(V8_FUNCTION_ARGS)
 		);
 }
 
-void Sleep(V8_FUNCTION_ARGS)
+void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
 {
 	int nTime = args[0]->Int32Value();
 
 	::Sleep(args.Length() > 0 ? nTime : 1);
 }
 
-// Reads a file into a v8 string.
-v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
-{
-	FILE* file = fopen(name, "rb");
-	if (file == NULL) 
-		return v8::Local<v8::String>();
-
-	fseek(file, 0, SEEK_END);
-	int size = ftell(file);
-	rewind(file);
-
-	char* chars = new char[size + 1];
-	chars[size] = '\0';
-	for (int i = 0; i < size;)
-	{
-		int read = static_cast<int>(fread(&chars[i], 1, size - i, file));
-		i += read;
-	}
-
-	fclose(file);
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, chars, v8::NewStringType::kNormal/*, size*/).ToLocalChecked();
-	delete[] chars;
-	return result;
-}
-
-void Exit(V8_FUNCTION_ARGS)
+void NaBasicModule::Exit(V8_FUNCTION_ARGS)
 {
 	g_bExit = true;
 }
 
-void FindWindows(V8_FUNCTION_ARGS)
+void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 {
 	v8::Isolate *isolate = args.GetIsolate();
 
@@ -140,7 +113,7 @@ void FindWindows(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(results);
 }
 
-void FindProcesses(V8_FUNCTION_ARGS)
+void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
 {
 	// Not Impl
 	v8::Isolate *isolate = args.GetIsolate();
@@ -148,7 +121,7 @@ void FindProcesses(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(result);
 }
 
-void FindTrays(V8_FUNCTION_ARGS)
+void NaBasicModule::FindTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl
 	v8::Isolate *isolate = args.GetIsolate();

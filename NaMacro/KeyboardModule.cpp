@@ -11,15 +11,14 @@ void NaKeyboardModule::Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>&
 	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
 	v8::Local<v8::Object> keyboard_obj = GetKeyboardObject(isolate);
 
-#define ADD_KEYBOARD_API(_js_func, _c_func) \
-	keyboard_obj->Set( \
-		v8::String::NewFromUtf8(isolate, #_js_func, v8::NewStringType::kNormal).ToLocalChecked(), \
-		v8::FunctionTemplate::New(isolate, _c_func)->GetFunction() \
-	);
+#define ADD_KEYBOARD_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(keyboard_obj, _js_func, _c_func);
+#define ADD_KEYBOARD_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(keyboard_obj, _prop, _getter, _setter);
+	
+	// accessors
 
-	ADD_KEYBOARD_API(down, KeyboardDown);
-	ADD_KEYBOARD_API(up, KeyboardUp);
-
+	// methods
+	ADD_KEYBOARD_METHOD(down,	Down);
+	ADD_KEYBOARD_METHOD(up,		Up);
 }
 
 void NaKeyboardModule::Release()
@@ -48,7 +47,7 @@ v8::Local<v8::Object> NaKeyboardModule::GetKeyboardObject(v8::Isolate *isolate)
 
 // description: 
 // syntax:		
-void KeyboardDown(V8_FUNCTION_ARGS)
+void NaKeyboardModule::Down(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
@@ -65,7 +64,7 @@ void KeyboardDown(V8_FUNCTION_ARGS)
 
 // description: 
 // syntax:		
-void KeyboardUp(V8_FUNCTION_ARGS)
+void NaKeyboardModule::Up(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
@@ -82,7 +81,7 @@ void KeyboardUp(V8_FUNCTION_ARGS)
 
 // description: 
 // syntax:		
-void KeyboardRegisterHotkey(V8_FUNCTION_ARGS)
+void NaKeyboardModule::RegisterHotkey(V8_FUNCTION_ARGS)
 {
 	// TODO
 	// HotkeyMap
@@ -94,7 +93,7 @@ void KeyboardRegisterHotkey(V8_FUNCTION_ARGS)
 
 // description: 
 // syntax:		
-void KeyboardUnregisterHotkey(V8_FUNCTION_ARGS)
+void NaKeyboardModule::UnregisterHotkey(V8_FUNCTION_ARGS)
 {
 	// TODO
 	//UnregisterHotKey(NULL, 1);

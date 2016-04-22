@@ -6,25 +6,26 @@
 #include "v8.h"
 
 #include <list>
+#include <map>
 
 #define NA_WINDOW_CLASS		L"NaWindowClass"
+
+enum NaWindowTypes
+{
+	NA_WINDOW_UNKNOWN,
+	NA_WINDOW_NORMAL,
+	NA_WINDOW_CONSOLE,
+};
 
 class NaWindow
 {
 public:
-	NaWindow();
+	NaWindow(long lUID, NaWindowTypes enType = NA_WINDOW_UNKNOWN);
 	~NaWindow();
 
 	HWND Create();
 
 	// Member
-	enum NaWindowTypes
-	{
-		NA_WINDOW_UNKNOWN,
-		NA_WINDOW_NORMAL,
-		NA_WINDOW_CONSOLE,
-	};
-
 	NaWindowTypes m_enType;
 	HWND m_hWnd;
 
@@ -34,18 +35,32 @@ public:
 		std::list<HWND> foundlist;
 	};
 
+	// management window list
+	static long s_lUniqueID;
+	static long CreateUniqueID();
+	static std::map<long, NaWindow*> s_mapWindow;
+	static void DestroyMap();
+
 	// static
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static bool s_bRegisterClass;
 
-	static v8::Local<v8::Object> CreateV8WindowObject(v8::Isolate *isolate);
+	static v8::Local<v8::Object> CreateV8Window(v8::Isolate *isolate);
 	static void FindWindows(v8::Isolate *isolate, const wchar_t *name, v8::Local<v8::Array> &results);
-	static v8::Local<v8::Object> ConvertHWNDToV8WindowObject(v8::Isolate *isolate, HWND hWnd);
-	static NaWindow* ConvertV8WindowObjectToNaWindow(v8::Isolate *isolate);
+
+	// static - Convert between NaWindow/V8/HWND
+	static v8::Local<v8::Object> GetV8Window(v8::Isolate *isolate, HWND hWnd);
+	static NaWindow* GetNaWindow(v8::Isolate *isolate, v8::Local<v8::Object> &obj);
+	static HWND GetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj);
+	static void SetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj, HWND hWnd);
+
+	// accessors
+	DEFINE_CLASS_ACCESSOR(GetVisible, SetVisible);
+	DEFINE_CLASS_ACCESSOR(GetHandle, SetHandle);
+
+	// methods
+	DEFINE_CLASS_METHOD(Move);
+	DEFINE_CLASS_METHOD(Activate);
 };
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
-
-void WindowMove(V8_FUNCTION_ARGS);
-void WindowActivate(V8_FUNCTION_ARGS);
-void WindowSetVisible(V8_FUNCTION_ARGS);

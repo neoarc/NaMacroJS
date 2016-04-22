@@ -19,7 +19,8 @@ public:
 
 	static bool s_bInitTTS;
 	static std::vector<ISpVoice*> s_vecVoices;
-};
 
-void ConvGMacroToNaMacro(V8_FUNCTION_ARGS);
-void TTSSpeak(V8_FUNCTION_ARGS);
+	// methods
+	DEFINE_CLASS_METHOD(ConvGMacroToNaMacro);
+	DEFINE_CLASS_METHOD(TTSSpeak);
+};

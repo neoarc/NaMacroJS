@@ -7,40 +7,71 @@ print("init NaMacro.js");
 
 function main()
 {
-    //timer_test();
+	try {
+		accessor_test();
 
-    //window_activate_test();
-    //consolewindow_test();
-    //record_test();
-    //window_test();
-    //key_test();
-    //tts_test();
-    //mouse_test();
-    //convGMacro_test();
-    //screen_test();
+	    //timer_test();
 
-	alert("Press a any key to exit", "End of demo script :)", 0);
-	exit();
+	    //window_activate_test();
+	    //consolewindow_test();
+	    //window_test();
+	    //key_test();
+	    //tts_test();
+		//mouse_test();
+	    //convGMacro_test();
+	    //screen_test();
+
+		alert("Press a any key to exit", "End of demo script :)", 0);
+		exit();
+
+        // TODO timer
+	} catch(e) {
+		alert("Error: " + e + " / " + typeof(e));
+	}
 }
 
-function timer_test()
+function accessor_test()
 {
-    consolewindow.setVisible(true);
+    consolewindow.visible = true;
 
-    // not support
+	var m = system.mouse;
+
+	///*
+	var old = {};
+	while (true)
+	{
+	    if (m.x != old.x ||
+            m.y != old.y) {
+	        print("mouse pos: " + m.x + ", " + m.y);
+	    }
+
+	    old.x = m.x;
+	    old.y = m.y;
+		sleep(10);
+	}
+	//*/
+
     /*
-    setInterval(0, function() {
-        print("test.");
-    }, 1000);
+	for (var i=0; i<1000; i++) {
+		m.x = i;
+		sleep(1);
+	}
     */
 }
 
 function window_activate_test()
 {
+    consolewindow.visible = true;
+
     var ar = findWindows("컴퓨터");
     if (ar.length == 0) {
         alert("Cannot find window.");
         return;
+    }
+
+    print("found window: " + ar.length);
+    for (var i = 0; i < ar.length; i++) {
+        print(i + ") " + ar[i]._unique_id);
     }
     for (var i=0; i<10; i++) {
         ar[i%(ar.length)].activate();
@@ -51,8 +82,9 @@ function window_activate_test()
 function consolewindow_test()
 {
     var c = consolewindow;
-    c.setVisible(true);
+    c.visible = true;
     c.move(0, 0);
+
     print("this is console window.");
     print("1.moving test");
     print("2.toggle visible test");
@@ -66,7 +98,7 @@ function consolewindow_test()
     var v = false;
     for (var i = 0; i < 5; i++)
     {
-        c.setVisible(v);
+        c.visible = v;
         v = !v;
 
         sleep(500);
@@ -86,13 +118,13 @@ function window_test()
         //win.move(0, 0);
 
         // visible teset
-        win.setVisible(false);
+        win.visible = false;
         sleep(1000);
-        win.setVisible(true);
+        win.visible = true;
         sleep(1000);
-        win.setVisible(false);
+        win.visible = false;
         sleep(1000);
-        win.setVisible(true);
+        win.visible = true;
         sleep(1000);
     } else {
         alert("Cannot find Window :(");
@@ -101,12 +133,17 @@ function window_test()
 
 function key_test()
 {
-    print("Open notepad and set focus in 10 seconds.");
-    for (var i = 10; i > 0; i--)
-    {
-        print(i + "...");
-        sleep(1000);
+    consolewindow.visible = true;
+
+    var win = findWindows("메모장");
+    if (win.length == 0) {
+        print("Open notepad to test.");
+        while (win.length == 0) {
+            win = findWindows("메모장");
+            sleep(1000);
+        }
     }
+    win[0].activate();
 
     var k = system.keyboard;
     k.down(0x20); // VK_SPACE
@@ -115,7 +152,7 @@ function key_test()
     // type a to z
     for (var i=0x41; i<=0x5a; i++)
     {
-        print(i);
+        print(String.fromCharCode(i));
 
         k.down(i);
         sleep(10);
@@ -190,6 +227,8 @@ function mouse_test()
 
 function screen_test()
 {
+    consolewindow.visible = true;
+
     // pick a pixel from point x,y
     var mouse = system.mouse;
     var screen = system.screen;
@@ -204,7 +243,7 @@ function screen_test()
 
         print(xy + ", " + xy + ": " + r + "," + g + "," + b);
 
-        sleep(1000);
+        sleep(10);
     }
 }
 
@@ -235,9 +274,4 @@ function showObjProperties(obj, level)
             trace(space + "   !!Exception!!");
         }
     }
-}
-
-function record_test()
-{
-    // removed
 }

@@ -9,7 +9,7 @@
 // Global Var
 bool g_bExit = false;
 
-void NaDebugOut(const char* pszFormat, ...)
+void NaDebugOutA(const char* pszFormat, ...)
 {
 #if !defined(_DEBUG)
 	return;
@@ -26,6 +26,22 @@ void NaDebugOut(const char* pszFormat, ...)
 	OutputDebugStringA(str);
 }
 
+void NaDebugOut(const wchar_t* pszFormat, ...)
+{
+#if !defined(_DEBUG)
+	return;
+#endif
+
+	wchar_t str[NA_DEBUGOUT_TEMPBUFFER_SIZE];
+	memset(str, 0, sizeof(wchar_t) * NA_DEBUGOUT_TEMPBUFFER_SIZE);
+
+	va_list arglist;
+	va_start(arglist, pszFormat);
+	vswprintf(str, pszFormat, arglist);
+	va_end(arglist);
+
+	OutputDebugStringW(str);
+}
 // Reads a file into a v8 string.
 v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
 {

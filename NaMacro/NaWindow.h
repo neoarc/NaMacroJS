@@ -47,14 +47,27 @@ public:
 
 	static v8::Local<v8::Object> CreateV8Window(v8::Isolate *isolate);
 	static void FindWindows(v8::Isolate *isolate, const wchar_t *name, v8::Local<v8::Array> &results);
+	static v8::Local<v8::Object> GetV8Window(v8::Isolate *isolate, int x, int y);
 
 	// static - Convert between NaWindow/V8/HWND
+	// HWND -> V8Window
 	static v8::Local<v8::Object> GetV8Window(v8::Isolate *isolate, HWND hWnd);
+
+	// V8Window -> NaWindow
 	static NaWindow* GetNaWindow(v8::Isolate *isolate, v8::Local<v8::Object> &obj);
+
+	// NaWindow -> V8Window
+	static v8::Local<v8::Object> GetV8Window(v8::Isolate *isolate, NaWindow *pWindow);
+
 	static HWND GetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj);
 	static void SetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj, HWND hWnd);
 
 	// accessors
+	DEFINE_CLASS_ACCESSOR(GetX, SetX);
+	DEFINE_CLASS_ACCESSOR(GetY, SetY);
+	DEFINE_CLASS_ACCESSOR(GetWidth, SetWidth);
+	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
+	DEFINE_CLASS_ACCESSOR(GetText, SetText);
 	DEFINE_CLASS_ACCESSOR(GetVisible, SetVisible);
 	DEFINE_CLASS_ACCESSOR(GetHandle, SetHandle);
 

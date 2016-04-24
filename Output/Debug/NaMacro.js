@@ -10,8 +10,6 @@ function main()
 	try {
 		accessor_test();
 
-	    //timer_test();
-
 	    //window_activate_test();
 	    //consolewindow_test();
 	    //window_test();
@@ -36,13 +34,30 @@ function accessor_test()
 
 	var m = system.mouse;
 
-	///*
+	for (var i = 0; i < 1000; i++) {
+	    consolewindow.x--;
+	    consolewindow.text = consolewindow.x;
+	    sleep(1);
+	}
+
+	/*
 	var old = {};
 	while (true)
 	{
 	    if (m.x != old.x ||
             m.y != old.y) {
 	        print("mouse pos: " + m.x + ", " + m.y);
+
+	        var w = getWindow(m.x, m.y);
+	        if (old.w == null ||
+                w.text != old.w.text) {
+	            print("-> text: " + w.text);
+	            print("-> x,y: " + w.x + "," + w.y);
+	            print("-> w,h: " + w.width + "x" + w.height);
+
+	            old.w = {};
+	            old.w.text = w.text;
+	        }
 	    }
 
 	    old.x = m.x;

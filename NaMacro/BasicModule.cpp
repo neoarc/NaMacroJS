@@ -18,6 +18,7 @@ void NaBasicModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>&
 	ADD_GLOBAL_METHOD(print,		Print);
 	ADD_GLOBAL_METHOD(trace,		Print);
 	ADD_GLOBAL_METHOD(exit,			Exit);
+	ADD_GLOBAL_METHOD(getWindow,	GetWindow);
 	ADD_GLOBAL_METHOD(findWindows,	FindWindows);
 	ADD_GLOBAL_METHOD(findProcesses, FindProcesses);
 	ADD_GLOBAL_METHOD(findTrays,	FindTrays);
@@ -102,10 +103,19 @@ void NaBasicModule::Exit(V8_FUNCTION_ARGS)
 	g_bExit = true;
 }
 
+void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
+{
+	v8::Isolate *isolate = args.GetIsolate();
+	int x = args[0]->Int32Value();
+	int y = args[1]->Int32Value();
+
+	v8::Local<v8::Object> result = NaWindow::GetV8Window(isolate, x, y);
+	args.GetReturnValue().Set(result);
+}
+
 void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 {
 	v8::Isolate *isolate = args.GetIsolate();
-
 	v8::String::Value str(args[0]);
 	v8::Local<v8::Array> results = v8::Array::New(isolate);
 

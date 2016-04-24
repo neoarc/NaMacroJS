@@ -12,12 +12,12 @@ NaWindow::NaWindow(long lUID, NaWindowTypes enType)
 	m_enType = enType;
 
 	s_mapWindow.insert(std::pair<long, NaWindow*>(lUID, this));
-	NaDebugOut("NaWindow(): 0x%08x\n", this);
+	NaDebugOut(L"NaWindow(): 0x%08x\n", this);
 }
 
 NaWindow::~NaWindow()
 {
-	NaDebugOut("~NaWindow(): 0x%08x\n", this);
+	NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
 }
 
 HWND NaWindow::Create()
@@ -119,6 +119,11 @@ v8::Local<v8::Object> NaWindow::CreateV8Window(v8::Isolate *isolate)
 #define ADD_WINDOW_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(obj, _js_func, _c_func);
 
 	// accessor
+	ADD_WINDOW_ACCESSOR(x, GetX, SetX);
+	ADD_WINDOW_ACCESSOR(y, GetY, SetY);
+	ADD_WINDOW_ACCESSOR(width, GetWidth, SetWidth);
+	ADD_WINDOW_ACCESSOR(height, GetHeight, SetHeight);
+	ADD_WINDOW_ACCESSOR(text, GetText, SetText);
 	ADD_WINDOW_ACCESSOR(visible, GetVisible, SetVisible);
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
 
@@ -162,8 +167,34 @@ void NaWindow::FindWindows(v8::Isolate *isolate, const wchar_t * name, v8::Local
 	}	
 }
 
+v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate * isolate, int x, int y)
+{
+	POINT pt;
+	pt.x = x;
+	pt.y = y;
+
+	HWND hWnd = WindowFromPoint(pt);
+	return GetV8Window(isolate, hWnd);
+}
+
 v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate *isolate, HWND hWnd)
 {
+	// find cached window
+	/*
+	int nSize = NaWindow::s_mapWindow.size();
+	std::map<long, NaWindow*>::iterator it = NaWindow::s_mapWindow.begin();
+	for (; it != NaWindow::s_mapWindow.end(); it++)
+	{
+		NaWindow *pWindow = it->second;
+		if (pWindow->m_hWnd == hWnd)
+		{
+			v8::Local<v8::Object> obj = GetV8Window(isolate, pWindow);
+			return obj;
+		}
+	}
+	*/
+
+	// not found
 	v8::Local<v8::Object> obj = CreateV8Window(isolate);	
 	NaWindow::SetHandle(isolate, obj, hWnd);
 
@@ -190,6 +221,25 @@ NaWindow* NaWindow::GetNaWindow(v8::Isolate * isolate, v8::Local<v8::Object> &ob
 	return pWindow;
 }
 
+/*
+v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate * isolate, NaWindow * pWindow)
+{
+	int nSize = NaWindow::s_mapWindow.size();
+	std::map<long, NaWindow*>::iterator it = NaWindow::s_mapWindow.begin();
+	for (; it != NaWindow::s_mapWindow.end(); it++)
+	{
+		NaWindow *pWindow = it->second;
+		if (pWindow->m_hWnd == hWnd)
+		{
+			v8::Local<v8::Object> obj = GetV8Window(isolate, pWindow);
+			return obj;
+		}
+	}
+
+	return v8::Local<v8::Object>();
+}
+*/
+
 // description: native GetHandle method
 HWND NaWindow::GetHandle(v8::Isolate * isolate, v8::Local<v8::Object> obj)
 {
@@ -214,6 +264,155 @@ void NaWindow::SetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj, HWND h
 		}
 
 		pWindow->m_hWnd = hWnd;
+	}
+}
+
+// description: x property getter/setter
+void NaWindow::GetX(V8_GETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+
+		info.GetReturnValue().Set(
+			v8::Integer::New(isolate, rc.left)
+			);
+	}
+}
+
+void NaWindow::SetX(V8_SETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+		::MoveWindow(pWindow->m_hWnd, value->Int32Value(), rc.top, rc.right - rc.left, rc.bottom - rc.top, FALSE);
+	}
+}
+
+// description: y property getter/setter
+void NaWindow::GetY(V8_GETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+
+		info.GetReturnValue().Set(
+			v8::Integer::New(isolate, rc.top)
+			);
+	}
+}
+
+void NaWindow::SetY(V8_SETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+		::MoveWindow(pWindow->m_hWnd, rc.left, value->Int32Value(), rc.right - rc.left, rc.bottom - rc.top, FALSE);
+	}
+}
+
+// description: width property getter/setter
+void NaWindow::GetWidth(V8_GETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+
+		info.GetReturnValue().Set(
+			v8::Integer::New(isolate, rc.right - rc.left)
+			);
+	}
+}
+
+void NaWindow::SetWidth(V8_SETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+		::MoveWindow(pWindow->m_hWnd, rc.left, rc.top, value->Int32Value(), rc.bottom - rc.top, FALSE);	
+	}
+}
+
+// description: height property getter/setter
+void NaWindow::GetHeight(V8_GETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+
+		info.GetReturnValue().Set(
+			v8::Integer::New(isolate, rc.bottom - rc.top)
+			);
+	}
+}
+
+void NaWindow::SetHeight(V8_SETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		RECT rc;
+		::GetWindowRect(pWindow->m_hWnd, &rc);
+		::MoveWindow(pWindow->m_hWnd, rc.left, rc.top, rc.right - rc.left, value->Int32Value(), FALSE);
+	}
+}
+
+// description: text property getter/setter
+void NaWindow::GetText(V8_GETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		wchar_t str[1024];
+		::GetWindowText(pWindow->m_hWnd, str, 1024);
+		
+		info.GetReturnValue().Set(
+			v8::String::NewFromTwoByte(isolate, (const uint16_t*)str, v8::NewStringType::kNormal).ToLocalChecked()
+			);
+	}
+}
+
+void NaWindow::SetText(V8_SETTER_ARGS)
+{
+	v8::Isolate *isolate = info.GetIsolate();
+	v8::Local<v8::Object> obj = info.This();
+	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	if (pWindow)
+	{
+		v8::String::Value str(value);
+		::SetWindowText(pWindow->m_hWnd, (const wchar_t*)*str);
 	}
 }
 

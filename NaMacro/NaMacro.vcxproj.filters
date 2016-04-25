@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Window">
       <UniqueIdentifier>{4551b7b5-527c-4db5-8e0a-85c87bd16f66}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Image">
+      <UniqueIdentifier>{3738d927-2a2e-47c9-ba7d-5ee7ba814b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Image">
+      <UniqueIdentifier>{15056b9e-9915-4678-8128-9ee48b00940c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -62,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="NaWindow.cpp">
       <Filter>Source Files\Window</Filter>
+    </ClCompile>
+    <ClCompile Include="NaImage.cpp">
+      <Filter>Source Files\Image</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,6 +104,12 @@
     <ClInclude Include="ModuleBase.h">
       <Filter>Header Files\Module</Filter>
     </ClInclude>
+    <ClInclude Include="NaImage.h">
+      <Filter>Header Files\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -107,5 +122,15 @@
     <None Include="..\Output\Release\NaMacro.js">
       <Filter>Resource Files\Release</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NaMacro.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\NaMacro.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

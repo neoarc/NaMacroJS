@@ -1,6 +1,7 @@
 #include "stdafx.h"
 
 #include "ScreenModule.h"
+#include "NaImage.h"
 
 HWND NaScreenModule::m_hDesktopWnd = NULL;
 HDC NaScreenModule::m_hDesktopDC = NULL;
@@ -19,6 +20,7 @@ void NaScreenModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& 
 	// accessors
 
 	// methods
+	ADD_SCREEN_METHOD(capture, CaptureScreen); 
 	ADD_SCREEN_METHOD(getPixel, GetPixel);
 	ADD_SCREEN_METHOD(setAero,	SetAero);
 }
@@ -32,6 +34,8 @@ void NaScreenModule::Release()
 	}
 
 	// TODO restore Aero status
+
+	NaImage::DestroyMap();
 }
 
 v8::Local<v8::Object> NaScreenModule::GetScreenObject(v8::Isolate * isolate)
@@ -50,6 +54,33 @@ v8::Local<v8::Object> NaScreenModule::GetScreenObject(v8::Isolate * isolate)
 
 	v8::Local<v8::Object> screen_obj = screen_value->ToObject();
 	return screen_obj;
+}
+
+// description: capture screen area to image object
+// syntax:		system.screen.capture(x, y, width, height) : image object
+void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
+{
+	v8::Isolate *isolate = args.GetIsolate();
+
+	if (args.Length() < 4)
+	{
+		// error
+		args.GetReturnValue().Set(v8::Integer::New(isolate, -1));
+		return;
+	}
+
+	int x = args[0]->Int32Value();
+	int y = args[1]->Int32Value();
+	int w = args[2]->Int32Value();
+	int h = args[3]->Int32Value();
+
+	NaImage *pImage = NaImage::CaptureScreen(x, y, w, h);
+	auto image_obj = NaImage::GetV8Image(isolate, pImage);
+
+	// return
+	args.GetReturnValue().Set(
+		image_obj
+		);
 }
 
 // description: get pixel color from point x,y
@@ -74,14 +105,25 @@ void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
 #define USE_FAST_GETPIXEL
 #ifdef USE_FAST_GETPIXEL
 	HDC hMemoryDC = ::CreateCompatibleDC(hDC);
+	if (hMemoryDC == nullptr)
+	{
+		DWORD dwError = ::GetLastError();
+		
+		// TODO error handling
+		return;
+	}
+
 	HBITMAP hBmp = ::CreateCompatibleBitmap(hDC, 1, 1);
 	::SelectObject(hMemoryDC, hBmp);
 	::BitBlt(hMemoryDC, 0, 0, 1, 1, hDC, x, y, SRCCOPY);
 
 	COLORREF color = ::GetPixel(hMemoryDC, 0, 0);
+	::DeleteDC(hMemoryDC);
 #else
 	COLORREF color = ::GetPixel(hDC, x, y);
 #endif
+	// TODO check GetPixel Failed when ReleaseDC
+	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 
 	// return
 	args.GetReturnValue().Set(v8::Integer::New(isolate, color));

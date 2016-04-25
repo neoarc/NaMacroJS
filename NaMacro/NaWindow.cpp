@@ -114,7 +114,7 @@ v8::Local<v8::Object> NaWindow::CreateV8Window(v8::Isolate *isolate)
 
 	// TODO bind api to prototype (not object)
 
-	// bind window apis
+	// bind window methods
 #define ADD_WINDOW_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(obj, _prop, _getter, _setter);
 #define ADD_WINDOW_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(obj, _js_func, _c_func);
 

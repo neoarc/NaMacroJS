@@ -35,6 +35,7 @@ public:
 	// accessors
 
 	// methods
+	DEFINE_CLASS_METHOD(CaptureScreen);
 	DEFINE_CLASS_METHOD(GetPixel);
 	DEFINE_CLASS_METHOD(SetAero);
 };

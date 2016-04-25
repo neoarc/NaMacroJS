@@ -123,6 +123,7 @@
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
+    <ClCompile Include="NaImage.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
     <ClCompile Include="NaWindow.cpp" />
@@ -138,9 +139,11 @@
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />
+    <ClInclude Include="NaImage.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />
     <ClInclude Include="NaWindow.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="ScreenModule.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
@@ -151,6 +154,12 @@
   <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js" />
     <None Include="..\Output\Release\NaMacro.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="NaMacro.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\NaMacro.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -8,8 +8,8 @@ print("init NaMacro.js");
 function main()
 {
 	try {
-		accessor_test();
-
+		garbage_collection_test();
+		//accessor_test();
 	    //window_activate_test();
 	    //consolewindow_test();
 	    //window_test();
@@ -28,19 +28,37 @@ function main()
 	}
 }
 
+function garbage_collection_test()
+{
+	consolewindow.visible = true;
+	
+	function make_garbage()
+	{
+		var img = system.screen.capture(0, 0, 1000, 1000);
+	}
+
+	make_garbage();
+	while(true) {
+		print("...");
+		sleep(1000);
+	}
+}
+
 function accessor_test()
 {
     consolewindow.visible = true;
 
 	var m = system.mouse;
 
+    /*
 	for (var i = 0; i < 1000; i++) {
 	    consolewindow.x--;
 	    consolewindow.text = consolewindow.x;
 	    sleep(1);
 	}
+    */
 
-	/*
+	///*
 	var old = {};
 	while (true)
 	{

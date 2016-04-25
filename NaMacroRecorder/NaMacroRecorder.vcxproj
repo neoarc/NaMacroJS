@@ -216,6 +216,7 @@
     <None Include="res\NaMacroRecorder.rc2" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="..\NaMacro.ico" />
     <Image Include="res\NaMacroRecorder.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

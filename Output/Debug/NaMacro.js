@@ -8,19 +8,13 @@ print("init NaMacro.js");
 function main()
 {
 	try {
-		consolewindow.visible = true;
+		consoleWindow.visible = true;
 
-		consolewindow.visible = 0;
-		consolewindow.visible = 1;
-		consolewindow.visible = 0;
-		consolewindow.visible = 1;
-
+		object_wrap_test();
 		//garbage_collection_test();
-		//object_wrap_test();
-
 		//accessor_test(); // <-- window spy
 	    //window_activate_test();
-	    //consolewindow_test();
+	    //consoleWindow_test();
 	    //window_test();
 	    //key_test();
 	    //tts_test();
@@ -39,15 +33,16 @@ function main()
 
 function object_wrap_test()
 {
-	function _func () {
-		//var img = {};
-		var img = system.screen.capture(0, 0, 1000, 1000);
-		print("img = " + img);
-		showObjProperties(img);
+	var ar = [];
+	for (var i=0; i<5; i++) {
+		var w = new Window();
+		w.create(i*100, i*100, 500, 500);
+		w.visible = true;
+		w.text = "윈도우";
 
-		img = system.screen.capture(0, 0, 1000, 1000);
+		//showObjProperties(w);
+		ar.push(w);
 	}
-	_func();
 
 	var i=5;
 	while(i>0) {
@@ -59,7 +54,7 @@ function object_wrap_test()
 
 function garbage_collection_test()
 {
-	for (var i=0; i<100; i++)
+	for (var i=0; i<1000; i++)
 		make_garbage();
 
 	var i=5;
@@ -72,7 +67,7 @@ function garbage_collection_test()
 
 function make_garbage()
 {
-	var ran = parseInt(Math.random()*100)%3;
+	var ran = parseInt(Math.random()*100) % 4;
 	print("make a random garbage: " + ran);
 	switch(ran) {
 		case 0: {
@@ -94,6 +89,10 @@ function make_garbage()
 			}
 		}
 		break;
+		case 3: {
+			var win = findWindows("");
+		}
+		break;
 	}
 }
 
@@ -103,8 +102,8 @@ function accessor_test()
 
     /*
 	for (var i = 0; i < 1000; i++) {
-	    consolewindow.x--;
-	    consolewindow.text = consolewindow.x;
+	    consoleWindow.x--;
+	    consoleWindow.text = consoleWindow.x;
 	    sleep(1);
 	}
     */
@@ -159,9 +158,9 @@ function window_activate_test()
     }
 }
 
-function consolewindow_test()
+function consoleWindow_test()
 {
-    var c = consolewindow;
+    var c = consoleWindow;
     c.visible = true;
     c.move(0, 0);
 

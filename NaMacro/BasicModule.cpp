@@ -29,24 +29,39 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 	// add global object
 	Local<Object> global = isolate->GetCurrentContext()->Global();
 	{
-		Local<String> consolewindow_name = String::NewFromUtf8(isolate, "consolewindow", NewStringType::kNormal).ToLocalChecked();
+		// Init ConsoleWindow
+		Local<String> consolewindow_name = String::NewFromUtf8(isolate, "consoleWindow", NewStringType::kNormal).ToLocalChecked();
 		Local<Value> consolewindow_value = global->Get(consolewindow_name);
 		if (!consolewindow_value.IsEmpty() && consolewindow_value->IsUndefined())
 		{
-			// InitConsoleWindow
-
-			// create empty handle window
-			//Local<Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
 			NaWindow *pWindow = new NaWindow(0, NA_WINDOW_CONSOLE);
 			Local<Object> consolewindow_object = NaWindow::WrapObject(isolate, pWindow);
 			consolewindow_value = consolewindow_object;
 			
-			consolewindow_object->Set(
-				String::NewFromUtf8(isolate, "_type", NewStringType::kNormal).ToLocalChecked(),
-				Number::New(isolate, (double)(long)NA_WINDOW_CONSOLE)
-				);
 			global->Set(consolewindow_name, consolewindow_value);
 		}
+	}
+
+	{
+		// Init Window class
+		Local<String> window_name = String::NewFromUtf8(isolate, "Window", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> window_value = global->Get(window_name);
+		if (!window_value.IsEmpty() && window_value->IsUndefined())
+		{
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaWindow::Constructor);
+			/*
+			Local<ObjectTemplate> obj_templ = templ->PrototypeTemplate();
+			obj_templ->Set(
+				window_name,
+				FunctionTemplate::New(isolate, NaWindow::Constructor)->GetFunction()
+			);
+
+			global->Set(window_name, window_value);
+			*/
+
+			global->Set(window_name, templ->GetFunction());
+		}
+
 	}
 }
 

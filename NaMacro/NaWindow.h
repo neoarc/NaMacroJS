@@ -17,6 +17,7 @@ enum NaWindowTypes
 	NA_WINDOW_UNKNOWN,
 	NA_WINDOW_NORMAL,
 	NA_WINDOW_CONSOLE,
+	NA_WINDOW_USERCREATED,
 };
 
 class NaWindow : public NaObject
@@ -30,6 +31,7 @@ public:
 	// Member
 	NaWindowTypes m_enType;
 	HWND m_hWnd;
+	int m_x, m_y, m_width, m_height;
 
 	// internal struct
 	struct FindWindowsInfo {
@@ -60,6 +62,8 @@ public:
 	DEFINE_CLASS_ACCESSOR(GetHandle, SetHandle);
 
 	// methods
+	DEFINE_CLASS_METHOD(Constructor);
+	DEFINE_CLASS_METHOD(Create);
 	DEFINE_CLASS_METHOD(Move);
 	DEFINE_CLASS_METHOD(Activate);
 };

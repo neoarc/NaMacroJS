@@ -1,17 +1,19 @@
 #include "NaWindow.h"
 
 #include "Common.h"
+#include "resource.h"
 
-//long NaWindow::s_lUniqueID = 0;
 bool NaWindow::s_bRegisterClass = false;
-//std::map<long, NaWindow*> NaWindow::s_mapWindow;
-
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;
 
 NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 {
 	m_hWnd = hWnd;
 	m_enType = enType;
+	m_x = 0;
+	m_y = 0;
+	m_width = 0;
+	m_height = 0;
 
 	NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
@@ -21,18 +23,20 @@ NaWindow::~NaWindow()
 	NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
 }
 
+// description: native create method
 HWND NaWindow::Create()
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 
-	if (s_bRegisterClass)
+	if (!s_bRegisterClass)
 	{
 		WNDCLASS WndClass;
 		WndClass.cbClsExtra = 0;
 		WndClass.cbWndExtra = 0;
 		WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 		WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-		WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		//WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 		WndClass.hInstance = hInstance;
 		WndClass.lpfnWndProc = NaWindow::WndProc;
 		WndClass.lpszClassName = NA_WINDOW_CLASS;
@@ -43,17 +47,16 @@ HWND NaWindow::Create()
 		s_bRegisterClass = true;
 	}
 
-	DWORD dwStyle = 0;
-	int x = 0, y = 0, nWidth = 600, nHeight = 400;
+	DWORD dwStyle = WS_OVERLAPPEDWINDOW;
 
 	m_hWnd = ::CreateWindow(
 		NA_WINDOW_CLASS,
 		NULL, // _In_opt_ LPCTSTR   lpWindowName,
 		dwStyle, // _In_     DWORD     dwStyle,
-		x,
-		y,
-		nWidth,
-		nHeight,
+		m_x,
+		m_y,
+		m_width,
+		m_height,
 		NULL, // _In_opt_ HWND      hWndParent,
 		NULL, // _In_opt_ HMENU     hMenu,
 		hInstance,
@@ -65,7 +68,17 @@ HWND NaWindow::Create()
 
 LRESULT CALLBACK NaWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	return 0;
+	switch (message)
+	{
+	case WM_CLOSE:
+		DestroyWindow(hWnd);
+		return 0;
+	case WM_DESTROY:
+		PostQuitMessage(0);
+		return 0;
+	}
+
+	return DefWindowProc(hWnd, message, wParam, lParam);
 }
 
 // description: EnumWindows CallBack
@@ -99,8 +112,6 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
 	templ->SetInternalFieldCount(1);
 
-	//templ->
-
 	// bind window methods
 #define ADD_WINDOW_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(templ, _prop, _getter, _setter);
 #define ADD_WINDOW_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
@@ -115,6 +126,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
 
 	// methods
+	ADD_WINDOW_METHOD(create, Create);
 	ADD_WINDOW_METHOD(move, Move);
 	ADD_WINDOW_METHOD(activate, Activate);
 
@@ -189,15 +201,16 @@ void NaWindow::GetX(V8_GETTER_ARGS)
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
 	Isolate *isolate = info.GetIsolate();
-	if (pWindow)
+	if (pWindow && pWindow->m_hWnd)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
-
-		info.GetReturnValue().Set(
-			Integer::New(isolate, rc.left)
-			);
+		pWindow->m_x = rc.left;
 	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_x)
+		);
 }
 
 void NaWindow::SetX(V8_SETTER_ARGS)
@@ -216,15 +229,16 @@ void NaWindow::GetY(V8_GETTER_ARGS)
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
-	if (pWindow)
+	if (pWindow && pWindow->m_hWnd)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
-
-		info.GetReturnValue().Set(
-			Integer::New(isolate, rc.top)
-			);
+		pWindow->m_y = rc.top;
 	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_y)
+		);
 }
 
 void NaWindow::SetY(V8_SETTER_ARGS)
@@ -243,15 +257,16 @@ void NaWindow::GetWidth(V8_GETTER_ARGS)
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
-	if (pWindow)
+	if (pWindow && pWindow->m_hWnd)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
-
-		info.GetReturnValue().Set(
-			Integer::New(isolate, rc.right - rc.left)
-			);
+		pWindow->m_width = rc.right - rc.left;
 	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_width)
+		);
 }
 
 void NaWindow::SetWidth(V8_SETTER_ARGS)
@@ -270,15 +285,16 @@ void NaWindow::GetHeight(V8_GETTER_ARGS)
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
 	Isolate *isolate = info.GetIsolate();
-	if (pWindow)
+	if (pWindow && pWindow->m_hWnd)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
-
-		info.GetReturnValue().Set(
-			Integer::New(isolate, rc.bottom - rc.top)
-			);
+		pWindow->m_height = rc.bottom - rc.top;
 	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_height)
+		);
 }
 
 void NaWindow::SetHeight(V8_SETTER_ARGS)
@@ -343,11 +359,7 @@ void NaWindow::SetVisible(Local<String> name, Local<Value> value, const Property
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
 	
 	bool bVisible = value->BooleanValue();
-
-	// get window type
-	Local<Value> type_value = obj->Get(String::NewFromUtf8(isolate, "_type", NewStringType::kNormal).ToLocalChecked());
-	int nType = type_value->IntegerValue();
-	switch (nType)
+	switch (pWindow->m_enType)
 	{
 	case NA_WINDOW_CONSOLE:
 		if (pWindow && pWindow->m_hWnd)
@@ -417,6 +429,51 @@ void NaWindow::SetHandle(Local<String> name, Local<Value> value, const PropertyC
 	{
 		pWindow->m_hWnd = (HWND)value->Int32Value();
 	}
+}
+
+// description: constructor function
+// syntax:		new Window([x, y[, width, height]]) : windowObj
+void NaWindow::Constructor(V8_FUNCTION_ARGS)
+{
+	NaWindow *pWindow = new NaWindow(0, NA_WINDOW_USERCREATED);
+	Local<Object> obj = WrapObject(args.GetIsolate(), pWindow);
+
+	if (args.Length() >= 2)
+	{
+		pWindow->m_x = args[0]->Int32Value();
+		pWindow->m_y = args[1]->Int32Value();
+	}
+
+	if (args.Length() >= 4)
+	{
+		pWindow->m_width = args[2]->Int32Value();
+		pWindow->m_height = args[3]->Int32Value();
+	}
+
+	args.GetReturnValue().Set(obj);
+}
+
+// description: create a new window handle
+// syntax:		windowObj.create([x, y[, width, height]]);
+void NaWindow::Create(V8_FUNCTION_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	if (pWindow == NULL)
+		return;
+
+	if (args.Length() >= 2)
+	{
+		pWindow->m_x = args[0]->Int32Value();
+		pWindow->m_y = args[1]->Int32Value();
+	}
+
+	if (args.Length() >= 4)
+	{
+		pWindow->m_width = args[2]->Int32Value();
+		pWindow->m_height = args[3]->Int32Value();
+	}
+
+	pWindow->Create();
 }
 
 // description: move window to x,y, width, height

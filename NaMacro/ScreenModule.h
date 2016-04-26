@@ -9,10 +9,10 @@
 class NaScreenModule : public ModuleBase
 {
 public:
-	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
 	virtual void Release();
 
-	v8::Local<v8::Object> GetScreenObject(v8::Isolate *isolate);
+	Local<Object> GetScreenObject(Isolate *isolate);
 
 	static HWND GetDesktopHWND()
 	{

@@ -43,11 +43,11 @@ void NaDebugOut(const wchar_t* pszFormat, ...)
 	OutputDebugStringW(str);
 }
 // Reads a file into a v8 string.
-v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
+Local<String> ReadFile(Isolate *isolate, const char* name)
 {
 	FILE* file = fopen(name, "rb");
 	if (file == NULL)
-		return v8::Local<v8::String>();
+		return Local<String>();
 
 	fseek(file, 0, SEEK_END);
 	int size = ftell(file);
@@ -62,26 +62,26 @@ v8::Local<v8::String> ReadFile(v8::Isolate *isolate, const char* name)
 	}
 
 	fclose(file);
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, chars, v8::NewStringType::kNormal/*, size*/).ToLocalChecked();
+	Local<String> result = String::NewFromUtf8(isolate, chars, NewStringType::kNormal/*, size*/).ToLocalChecked();
 	delete[] chars;
 	return result;
 }
 
 // description: return 'system'
-v8::Local<v8::Object> GetSystemObject(v8::Isolate *isolate)
+Local<Object> GetSystemObject(Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 
-	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
-	v8::Local<v8::String> system_name = v8::String::NewFromUtf8(isolate, "system", v8::NewStringType::kNormal).ToLocalChecked();
-	v8::Local<v8::Value> system_value = global->Get(system_name);
+	Local<Object> global = isolate->GetCurrentContext()->Global();
+	Local<String> system_name = String::NewFromUtf8(isolate, "system", NewStringType::kNormal).ToLocalChecked();
+	Local<Value> system_value = global->Get(system_name);
 	if (!system_value.IsEmpty() && system_value->IsUndefined())
 	{
 		// InitSystem
-		system_value = v8::Object::New(isolate);
+		system_value = Object::New(isolate);
 		global->Set(system_name, system_value);
 	}
 
-	v8::Local<v8::Object> system_obj = system_value->ToObject();
+	Local<Object> system_obj = system_value->ToObject();
 	return system_obj;
 }

@@ -5,20 +5,20 @@
 
 using namespace std;
 
-void ReportException(v8::Isolate *isolate, v8::TryCatch* handler);
+void ReportException(Isolate *isolate, TryCatch* handler);
 bool report_exceptions = true;
 
 extern bool g_bExit;
 
 // prototypes
-void CreateDefaultModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
-void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+void CreateDefaultModules(Isolate *isolate, Local<ObjectTemplate> &global_template);
+void InitModules(Isolate *isolate, Local<ObjectTemplate> &global_template);
 void ReleaseModules();
 
 vector<ModuleBase*> g_ModuleList;
 
 // Buffer Allocator
-class ArrayBufferAllocator : public v8::ArrayBuffer::Allocator {
+class ArrayBufferAllocator : public ArrayBuffer::Allocator {
 public:
 	virtual void* Allocate(size_t length) {
 		void* data = AllocateUninitialized(length);

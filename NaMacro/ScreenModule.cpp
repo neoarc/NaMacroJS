@@ -7,12 +7,12 @@ HWND NaScreenModule::m_hDesktopWnd = NULL;
 HDC NaScreenModule::m_hDesktopDC = NULL;
 bool NaScreenModule::m_bAeroStatus = false;
 
-void NaScreenModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
-	v8::HandleScope handle_scope(isolate);
+	HandleScope handle_scope(isolate);
 
-	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
-	v8::Local<v8::Object> screen_obj = GetScreenObject(isolate);
+	Local<Object> global = isolate->GetCurrentContext()->Global();
+	Local<Object> screen_obj = GetScreenObject(isolate);
 
 #define ADD_SCREEN_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(screen_obj, _js_func, _c_func);
 #define ADD_SCREEN_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(screen_obj, _prop, _getter, _setter);
@@ -34,25 +34,23 @@ void NaScreenModule::Release()
 	}
 
 	// TODO restore Aero status
-
-	NaImage::DestroyMap();
 }
 
-v8::Local<v8::Object> NaScreenModule::GetScreenObject(v8::Isolate * isolate)
+Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 {
 	// HandleScope 안에서 호출
 
-	v8::Local<v8::Object> system_obj = GetSystemObject(isolate);
-	v8::Local<v8::String> screen_name = v8::String::NewFromUtf8(isolate, "screen", v8::NewStringType::kNormal).ToLocalChecked();
-	v8::Local<v8::Value> screen_value = system_obj->Get(screen_name);
+	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<String> screen_name = String::NewFromUtf8(isolate, "screen", NewStringType::kNormal).ToLocalChecked();
+	Local<Value> screen_value = system_obj->Get(screen_name);
 	if (!screen_value.IsEmpty() && screen_value->IsUndefined())
 	{
 		// InitScreen
-		screen_value = v8::Object::New(isolate);
+		screen_value = Object::New(isolate);
 		system_obj->Set(screen_name, screen_value);
 	}
 
-	v8::Local<v8::Object> screen_obj = screen_value->ToObject();
+	Local<Object> screen_obj = screen_value->ToObject();
 	return screen_obj;
 }
 
@@ -60,12 +58,12 @@ v8::Local<v8::Object> NaScreenModule::GetScreenObject(v8::Isolate * isolate)
 // syntax:		system.screen.capture(x, y, width, height) : image object
 void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
 {
-	v8::Isolate *isolate = args.GetIsolate();
+	Isolate *isolate = args.GetIsolate();
 
 	if (args.Length() < 4)
 	{
 		// error
-		args.GetReturnValue().Set(v8::Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
 		return;
 	}
 
@@ -75,7 +73,7 @@ void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
 	int h = args[3]->Int32Value();
 
 	NaImage *pImage = NaImage::CaptureScreen(x, y, w, h);
-	auto image_obj = NaImage::GetV8Image(isolate, pImage);
+	auto image_obj = NaImage::WrapObject(isolate, pImage);
 
 	// return
 	args.GetReturnValue().Set(
@@ -87,12 +85,12 @@ void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
 // syntax:		system.screen.getPixel(x, y) : color
 void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
 {
-	v8::Isolate *isolate = args.GetIsolate();
+	Isolate *isolate = args.GetIsolate();
 
 	if (args.Length() < 2)
 	{
 		// error
-		args.GetReturnValue().Set(v8::Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
 		return;
 	}
 
@@ -126,7 +124,7 @@ void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
 	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 
 	// return
-	args.GetReturnValue().Set(v8::Integer::New(isolate, color));
+	args.GetReturnValue().Set(Integer::New(isolate, color));
 }
 
 // description: change aero mode to on/off
@@ -136,7 +134,7 @@ void NaScreenModule::SetAero(V8_FUNCTION_ARGS)
 	if (args.Length() < 1)
 		return;
 
-	v8::Isolate *isolate = args.GetIsolate();
+	Isolate *isolate = args.GetIsolate();
 	bool bAeroOn = args[0]->BooleanValue();
 
 	WCHAR strFullPath[MAX_PATH * 2];
@@ -165,6 +163,6 @@ void NaScreenModule::SetAero(V8_FUNCTION_ARGS)
 		hr = DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
 	*/
 
-	args.GetReturnValue().Set(v8::Boolean::New(isolate, SUCCEEDED(hr)));
+	args.GetReturnValue().Set(Boolean::New(isolate, SUCCEEDED(hr)));
 	return;
 }

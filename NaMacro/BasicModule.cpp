@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-void NaBasicModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
 
@@ -24,25 +24,26 @@ void NaBasicModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>&
 	ADD_GLOBAL_METHOD(findTrays,	FindTrays);
 }
 
-void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 	// add global object
-	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
+	Local<Object> global = isolate->GetCurrentContext()->Global();
 	{
-		v8::Local<v8::String> consolewindow_name = v8::String::NewFromUtf8(isolate, "consolewindow", v8::NewStringType::kNormal).ToLocalChecked();
-		v8::Local<v8::Value> consolewindow_value = global->Get(consolewindow_name);
+		Local<String> consolewindow_name = String::NewFromUtf8(isolate, "consolewindow", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> consolewindow_value = global->Get(consolewindow_name);
 		if (!consolewindow_value.IsEmpty() && consolewindow_value->IsUndefined())
 		{
 			// InitConsoleWindow
 
 			// create empty handle window
-			//v8::Local<v8::Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
-			v8::Local<v8::Object> consolewindow_object = NaWindow::CreateV8Window(isolate);
+			//Local<Object> consolewindow_object = NaWindow::ConvertHWNDToV8WindowObject(isolate, NULL);
+			NaWindow *pWindow = new NaWindow(0, NA_WINDOW_CONSOLE);
+			Local<Object> consolewindow_object = NaWindow::WrapObject(isolate, pWindow);
 			consolewindow_value = consolewindow_object;
 			
 			consolewindow_object->Set(
-				v8::String::NewFromUtf8(isolate, "_type", v8::NewStringType::kNormal).ToLocalChecked(),
-				v8::Number::New(isolate, (double)(long)NA_WINDOW_CONSOLE)
+				String::NewFromUtf8(isolate, "_type", NewStringType::kNormal).ToLocalChecked(),
+				Number::New(isolate, (double)(long)NA_WINDOW_CONSOLE)
 				);
 			global->Set(consolewindow_name, consolewindow_value);
 		}
@@ -51,7 +52,7 @@ void NaBasicModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 
 void NaBasicModule::Release()
 {
-	NaWindow::DestroyMap();
+	
 }
 
 // description: Print message to console
@@ -61,7 +62,7 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++)
 	{
-		v8::HandleScope handle_scope(args.GetIsolate());
+		HandleScope handle_scope(args.GetIsolate());
 		if (first) {
 			first = false;
 		}
@@ -69,7 +70,7 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 			printf(" ");
 		}
 
-		v8::String::Value str(args[i]);
+		String::Value str(args[i]);
 		wprintf(_T("%s"), (const wchar_t*)*str);
 	}
 	printf("\n");
@@ -80,8 +81,8 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 // syntax:		alert(message, title, type)
 void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 {
-	v8::String::Value msg(args[0]);
-	v8::String::Value title(args[1]);
+	String::Value msg(args[0]);
+	String::Value title(args[1]);
 	int nType = args[2]->Int32Value();
 
 	::MessageBoxW(NULL,
@@ -105,19 +106,21 @@ void NaBasicModule::Exit(V8_FUNCTION_ARGS)
 
 void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 {
-	v8::Isolate *isolate = args.GetIsolate();
+	Isolate *isolate = args.GetIsolate();
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
 
-	v8::Local<v8::Object> result = NaWindow::GetV8Window(isolate, x, y);
+	NaWindow *pWindow = NaWindow::GetWindow(x, y);;
+	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
+
 	args.GetReturnValue().Set(result);
 }
 
 void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 {
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::String::Value str(args[0]);
-	v8::Local<v8::Array> results = v8::Array::New(isolate);
+	Isolate *isolate = args.GetIsolate();
+	String::Value str(args[0]);
+	Local<Array> results = Array::New(isolate);
 
 	NaWindow::FindWindows(isolate, (const wchar_t*)*str, results);
 	args.GetReturnValue().Set(results);
@@ -126,15 +129,15 @@ void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
 {
 	// Not Impl
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
+	Isolate *isolate = args.GetIsolate();
+	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
 	args.GetReturnValue().Set(result);
 }
 
 void NaBasicModule::FindTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, "NotImpl", v8::NewStringType::kNormal, 7).ToLocalChecked();
+	Isolate *isolate = args.GetIsolate();
+	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
 	args.GetReturnValue().Set(result);
 }

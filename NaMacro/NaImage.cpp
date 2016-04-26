@@ -2,20 +2,11 @@
 
 #include "ScreenModule.h"
 
-long NaImage::s_lUniqueID = 0;
-std::map<long, NaImage*> NaImage::s_mapImage;
+Global<ObjectTemplate> NaImage::s_NaImageTemplate;
 
-NaImage::NaImage(long lUID)
+NaImage::NaImage()
 {
 	m_hMemoryDC = NULL;
-	if (lUID == -1)
-	{
-		lUID = NaImage::CreateUniqueID();
-	}
-
-	m_lUID = lUID;
-
-	s_mapImage.insert(std::pair<long, NaImage*>(lUID, this));
 	NaDebugOut(L"NaImage(): 0x%08x\n", this);
 }
 
@@ -24,33 +15,16 @@ NaImage::~NaImage()
 	NaDebugOut(L"~NaImage(): 0x%08x\n", this);
 }
 
-long NaImage::CreateUniqueID()
+Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 {
-	return s_lUniqueID++;
-}
+	EscapableHandleScope handle_scope(isolate);
 
-void NaImage::DestroyMap()
-{
-	int nSize = NaImage::s_mapImage.size();
-	std::map<long, NaImage*>::iterator it = NaImage::s_mapImage.begin();
-	for (; it != NaImage::s_mapImage.end(); it++)
-	{
-		NaImage *pWindow = it->second;
-		delete pWindow;
-	}
-
-	NaImage::s_mapImage.clear();
-}
-
-v8::Local<v8::Object> NaImage::CreateV8Image(v8::Isolate * isolate, NaImage *pImage)
-{
-	v8::Local<v8::Object> obj = v8::Object::New(isolate);
-
-	// TODO bind api to prototype (not object)
+	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
+	templ->SetInternalFieldCount(1);
 
 	// bind image methods
 #define ADD_IMAGE_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(obj, _prop, _getter, _setter);
-#define ADD_IMAGE_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(obj, _js_func, _c_func);
+#define ADD_IMAGE_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
 
 	// accessor
 	//ADD_IMAGE_ACCESSOR(x, GetX, SetX);
@@ -58,25 +32,10 @@ v8::Local<v8::Object> NaImage::CreateV8Image(v8::Isolate * isolate, NaImage *pIm
 	// methods
 	ADD_IMAGE_METHOD(getPixel, GetPixel);
 
-	long lUID = -1;
-	if (pImage == NULL)
-	{
-		lUID = NaImage::CreateUniqueID();
-		pImage = new NaImage(lUID);
-	}
-	else
-	{
-		lUID = pImage->m_lUID;
-	}
-
-	obj->Set(
-		v8::String::NewFromUtf8(isolate, "_unique_id", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::Number::New(isolate, lUID)
-		);
-
-	return obj;
+	return handle_scope.Escape(templ);
 }
 
+// description: capture screen & create Image object
 NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 {
 	NaImage *pImage = new NaImage();
@@ -100,46 +59,24 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	return pImage;
 }
 
-// description: wrap NaImage to V8 Object
-v8::Local<v8::Object> NaImage::GetV8Image(v8::Isolate * isolate, NaImage * pImage)
-{
-	auto obj = CreateV8Image(isolate, pImage);
-	return obj;
-}
-
-NaImage * NaImage::GetNaImage(v8::Isolate * isolate, v8::Local<v8::Object> obj)
-{
-	NaImage *pImage = NULL;
-
-	v8::Local<v8::Value> value = obj->Get(v8::String::NewFromUtf8(isolate, "_unique_id", v8::NewStringType::kNormal).ToLocalChecked());
-	long lUID = value->Int32Value();
-	std::map<long, NaImage*>::iterator it = s_mapImage.find(lUID);
-	if (it != s_mapImage.end())
-	{
-		pImage = it->second;
-	}
-
-	return pImage;
-}
-
 // description: get pixel from image buffer
 // syntax:		imageObj.getPixel(x, y);
 void NaImage::GetPixel(V8_FUNCTION_ARGS)
 {
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::Local<v8::Object> obj = args.This();
-	NaImage *pImage = GetNaImage(isolate, obj);
+	Isolate *isolate = args.GetIsolate();
+	Local<Object> obj = args.This();
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(obj));
 	if (pImage == nullptr)
 	{
 		// error
-		args.GetReturnValue().Set(v8::Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
 		return;
 	}
 
 	if (args.Length() < 2)
 	{
 		// error
-		args.GetReturnValue().Set(v8::Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
 		return;
 	}
 
@@ -149,5 +86,5 @@ void NaImage::GetPixel(V8_FUNCTION_ARGS)
 	COLORREF color = ::GetPixel(pImage->m_hMemoryDC, x, y);
 
 	// return
-	args.GetReturnValue().Set(v8::Integer::New(isolate, color));
+	args.GetReturnValue().Set(Integer::New(isolate, color));
 }

@@ -2,17 +2,18 @@
 
 #include "Common.h"
 
-long NaWindow::s_lUniqueID = 0;
+//long NaWindow::s_lUniqueID = 0;
 bool NaWindow::s_bRegisterClass = false;
-std::map<long, NaWindow*> NaWindow::s_mapWindow;
+//std::map<long, NaWindow*> NaWindow::s_mapWindow;
 
-NaWindow::NaWindow(long lUID, NaWindowTypes enType)
+Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;
+
+NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 {
-	m_hWnd = NULL;
+	m_hWnd = hWnd;
 	m_enType = enType;
 
-	s_mapWindow.insert(std::pair<long, NaWindow*>(lUID, this));
-	NaDebugOut(L"NaWindow(): 0x%08x\n", this);
+	NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
 
 NaWindow::~NaWindow()
@@ -62,16 +63,12 @@ HWND NaWindow::Create()
 	return m_hWnd;
 }
 
-long NaWindow::CreateUniqueID()
-{
-	return s_lUniqueID++;
-}
-
 LRESULT CALLBACK NaWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	return 0;
 }
 
+// description: EnumWindows CallBack
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 {
 	int nLen = GetWindowTextLength(hWnd);
@@ -95,28 +92,18 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	return 1;
 }
 
-void NaWindow::DestroyMap()
+Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 {
-	int nSize = NaWindow::s_mapWindow.size();
-	std::map<long, NaWindow*>::iterator it = NaWindow::s_mapWindow.begin();
-	for (; it != NaWindow::s_mapWindow.end(); it++)
-	{
-		NaWindow *pWindow = it->second;
-		delete pWindow;
-	}
+	EscapableHandleScope handle_scope(isolate);
 
-	NaWindow::s_mapWindow.clear();
-}
+	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
+	templ->SetInternalFieldCount(1);
 
-v8::Local<v8::Object> NaWindow::CreateV8Window(v8::Isolate *isolate)
-{
-	v8::Local<v8::Object> obj = v8::Object::New(isolate);
-
-	// TODO bind api to prototype (not object)
+	//templ->
 
 	// bind window methods
-#define ADD_WINDOW_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(obj, _prop, _getter, _setter);
-#define ADD_WINDOW_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(obj, _js_func, _c_func);
+#define ADD_WINDOW_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(templ, _prop, _getter, _setter);
+#define ADD_WINDOW_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
 
 	// accessor
 	ADD_WINDOW_ACCESSOR(x, GetX, SetX);
@@ -128,23 +115,13 @@ v8::Local<v8::Object> NaWindow::CreateV8Window(v8::Isolate *isolate)
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
 
 	// methods
-	ADD_WINDOW_METHOD(move,		Move);
+	ADD_WINDOW_METHOD(move, Move);
 	ADD_WINDOW_METHOD(activate, Activate);
-	//ADD_WINDOW_METHOD(setVisible, WindowSetVisible);
 
-	// register to map
-	long lUID = NaWindow::CreateUniqueID();
-	obj->Set(
-		v8::String::NewFromUtf8(isolate, "_unique_id", v8::NewStringType::kNormal).ToLocalChecked(),
-		v8::Number::New(isolate, lUID)
-		);
-
-	NaWindow *pWindow = new NaWindow(lUID);
-
-	return obj;
+	return handle_scope.Escape(templ);
 }
 
-void NaWindow::FindWindows(v8::Isolate *isolate, const wchar_t * name, v8::Local<v8::Array> &results)
+void NaWindow::FindWindows(Isolate *isolate, const wchar_t * name, Local<Array> &results)
 {
 	// NOTE
 	// ::FindWindow can find only exactly same named window can found.
@@ -160,24 +137,29 @@ void NaWindow::FindWindows(v8::Isolate *isolate, const wchar_t * name, v8::Local
 	it = info.foundlist.begin();
 	for (; it != info.foundlist.end(); ++it) {
 		HWND hWnd = *it;
-		v8::Local<v8::Value> obj = GetV8Window(isolate, hWnd);
+		
+		NaWindow *pNaWindow = new NaWindow;
+		pNaWindow->m_hWnd = hWnd;
+
+		Local<Value> obj = WrapObject(isolate, pNaWindow);
 
 		// Fill V8Object Array
 		results->Set(nIndex++, obj);
 	}	
 }
 
-v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate * isolate, int x, int y)
+NaWindow* NaWindow::GetWindow(int x, int y)
 {
 	POINT pt;
 	pt.x = x;
 	pt.y = y;
 
 	HWND hWnd = WindowFromPoint(pt);
-	return GetV8Window(isolate, hWnd);
+
+	return GetWindow(hWnd);
 }
 
-v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate *isolate, HWND hWnd)
+NaWindow* NaWindow::GetWindow(HWND hWnd)
 {
 	// find cached window
 	/*
@@ -188,107 +170,39 @@ v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate *isolate, HWND hWnd)
 		NaWindow *pWindow = it->second;
 		if (pWindow->m_hWnd == hWnd)
 		{
-			v8::Local<v8::Object> obj = GetV8Window(isolate, pWindow);
+			Local<Object> obj = GetV8Window(isolate, pWindow);
 			return obj;
 		}
 	}
 	*/
 
+	NaWindow *pNaWindow = (NaWindow*)GetWindowLong(hWnd, NA_WINDOW_MARK);
+	if (pNaWindow) 
+		return pNaWindow;
+
 	// not found
-	v8::Local<v8::Object> obj = CreateV8Window(isolate);	
-	NaWindow::SetHandle(isolate, obj, hWnd);
-
-	return obj;
-}
-
-NaWindow* NaWindow::GetNaWindow(v8::Isolate * isolate, v8::Local<v8::Object> &obj)
-{
-	// TODO null check
-
-	// get window handle
-	NaWindow *pWindow = NULL;
-
-	v8::Local<v8::Value> value = obj->Get(v8::String::NewFromUtf8(isolate, "_unique_id", v8::NewStringType::kNormal).ToLocalChecked());
-	long lUID = value->Int32Value();
-	std::map<long, NaWindow*>::iterator it = s_mapWindow.find(lUID);
-	if (it != s_mapWindow.end())
-	{
-		pWindow = it->second;
-	}
-	
-	// TODO validation?
-
-	return pWindow;
-}
-
-/*
-v8::Local<v8::Object> NaWindow::GetV8Window(v8::Isolate * isolate, NaWindow * pWindow)
-{
-	int nSize = NaWindow::s_mapWindow.size();
-	std::map<long, NaWindow*>::iterator it = NaWindow::s_mapWindow.begin();
-	for (; it != NaWindow::s_mapWindow.end(); it++)
-	{
-		NaWindow *pWindow = it->second;
-		if (pWindow->m_hWnd == hWnd)
-		{
-			v8::Local<v8::Object> obj = GetV8Window(isolate, pWindow);
-			return obj;
-		}
-	}
-
-	return v8::Local<v8::Object>();
-}
-*/
-
-// description: native GetHandle method
-HWND NaWindow::GetHandle(v8::Isolate * isolate, v8::Local<v8::Object> obj)
-{
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
-	if (pWindow)
-	{
-		return pWindow->m_hWnd;
-	}
-	
-	return nullptr;
-}
-
-// description: native SetHandle method
-void NaWindow::SetHandle(v8::Isolate *isolate, v8::Local<v8::Object> obj, HWND hWnd)
-{
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
-	if (pWindow)
-	{
-		if (pWindow->m_hWnd == nullptr)
-		{
-			SetWindowLong(hWnd, 160422, (LONG)pWindow);
-		}
-
-		pWindow->m_hWnd = hWnd;
-	}
+	return (new NaWindow(hWnd));
 }
 
 // description: x property getter/setter
 void NaWindow::GetX(V8_GETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
+	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
 
 		info.GetReturnValue().Set(
-			v8::Integer::New(isolate, rc.left)
+			Integer::New(isolate, rc.left)
 			);
 	}
 }
 
 void NaWindow::SetX(V8_SETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
 		RECT rc;
@@ -300,25 +214,22 @@ void NaWindow::SetX(V8_SETTER_ARGS)
 // description: y property getter/setter
 void NaWindow::GetY(V8_GETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
 
 		info.GetReturnValue().Set(
-			v8::Integer::New(isolate, rc.top)
+			Integer::New(isolate, rc.top)
 			);
 	}
 }
 
 void NaWindow::SetY(V8_SETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
 		RECT rc;
@@ -330,25 +241,22 @@ void NaWindow::SetY(V8_SETTER_ARGS)
 // description: width property getter/setter
 void NaWindow::GetWidth(V8_GETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
 
 		info.GetReturnValue().Set(
-			v8::Integer::New(isolate, rc.right - rc.left)
+			Integer::New(isolate, rc.right - rc.left)
 			);
 	}
 }
 
 void NaWindow::SetWidth(V8_SETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
 		RECT rc;
@@ -360,25 +268,22 @@ void NaWindow::SetWidth(V8_SETTER_ARGS)
 // description: height property getter/setter
 void NaWindow::GetHeight(V8_GETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
+	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
 
 		info.GetReturnValue().Set(
-			v8::Integer::New(isolate, rc.bottom - rc.top)
+			Integer::New(isolate, rc.bottom - rc.top)
 			);
 	}
 }
 
 void NaWindow::SetHeight(V8_SETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
 		RECT rc;
@@ -390,39 +295,35 @@ void NaWindow::SetHeight(V8_SETTER_ARGS)
 // description: text property getter/setter
 void NaWindow::GetText(V8_GETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pWindow->m_hWnd, str, 1024);
 		
 		info.GetReturnValue().Set(
-			v8::String::NewFromTwoByte(isolate, (const uint16_t*)str, v8::NewStringType::kNormal).ToLocalChecked()
+			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
 			);
 	}
 }
 
 void NaWindow::SetText(V8_SETTER_ARGS)
 {
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
-		v8::String::Value str(value);
+		String::Value str(value);
 		::SetWindowText(pWindow->m_hWnd, (const wchar_t*)*str);
 	}
 }
 
 // description: visible property getter/setter
-void NaWindow::GetVisible(v8::Local<v8::String> name, const v8::PropertyCallbackInfo<v8::Value>& info)
+void NaWindow::GetVisible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	// get window object(this)
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	
 	bool bVisible = false;
 	if (pWindow)
 	{
@@ -430,21 +331,21 @@ void NaWindow::GetVisible(v8::Local<v8::String> name, const v8::PropertyCallback
 	}
 
 	info.GetReturnValue().Set(
-		v8::Boolean::New(isolate, bVisible)
+		Boolean::New(isolate, bVisible)
 		);
 }
 
-void NaWindow::SetVisible(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void>& info)
+void NaWindow::SetVisible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	// get window object(this)
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	Isolate *isolate = info.GetIsolate();
+	Local<Object> obj = info.This();
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
 	
 	bool bVisible = value->BooleanValue();
 
 	// get window type
-	v8::Local<v8::Value> type_value = obj->Get(v8::String::NewFromUtf8(isolate, "_type", v8::NewStringType::kNormal).ToLocalChecked());
+	Local<Value> type_value = obj->Get(String::NewFromUtf8(isolate, "_type", NewStringType::kNormal).ToLocalChecked());
 	int nType = type_value->IntegerValue();
 	switch (nType)
 	{
@@ -481,7 +382,7 @@ void NaWindow::SetVisible(v8::Local<v8::String> name, v8::Local<v8::Value> value
 				}
 
 				// bind handle
-				SetHandle(isolate, obj, hConsole);
+				pWindow->m_hWnd = hConsole;
 			}
 		}
 		break;
@@ -493,16 +394,14 @@ void NaWindow::SetVisible(v8::Local<v8::String> name, v8::Local<v8::Value> value
 }
 
 // description: handle property getter/setter
-void NaWindow::GetHandle(v8::Local<v8::String> name, const v8::PropertyCallbackInfo<v8::Value>& info)
+void NaWindow::GetHandle(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	// get window object(this)
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
+		Isolate *isolate = info.GetIsolate();
 		info.GetReturnValue().Set(
-			v8::Integer::New(isolate, (int)pWindow->m_hWnd)
+			Integer::New(isolate, (int)pWindow->m_hWnd)
 			);
 	}
 	else
@@ -511,12 +410,9 @@ void NaWindow::GetHandle(v8::Local<v8::String> name, const v8::PropertyCallbackI
 	}
 }
 
-void NaWindow::SetHandle(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void>& info)
+void NaWindow::SetHandle(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	// get window object(this)
-	v8::Isolate *isolate = info.GetIsolate();
-	v8::Local<v8::Object> obj = info.This();
-	NaWindow *pWindow = NaWindow::GetNaWindow(isolate, obj);
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
 		pWindow->m_hWnd = (HWND)value->Int32Value();
@@ -527,18 +423,14 @@ void NaWindow::SetHandle(v8::Local<v8::String> name, v8::Local<v8::Value> value,
 // syntax:      windowObj.move(x, y, width, height)
 void NaWindow::Move(V8_FUNCTION_ARGS)
 {
-	// get window object(this)
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::Local<v8::Object> obj = args.This();
-	HWND hWnd = GetHandle(isolate, obj);
-
 	if (args.Length() < 2)
 	{
 		// TODO error? exception?
 		return;
 	}
 
-	if (hWnd == NULL)
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	if (pWindow == NULL)
 		return;
 
 	// move window
@@ -548,7 +440,7 @@ void NaWindow::Move(V8_FUNCTION_ARGS)
 	if (args.Length() < 3)
 	{
 		RECT rc;
-		::GetWindowRect(hWnd, &rc);
+		::GetWindowRect(pWindow->m_hWnd, &rc);
 		w = rc.right - rc.left;
 		h = rc.bottom - rc.top;
 	}
@@ -557,20 +449,16 @@ void NaWindow::Move(V8_FUNCTION_ARGS)
 		w = args[2]->IntegerValue();
 		h = args[3]->IntegerValue();
 	}
-	::MoveWindow(hWnd, x, y, w, h, TRUE);
+	::MoveWindow(pWindow->m_hWnd, x, y, w, h, TRUE);
 }
 
 // description: activate window
 // syntax:      windowObj.activate()
 void NaWindow::Activate(V8_FUNCTION_ARGS)
 {
-	// get window object(this)
-	v8::Isolate *isolate = args.GetIsolate();
-	v8::Local<v8::Object> obj = args.This();
-	HWND hWnd = GetHandle(isolate, obj);
-
-	if (hWnd == NULL)
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	if (pWindow == NULL)
 		return;
 
-	::SetForegroundWindow(hWnd);
+	::SetForegroundWindow(pWindow->m_hWnd);
 }

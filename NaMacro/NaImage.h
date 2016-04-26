@@ -1,15 +1,16 @@
 #pragma once
 
 #include "Common.h"
+#include "NaObject.h"
 
 #include <Windows.h>
 #include <map>
 
-class NaImage 
+class NaImage : public NaObject
 {
 public:
-	NaImage(long lUID = -1);
-	~NaImage();
+	NaImage();
+	virtual ~NaImage();
 
 	// members
 	long m_lUID;
@@ -17,22 +18,14 @@ public:
 	HBITMAP m_hBitmap;
 	RECT m_rc;
 
-	// management image list
-	static long s_lUniqueID;
-	static long CreateUniqueID();
-	static std::map<long, NaImage*> s_mapImage;
-	static void DestroyMap();
-
 	// static
-	static v8::Local<v8::Object> CreateV8Image(v8::Isolate *isolate, NaImage *pImage = NULL);
-
+	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);
 	static NaImage* CaptureScreen(int x, int y, int width, int height);
-
-	// static - Convert between NaImage/V8
-	// NaWindow -> V8Window
-	static v8::Local<v8::Object> GetV8Image(v8::Isolate *isolate, NaImage *pImage);
-
-	static NaImage* GetNaImage(v8::Isolate *isolate, v8::Local<v8::Object> obj);
+	
+	// wrap object
+	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
+	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_NaImageTemplate; }
+	static Global<ObjectTemplate> s_NaImageTemplate;
 
 	// methods
 	DEFINE_CLASS_METHOD(GetPixel);

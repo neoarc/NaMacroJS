@@ -11,7 +11,7 @@ using namespace std;
 bool NaExtModule::s_bInitTTS = false;
 vector<ISpVoice*> NaExtModule::s_vecVoices;
 
-void NaExtModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaExtModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
 
@@ -20,7 +20,7 @@ void NaExtModule::Create(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& g
 	ADD_GLOBAL_METHOD(ttsSpeak,				TTSSpeak);
 }
 
-void NaExtModule::Init(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaExtModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 	// TODO make extapi object
 	// TODO bind apis to extapi object
@@ -51,17 +51,17 @@ void NaExtModule::Release()
 void NaExtModule::ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
-	v8::Isolate *isolate = args.GetIsolate();
+	Isolate *isolate = args.GetIsolate();
 
 	// Load GMacro Data
-	v8::String::Utf8Value arg0(args[0]);
+	String::Utf8Value arg0(args[0]);
 	char *filename = *arg0;
 
 	ifstream file;
 	file.open(filename, ios::binary || ios::in || ios::ate);
 	if (!file.is_open())
 	{
-		// v8::Local<v8::String>();
+		// Local<String>();
 		return;
 	}
 
@@ -188,7 +188,7 @@ void NaExtModule::ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 		strNaScript += str;
 	}
 
-	v8::Local<v8::String> result = v8::String::NewFromUtf8(isolate, strNaScript.data(), v8::NewStringType::kNormal, strNaScript.length()).ToLocalChecked();
+	Local<String> result = String::NewFromUtf8(isolate, strNaScript.data(), NewStringType::kNormal, strNaScript.length()).ToLocalChecked();
 	args.GetReturnValue().Set(result);
 }
 
@@ -207,7 +207,7 @@ void NaExtModule::TTSSpeak(V8_FUNCTION_ARGS)
 
 	if (SUCCEEDED(hr))
 	{
-		v8::String::Utf8Value str(args[0]);
+		String::Utf8Value str(args[0]);
 		bool bAsync = false;
 		if (args.Length() >= 2)
 		{

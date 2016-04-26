@@ -13,8 +13,8 @@
 class NaExtModule : public ModuleBase
 {
 public:
-	virtual void Create(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template);
-	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+	virtual void Create(Isolate *isolate, Local<ObjectTemplate>& global_template);
+	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
 	virtual void Release();
 
 	static bool s_bInitTTS;

@@ -126,6 +126,7 @@
     <ClCompile Include="NaImage.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
+    <ClCompile Include="NaObject.cpp" />
     <ClCompile Include="NaWindow.cpp" />
     <ClCompile Include="ScreenModule.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -142,6 +143,7 @@
     <ClInclude Include="NaImage.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />
+    <ClInclude Include="NaObject.h" />
     <ClInclude Include="NaWindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScreenModule.h" />

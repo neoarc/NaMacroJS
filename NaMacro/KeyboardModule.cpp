@@ -4,12 +4,12 @@
 
 #include "Windows.h"
 
-void NaKeyboardModule::Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
 {
-	v8::HandleScope handle_scope(isolate);
+	HandleScope handle_scope(isolate);
 
-	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
-	v8::Local<v8::Object> keyboard_obj = GetKeyboardObject(isolate);
+	Local<Object> global = isolate->GetCurrentContext()->Global();
+	Local<Object> keyboard_obj = GetKeyboardObject(isolate);
 
 #define ADD_KEYBOARD_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(keyboard_obj, _js_func, _c_func);
 #define ADD_KEYBOARD_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(keyboard_obj, _prop, _getter, _setter);
@@ -27,21 +27,21 @@ void NaKeyboardModule::Release()
 }
 
 // description: return 'system.keyboard'
-v8::Local<v8::Object> NaKeyboardModule::GetKeyboardObject(v8::Isolate *isolate)
+Local<Object> NaKeyboardModule::GetKeyboardObject(Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 
-	v8::Local<v8::Object> system_obj = GetSystemObject(isolate);
-	v8::Local<v8::String> keyboard_name = v8::String::NewFromUtf8(isolate, "keyboard", v8::NewStringType::kNormal).ToLocalChecked();
-	v8::Local<v8::Value> keyboard_value = system_obj->Get(keyboard_name);
+	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<String> keyboard_name = String::NewFromUtf8(isolate, "keyboard", NewStringType::kNormal).ToLocalChecked();
+	Local<Value> keyboard_value = system_obj->Get(keyboard_name);
 	if (!keyboard_value.IsEmpty() && keyboard_value->IsUndefined())
 	{
 		// Initkeyboard
-		keyboard_value = v8::Object::New(isolate);
+		keyboard_value = Object::New(isolate);
 		system_obj->Set(keyboard_name, keyboard_value);
 	}
 
-	v8::Local<v8::Object> keyboard_obj = keyboard_value->ToObject();
+	Local<Object> keyboard_obj = keyboard_value->ToObject();
 	return keyboard_obj;
 }
 

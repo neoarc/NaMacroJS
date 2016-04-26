@@ -24,9 +24,6 @@
 using namespace v8;
 
 // Main
-
-// 16.03.31 changed console to windows application 
-//int main(int argc, char* argv[])
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
 {
 	// Initialize V8
@@ -37,7 +34,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 	V8::Initialize();
 
 	// 16.03.31 disabled
-	//v8::V8::SetFlagsFromCommandLine(&argc, argv, true);
+	//SetFlagsFromCommandLine(&argc, argv, true);
 
 	// Create a new Isolate and make it the current one.
 	Isolate::CreateParams create_params;
@@ -47,22 +44,22 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 
 	// Creates a new execution environment containing the built-in functions.
 	{
-		v8::Isolate::Scope isolate_scope(isolate);
-		v8::HandleScope handle_scope(isolate);
+		Isolate::Scope isolate_scope(isolate);
+		HandleScope handle_scope(isolate);
 	
 		// Create a template for the global object.
-		v8::Local<v8::ObjectTemplate> global_template = v8::ObjectTemplate::New(isolate);
+		Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);
 
 		// Load Default js
-		v8::Local<v8::String> script_source;
-		v8::MaybeLocal<v8::String> script_name;
+		Local<String> script_source;
+		MaybeLocal<String> script_name;
 
 		char *str = "NaMacro.js";
 		if (__argc > 1)
 			str = __argv[1];
 
 		script_source = ReadFile(isolate, str);
-		script_name = v8::String::NewFromUtf8(isolate, str, v8::NewStringType::kNormal);
+		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
 		if (script_source.IsEmpty()) {
 			printf("Error reading '%s'\n", str);
 			return 1;
@@ -72,19 +69,19 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		CreateDefaultModules(isolate, global_template);
 
 		// Enter the newly created execution environment.
-		v8::Local<v8::Context> context = v8::Context::New(isolate, NULL, global_template);
-		v8::Context::Scope context_scope(context);
+		Local<Context> context = Context::New(isolate, NULL, global_template);
+		Context::Scope context_scope(context);
 
 		// Initialize Modules (Access global context)
 		InitModules(isolate, global_template);
 
-		v8::Local<v8::Script> script;
+		Local<Script> script;
 		{
 			// Compile script in try/catch context.
-			v8::TryCatch try_catch(isolate);
+			TryCatch try_catch(isolate);
 
-			v8::ScriptOrigin origin(script_name.ToLocalChecked());
-			v8::Script::Compile(context, script_source, &origin).ToLocal(&script);
+			ScriptOrigin origin(script_name.ToLocalChecked());
+			Script::Compile(context, script_source, &origin).ToLocal(&script);
 			if (script.IsEmpty())
 			{
 				// Print errors that happened during compilation.
@@ -95,7 +92,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		}
 
 		{
-			v8::TryCatch try_catch(isolate);
+			TryCatch try_catch(isolate);
 
 			script->Run(context);
 			if (try_catch.HasCaught())
@@ -107,9 +104,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		}
 
 		// Find main()
-		v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
-		v8::Local<v8::String> main_name = v8::String::NewFromUtf8(isolate, "main", v8::NewStringType::kNormal).ToLocalChecked();
-		v8::Local<v8::Value> main_value = global->Get(main_name);
+		Local<Object> global = isolate->GetCurrentContext()->Global();
+		Local<String> main_name = String::NewFromUtf8(isolate, "main", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> main_value = global->Get(main_name);
 		if (main_value.IsEmpty() || main_value->IsUndefined())
 		{
 			// error
@@ -124,15 +121,15 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			return 0;
 		}
 
-		v8::Local<v8::Function> main_fn = v8::Local<v8::Function>::Cast(global->Get(main_name));
+		Local<Function> main_fn = Local<Function>::Cast(global->Get(main_name));
 
 		// Run main function
 		{
-			v8::TryCatch try_catch(isolate);
+			TryCatch try_catch(isolate);
 
 			// main arguments
 			const int js_argc = 1;
-			v8::Local<v8::Value> js_argv[js_argc] = { v8::String::NewFromUtf8(isolate, "hello :)", String::kNormalString) };
+			Local<Value> js_argv[js_argc] = { String::NewFromUtf8(isolate, "hello :)", String::kNormalString) };
 			main_fn->Call(isolate->GetCurrentContext()->Global(), js_argc, js_argv);
 			
 			if (try_catch.HasCaught())
@@ -143,25 +140,31 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			}
 		}
 
+		// Collect Garbage
+		isolate->IdleNotification(1000);
+
 		// Release Modules
 		ReleaseModules();
 	}
 
 	// Dispose the isolate and tear down V8.
-	isolate->Dispose();
-	v8::V8::Dispose();
-	v8::V8::ShutdownPlatform();
+
+	// 16.04.26 check; GlobalHandles broken
+	//isolate->Dispose();
+
+	V8::Dispose();
+	V8::ShutdownPlatform();
 	delete platform;
 
 	return 0;
 }
 
-void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch) 
+void ReportException(Isolate *isolate, TryCatch* try_catch) 
 {
-	v8::HandleScope handle_scope(isolate);
-	v8::String::Utf8Value exception(try_catch->Exception());
+	HandleScope handle_scope(isolate);
+	String::Utf8Value exception(try_catch->Exception());
 	const char* exception_string = *exception;
-	v8::Local<v8::Message> message = try_catch->Message();
+	Local<Message> message = try_catch->Message();
 	if (message.IsEmpty()) 
 	{
 		// V8 didn't provide any extra information about this error; just
@@ -171,13 +174,13 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 	else 
 	{
 		// Print (filename):(line number): (message).
-		v8::String::Utf8Value filename(message->GetScriptResourceName());
+		String::Utf8Value filename(message->GetScriptResourceName());
 		const char* filename_string = *filename;
 		int linenum = message->GetLineNumber();
 		printf("%s:%i: %s\n", filename_string, linenum, exception_string);
 
 		// Print line of source code.
-		v8::String::Utf8Value sourceline(message->GetSourceLine());
+		String::Utf8Value sourceline(message->GetSourceLine());
 		const char* sourceline_string = *sourceline;
 		printf("%s\n", sourceline_string);
 
@@ -197,7 +200,7 @@ void ReportException(v8::Isolate *isolate, v8::TryCatch* try_catch)
 	}
 }
 
-void CreateDefaultModules(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void CreateDefaultModules(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 	ModuleBase *pModule;
 #define CREATE_MODULE(_class) \
@@ -212,7 +215,7 @@ void CreateDefaultModules(v8::Isolate * isolate, v8::Local<v8::ObjectTemplate>& 
 	CREATE_MODULE(NaScreenModule);
 }
 
-void InitModules(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template)
+void InitModules(Isolate *isolate, Local<ObjectTemplate> &global_template)
 {
 	vector<ModuleBase*>::iterator it = g_ModuleList.begin();
 	for (; it != g_ModuleList.end(); ++it)

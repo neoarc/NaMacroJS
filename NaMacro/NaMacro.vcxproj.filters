@@ -25,17 +25,11 @@
     <Filter Include="Source Files\Module">
       <UniqueIdentifier>{e1c57263-c55e-4062-9587-a04231423c36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Window">
-      <UniqueIdentifier>{53e58809-1aee-4086-b961-afd5be02ea5d}</UniqueIdentifier>
+    <Filter Include="Header Files\Objects">
+      <UniqueIdentifier>{9c24ac98-f245-440b-8c63-dd485d45dada}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Window">
-      <UniqueIdentifier>{4551b7b5-527c-4db5-8e0a-85c87bd16f66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Image">
-      <UniqueIdentifier>{3738d927-2a2e-47c9-ba7d-5ee7ba814b95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Image">
-      <UniqueIdentifier>{15056b9e-9915-4678-8128-9ee48b00940c}</UniqueIdentifier>
+    <Filter Include="Source Files\Objects">
+      <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,11 +60,14 @@
     <ClCompile Include="ModuleBase.cpp">
       <Filter>Source Files\Module</Filter>
     </ClCompile>
-    <ClCompile Include="NaWindow.cpp">
-      <Filter>Source Files\Window</Filter>
-    </ClCompile>
     <ClCompile Include="NaImage.cpp">
-      <Filter>Source Files\Image</Filter>
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaWindow.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaObject.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,20 +92,23 @@
     <ClInclude Include="MouseModule.h">
       <Filter>Header Files\Module</Filter>
     </ClInclude>
-    <ClInclude Include="NaWindow.h">
-      <Filter>Header Files\Window</Filter>
-    </ClInclude>
     <ClInclude Include="ScreenModule.h">
       <Filter>Header Files\Module</Filter>
     </ClInclude>
     <ClInclude Include="ModuleBase.h">
       <Filter>Header Files\Module</Filter>
     </ClInclude>
-    <ClInclude Include="NaImage.h">
-      <Filter>Header Files\Image</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaImage.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaWindow.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaObject.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

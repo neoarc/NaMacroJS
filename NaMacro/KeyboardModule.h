@@ -7,10 +7,10 @@
 class NaKeyboardModule : public ModuleBase
 {
 public:
-	virtual void Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate> &global_template);
+	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
 	virtual void Release();
 
-	v8::Local<v8::Object> GetKeyboardObject(v8::Isolate *isolate);
+	Local<Object> GetKeyboardObject(Isolate *isolate);
 
 	// accessors
 

@@ -8,8 +8,17 @@ print("init NaMacro.js");
 function main()
 {
 	try {
-		garbage_collection_test();
-		//accessor_test();
+		consolewindow.visible = true;
+
+		consolewindow.visible = 0;
+		consolewindow.visible = 1;
+		consolewindow.visible = 0;
+		consolewindow.visible = 1;
+
+		//garbage_collection_test();
+		//object_wrap_test();
+
+		//accessor_test(); // <-- window spy
 	    //window_activate_test();
 	    //consolewindow_test();
 	    //window_test();
@@ -20,7 +29,7 @@ function main()
 	    //screen_test();
 
 		alert("Press a any key to exit", "End of demo script :)", 0);
-		exit();
+		//exit();
 
         // TODO timer
 	} catch(e) {
@@ -28,26 +37,68 @@ function main()
 	}
 }
 
+function object_wrap_test()
+{
+	function _func () {
+		//var img = {};
+		var img = system.screen.capture(0, 0, 1000, 1000);
+		print("img = " + img);
+		showObjProperties(img);
+
+		img = system.screen.capture(0, 0, 1000, 1000);
+	}
+	_func();
+
+	var i=5;
+	while(i>0) {
+		print(i + "...");
+		sleep(1000);
+		--i;
+	}
+}
+
 function garbage_collection_test()
 {
-	consolewindow.visible = true;
-	
-	function make_garbage()
-	{
-		var img = system.screen.capture(0, 0, 1000, 1000);
-	}
+	for (var i=0; i<100; i++)
+		make_garbage();
 
-	make_garbage();
-	while(true) {
-		print("...");
+	var i=5;
+	while(i>0) {
+		print(i + "...");
 		sleep(1000);
+		--i;
+	}
+}
+
+function make_garbage()
+{
+	var ran = parseInt(Math.random()*100)%3;
+	print("make a random garbage: " + ran);
+	switch(ran) {
+		case 0: {
+			var img = system.screen.capture(0, 0, 1000, 1000);
+		}
+		break;
+		case 1: {
+			var aa = {name:"aa", year:35};
+			var bb = {name:"bb", year:34};
+		}
+		break;
+		case 2: {
+			var ar = [];
+			for (var i=0; i<10; i++) {
+				ar[i] = [];
+				for (var j=0; j<10; j++){
+					ar[i][j] = {name:"dummy"};
+				}
+			}
+		}
+		break;
 	}
 }
 
 function accessor_test()
 {
-    consolewindow.visible = true;
-
 	var m = system.mouse;
 
     /*
@@ -67,11 +118,9 @@ function accessor_test()
 	        print("mouse pos: " + m.x + ", " + m.y);
 
 	        var w = getWindow(m.x, m.y);
-	        if (old.w == null ||
-                w.text != old.w.text) {
-	            print("-> text: " + w.text);
-	            print("-> x,y: " + w.x + "," + w.y);
-	            print("-> w,h: " + w.width + "x" + w.height);
+	        if (old.w == null || w.text != old.w.text) {
+				print("---------------------------------------------");
+	            showObjProperties(w);
 
 	            old.w = {};
 	            old.w.text = w.text;
@@ -94,8 +143,6 @@ function accessor_test()
 
 function window_activate_test()
 {
-    consolewindow.visible = true;
-
     var ar = findWindows("컴퓨터");
     if (ar.length == 0) {
         alert("Cannot find window.");
@@ -166,8 +213,6 @@ function window_test()
 
 function key_test()
 {
-    consolewindow.visible = true;
-
     var win = findWindows("메모장");
     if (win.length == 0) {
         print("Open notepad to test.");
@@ -260,8 +305,6 @@ function mouse_test()
 
 function screen_test()
 {
-    consolewindow.visible = true;
-
     // pick a pixel from point x,y
     var mouse = system.mouse;
     var screen = system.screen;
@@ -296,15 +339,15 @@ function showObjProperties(obj, level)
     for (var prop in obj) {
         for (var i = 0, space = ""; i < level; i++) space += "   ";
 
-        if (this.isFunction(obj[prop])) continue;
-        trace(space + prop + " : " + obj[prop]);
+        //if (isFunction(obj[prop])) continue;
+        print(space + prop + " : " + obj[prop]);
 
         try {
             if (typeof obj[prop] == "object") {
-                this.showObjProperties(obj[prop], level + 1);
+                showObjProperties(obj[prop], level + 1);
             }
         } catch (e) {
-            trace(space + "   !!Exception!!");
+            print(space + "   !!Exception!!");
         }
     }
 }

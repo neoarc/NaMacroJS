@@ -5,12 +5,12 @@
 
 #include "Windows.h"
 
-void NaMouseModule::Init(v8::Isolate *isolate, v8::Local<v8::ObjectTemplate>& global_template)
+void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
 {
-	v8::HandleScope handle_scope(isolate);
+	HandleScope handle_scope(isolate);
 
-	v8::Local<v8::Object> global = isolate->GetCurrentContext()->Global();
-	v8::Local<v8::Object> mouse_obj = GetMouseObject(isolate);
+	Local<Object> global = isolate->GetCurrentContext()->Global();
+	Local<Object> mouse_obj = GetMouseObject(isolate);
 
 #define ADD_MOUSE_ACCESSOR(_prop, _getter, _setter)		ADD_OBJ_ACCESSOR(mouse_obj, _prop, _getter, _setter);
 #define ADD_MOUSE_METHOD(_js_func, _c_func)				ADD_OBJ_METHOD(mouse_obj, _js_func, _c_func);
@@ -35,24 +35,24 @@ void NaMouseModule::Release()
 }
 
 // description: return 'system.mouse'
-v8::Local<v8::Object> NaMouseModule::GetMouseObject(v8::Isolate *isolate)
+Local<Object> NaMouseModule::GetMouseObject(Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 
-	v8::Local<v8::Object> system_obj = GetSystemObject(isolate);
-	v8::Local<v8::String> mouse_name = v8::String::NewFromUtf8(isolate, "mouse", v8::NewStringType::kNormal).ToLocalChecked();
-	v8::Local<v8::Value> mouse_value = system_obj->Get(mouse_name);
+	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<String> mouse_name = String::NewFromUtf8(isolate, "mouse", NewStringType::kNormal).ToLocalChecked();
+	Local<Value> mouse_value = system_obj->Get(mouse_name);
 	if (!mouse_value.IsEmpty() && mouse_value->IsUndefined())
 	{
 		// InitMouse
-		mouse_value = v8::Object::New(isolate);
+		mouse_value = Object::New(isolate);
 
 		// temp; using template example
 		/*
-		v8::Local<v8::ObjectTemplate> templ = v8::ObjectTemplate::New(isolate);
+		Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
 
 		templ->SetAccessor(
-			v8::String::NewFromUtf8(isolate, "x", v8::NewStringType::kInternalized).ToLocalChecked(),
+			String::NewFromUtf8(isolate, "x", NewStringType::kInternalized).ToLocalChecked(),
 			GetX,
 			SetX
 			);
@@ -62,24 +62,24 @@ v8::Local<v8::Object> NaMouseModule::GetMouseObject(v8::Isolate *isolate)
 		system_obj->Set(mouse_name, mouse_value);
 	}
 
-	v8::Local<v8::Object> mouse_obj = mouse_value->ToObject();
+	Local<Object> mouse_obj = mouse_value->ToObject();
 	return mouse_obj;
 }
 
 // description: x getter 
-void NaMouseModule::GetX(v8::Local<v8::String> name, const v8::PropertyCallbackInfo<v8::Value>& info)
+void NaMouseModule::GetX(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	v8::Isolate *isolate = info.GetIsolate();
+	Isolate *isolate = info.GetIsolate();
 	info.GetReturnValue().Set(
-		v8::Integer::New(isolate, pt.x)
+		Integer::New(isolate, pt.x)
 		);
 }
 
 // description: x setter 
-void NaMouseModule::SetX(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void>& info)
+void NaMouseModule::SetX(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -89,19 +89,19 @@ void NaMouseModule::SetX(v8::Local<v8::String> name, v8::Local<v8::Value> value,
 }
 
 // description: y getter 
-void NaMouseModule::GetY(v8::Local<v8::String> name, const v8::PropertyCallbackInfo<v8::Value>& info)
+void NaMouseModule::GetY(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	v8::Isolate *isolate = info.GetIsolate();
+	Isolate *isolate = info.GetIsolate();
 	info.GetReturnValue().Set(
-		v8::Integer::New(isolate, pt.y)
+		Integer::New(isolate, pt.y)
 		);
 }
 
 // description: y setter 
-void NaMouseModule::SetY(v8::Local<v8::String> name, v8::Local<v8::Value> value, const v8::PropertyCallbackInfo<void>& info)
+void NaMouseModule::SetY(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);

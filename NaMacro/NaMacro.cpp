@@ -61,7 +61,7 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		script_source = ReadFile(isolate, str);
 		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
 		if (script_source.IsEmpty()) {
-			printf("Error reading '%s'\n", str);
+			fprintf(stderr, "Error reading '%s'\n", str);
 			return 1;
 		}
 
@@ -107,9 +107,15 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		Local<Object> global = isolate->GetCurrentContext()->Global();
 		Local<String> main_name = String::NewFromUtf8(isolate, "main", NewStringType::kNormal).ToLocalChecked();
 		Local<Value> main_value = global->Get(main_name);
-		Local<Function> main_fn = Local<Function>::Cast(global->Get(main_name));
+		if (main_value.IsEmpty() || main_value->IsUndefined())
+		{
+			// error
+			fprintf(stderr, "Cannot find main function\n");
+			return 0;
+		}
 
 		// Run main function
+		Local<Function> main_fn = Local<Function>::Cast(main_value);
 		{
 			TryCatch try_catch(isolate);
 

@@ -97,7 +97,7 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 			strcpy(str, (const char*)&buf);
 			*/
 
-			printf("Error reading '%s'\n", str);
+			fprintf(stderr, "Error reading '%s'\n", str);
 
 			// TODO ThrowException
 			delete str;

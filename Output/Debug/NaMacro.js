@@ -3,8 +3,6 @@
 // 2015.12.02 neoarc (neoarcturus@gmail.com)
 //
 
-print("init NaMacro.js");
-
 function main()
 {
 	try {
@@ -19,7 +17,7 @@ function main()
 	    //window_activate_test();
 	    //consoleWindow_test();
 	    //window_test();
-	    //key_test();
+	    key_test();
 	    //tts_test();
 		//mouse_test();
 	    //convGMacro_test();
@@ -36,7 +34,7 @@ function main()
 
 function include_test()
 {
-	include("Neoarc.js");
+	include("ModuleNeoarc.js");
 
 	var a = new Neoarc();
 	a.func();
@@ -272,6 +270,21 @@ function window_test()
 
 function key_test()
 {
+	var k = system.keyboard;
+
+	k.down(0x5b); // l win
+	for (var i=0; i<30; i++) {
+		k.down(0x09); // tab
+		k.up(0x09);
+		sleep(100);
+	}
+	k.down(0x1b); // esc
+	k.up(0x1b);
+	sleep(100);
+
+	k.up(0x5b);
+
+	/*
     var win = findWindows("메모장");
     if (win.length == 0) {
         print("Open notepad to test.");
@@ -282,21 +295,17 @@ function key_test()
     }
     win[0].activate();
 
-    var k = system.keyboard;
     k.down(0x20); // VK_SPACE
     k.up(0x20);
 
     // type a to z
-    for (var i=0x41; i<=0x5a; i++)
-    {
+    for (var i=0x41; i<=0x5a; i++) {
         print(String.fromCharCode(i));
 
         k.down(i);
-        sleep(10);
-
         k.up(i);
-        sleep(10);
     }
+	*/
 }
 
 function convGMacro_test()

@@ -12,6 +12,7 @@ public:
 	virtual void Release();
 
 	// methods
+	DEFINE_CLASS_METHOD(Include);
 	DEFINE_CLASS_METHOD(Sleep);
 	DEFINE_CLASS_METHOD(Alert);
 	DEFINE_CLASS_METHOD(Print);

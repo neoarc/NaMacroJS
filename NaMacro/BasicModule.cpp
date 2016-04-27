@@ -13,6 +13,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 #define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
 
 	// methods
+	ADD_GLOBAL_METHOD(include,		Include);
 	ADD_GLOBAL_METHOD(sleep,		Sleep);
 	ADD_GLOBAL_METHOD(alert,		Alert);
 	ADD_GLOBAL_METHOD(print,		Print);
@@ -68,6 +69,49 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 void NaBasicModule::Release()
 {
 	
+}
+
+// description: Include external source file
+// syntax:		include(filename);
+void NaBasicModule::Include(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+	for (int i = 0; i < args.Length(); i++) 
+	{
+		Local<String> script_source;
+		MaybeLocal<String> script_name;
+		
+		String::Value arg_value(args[i]);
+		wchar_t *wstr = (wchar_t*)(*arg_value);
+
+		int nChars = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, 0, 0);
+		char *str = new char[nChars];
+		WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, nChars, 0, 0);
+
+		script_source = ReadFile(isolate, str);
+		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
+		if (script_source.IsEmpty()) {
+			/*
+			GetCurrentDirectoryA(1024, buf);
+			strcat(buf, str);
+			strcpy(str, (const char*)&buf);
+			*/
+
+			printf("Error reading '%s'\n", str);
+
+			// TODO ThrowException
+			delete str;
+			return;
+		}
+		delete str;
+
+		Local<Script> script;
+		Local<Context> context = isolate->GetCurrentContext();
+		ScriptOrigin origin(script_name.ToLocalChecked());
+		Script::Compile(context, script_source, &origin).ToLocal(&script);
+		
+		script->Run(context);
+	}
 }
 
 // description: Print message to console

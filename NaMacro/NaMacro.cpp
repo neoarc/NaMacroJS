@@ -107,20 +107,6 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		Local<Object> global = isolate->GetCurrentContext()->Global();
 		Local<String> main_name = String::NewFromUtf8(isolate, "main", NewStringType::kNormal).ToLocalChecked();
 		Local<Value> main_value = global->Get(main_name);
-		if (main_value.IsEmpty() || main_value->IsUndefined())
-		{
-			// error
-			printf("Cannot find main function\n");
-			return 0;
-		}
-
-		if (!main_value->IsFunction())
-		{
-			// error
-			printf("main is not function!\n");
-			return 0;
-		}
-
 		Local<Function> main_fn = Local<Function>::Cast(global->Get(main_name));
 
 		// Run main function
@@ -178,25 +164,30 @@ void ReportException(Isolate *isolate, TryCatch* try_catch)
 		const char* filename_string = *filename;
 		int linenum = message->GetLineNumber();
 		printf("%s:%i: %s\n", filename_string, linenum, exception_string);
+		NaDebugOutA("%s:%i: %s\n", filename_string, linenum, exception_string);
 
 		// Print line of source code.
 		String::Utf8Value sourceline(message->GetSourceLine());
 		const char* sourceline_string = *sourceline;
 		printf("%s\n", sourceline_string);
+		NaDebugOutA("%s\n", sourceline_string);
 
 		// Print wavy underline (GetUnderline is deprecated).
 		int start = message->GetStartColumn();
 		for (int i = 0; i < start; i++) 
 		{
 			printf(" ");
+			NaDebugOutA(" ");
 		}
 
 		int end = message->GetEndColumn();
 		for (int i = start; i < end; i++) 
 		{
 			printf("^");
+			NaDebugOutA("^");
 		}
 		printf("\n");
+		NaDebugOutA("\n");
 	}
 }
 

@@ -10,9 +10,9 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		
 		//complex_test();
 
+		//include_test();
 		//object_wrap_test();
 		//garbage_collection_test();
 		//accessor_test(); // <-- window spy
@@ -32,6 +32,14 @@ function main()
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));
 	}
+}
+
+function include_test()
+{
+	include("Neoarc.js");
+
+	var a = new Neoarc();
+	a.func();
 }
 
 function complex_test()

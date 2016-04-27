@@ -31,6 +31,7 @@ int NaObject::Release()
 	{
 		MakeWeak();
 		delete this;
+		return 0;
 	}
 	return m_nRef;
 }
@@ -83,8 +84,6 @@ Local<Object> NaObject::WrapObject(Isolate *isolate, NaObject * pObject)
 	// we need to call Close to let one, the result, escape into the
 	// outer handle scope.
 	return handle_scope.Escape(result);
-
-	//pObject->AddRef();
 }
 
 NaObject * NaObject::UnwrapObject(Local<Object> obj)
@@ -103,7 +102,6 @@ void NaObject::MakeWeak()
 
 void NaObject::WeakCallback(
 	const v8::WeakCallbackData<v8::Object, NaObject>& data
-	//Persistent<Value> obj, void * pData
 	)
 {
 	NaObject *pObject = data.GetParameter();

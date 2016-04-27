@@ -33,6 +33,8 @@ public:
 	static bool m_bAeroStatus;
 
 	// accessors
+	DEFINE_CLASS_ACCESSOR_RO(GetWidth);
+	DEFINE_CLASS_ACCESSOR_RO(GetHeight);
 
 	// methods
 	DEFINE_CLASS_METHOD(CaptureScreen);

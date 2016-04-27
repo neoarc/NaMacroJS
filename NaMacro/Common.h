@@ -39,6 +39,10 @@ Local<Object> GetSystemObject(Isolate *isolate);
 	String::NewFromUtf8(isolate, #_property, NewStringType::kInternalized).ToLocalChecked(), \
 	_getter, _setter);
 
+
+#define DEFINE_CLASS_ACCESSOR_RO(_getter) \
+	static void _getter(Local<String> name, const PropertyCallbackInfo<Value>& info);
+
 #define DEFINE_CLASS_ACCESSOR(_getter, _setter) \
 	static void _getter(Local<String> name, const PropertyCallbackInfo<Value>& info); \
 	static void _setter(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info);

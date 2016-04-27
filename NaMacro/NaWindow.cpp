@@ -129,6 +129,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_METHOD(create, Create);
 	ADD_WINDOW_METHOD(move, Move);
 	ADD_WINDOW_METHOD(activate, Activate);
+	ADD_WINDOW_METHOD(alert, Alert);
 
 	return handle_scope.Escape(templ);
 }
@@ -518,4 +519,30 @@ void NaWindow::Activate(V8_FUNCTION_ARGS)
 		return;
 
 	::SetForegroundWindow(pWindow->m_hWnd);
+}
+
+// description: same as alert but window is its parent
+// syntax:      windowObj.alert(message[, title[, type]])
+void NaWindow::Alert(V8_FUNCTION_ARGS)
+{
+	HWND hParent = NULL;
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	if (pWindow)
+		hParent = pWindow->m_hWnd;
+
+	String::Value msg(args[0]);
+	String::Value title(args[1]);
+	int nType = args[2]->Int32Value();
+
+	int nRet = ::MessageBoxW(
+		hParent,
+		(const wchar_t*)*msg,
+		args.Length() >= 2 ? (const wchar_t*)*title : L"Alert",
+		args.Length() >= 3 ? nType : MB_OK
+		);
+
+	Isolate *isolate = args.GetIsolate();
+	args.GetReturnValue().Set(
+		Integer::New(isolate, nRet)
+		);
 }

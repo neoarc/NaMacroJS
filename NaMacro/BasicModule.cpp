@@ -100,10 +100,15 @@ void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 	String::Value title(args[1]);
 	int nType = args[2]->Int32Value();
 
-	::MessageBoxW(NULL,
+	int nRet = ::MessageBoxW(NULL,
 		(const wchar_t*)*msg,
 		args.Length() >= 2 ? (const wchar_t*)*title : L"Alert",
 		args.Length() >= 3 ? nType : MB_OK
+		);
+
+	Isolate *isolate = args.GetIsolate();
+	args.GetReturnValue().Set(
+		Integer::New(isolate, nRet)
 		);
 }
 

@@ -134,7 +134,6 @@ void NaMouseModule::Click(V8_FUNCTION_ARGS)
 
 	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
 	::SendInput(1, &input, sizeof(INPUT));
-	::Sleep(MOUSECLICK_SLEEP);
 }
 
 // description: 
@@ -148,7 +147,6 @@ void NaMouseModule::LButtonDown(V8_FUNCTION_ARGS)
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTDOWN;
 	::SendInput(1, &input, sizeof(INPUT));
-	::Sleep(MOUSECLICK_SLEEP);
 }
 
 // description: 
@@ -162,7 +160,6 @@ void NaMouseModule::LButtonUp(V8_FUNCTION_ARGS)
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_LEFTUP;
 	::SendInput(1, &input, sizeof(INPUT));
-	::Sleep(MOUSECLICK_SLEEP);
 }
 
 
@@ -177,7 +174,6 @@ void NaMouseModule::RButtonDown(V8_FUNCTION_ARGS)
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_RIGHTDOWN;
 	::SendInput(1, &input, sizeof(INPUT));
-	::Sleep(MOUSECLICK_SLEEP);
 }
 
 
@@ -192,7 +188,6 @@ void NaMouseModule::RButtonUp(V8_FUNCTION_ARGS)
 	input.type = INPUT_MOUSE;
 	input.mi.dwFlags = MOUSEEVENTF_RIGHTUP;
 	::SendInput(1, &input, sizeof(INPUT));
-	::Sleep(MOUSECLICK_SLEEP);
 }
 
 

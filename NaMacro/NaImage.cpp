@@ -13,6 +13,11 @@ NaImage::NaImage()
 NaImage::~NaImage()
 {
 	NaDebugOut(L"~NaImage(): 0x%08x\n", this);
+
+	if (m_hBitmap)
+	{
+		::DeleteObject(m_hBitmap);
+	}
 }
 
 Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
@@ -47,7 +52,7 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	::BitBlt(pImage->m_hMemoryDC, 0, 0, width, height, hDC, x, y, SRCCOPY);
 
 	// TODO must delete
-	//::DeleteDC(m_hMemoryDC);
+	::DeleteDC(pImage->m_hMemoryDC);
 
 	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 

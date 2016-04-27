@@ -66,6 +66,7 @@ public:
 	DEFINE_CLASS_METHOD(Create);
 	DEFINE_CLASS_METHOD(Move);
 	DEFINE_CLASS_METHOD(Activate);
+	DEFINE_CLASS_METHOD(Alert);
 };
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);

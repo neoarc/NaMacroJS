@@ -10,7 +10,10 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		object_wrap_test();
+		
+		//complex_test();
+
+		//object_wrap_test();
 		//garbage_collection_test();
 		//accessor_test(); // <-- window spy
 	    //window_activate_test();
@@ -31,6 +34,55 @@ function main()
 	}
 }
 
+function complex_test()
+{
+	function _random(_min, _max) {
+		var r = Math.random() * (_max - _min);
+		r = r % (_max - _min) + _min;
+		r = parseInt(r);
+		//print(_min + " ~ " + _max + " : " + r);
+		return r;
+	}
+
+	var max_cnt = 10;
+	var max_speed = 5;
+    var s = system.screen;
+	var ar = [];
+	for (var i=0; i<max_cnt; i++) {
+		var w = new Window(
+			_random(0, s.width/3),
+			_random(0, s.height/3),
+			_random(100, s.width/2),
+			_random(100, s.height/2)
+		    );
+		w.create();
+		w.visible = true;
+		w.text = "윈도우";
+		w.xs = _random(1,max_speed) * (_random(0,10) > 5 ? 1 : -1);
+		w.ys = _random(1,max_speed) * (_random(0,10) > 5 ? 1 : -1);
+
+		ar.push(w);
+	}
+
+	for (var j=0; j<10000; j++ ) {
+		for (var i=0; i<ar.length; i++) {
+			var w = ar[i];
+
+			w.x += w.xs
+			w.y += w.ys;
+			if (w.x + w.width >= s.width)
+				w.xs *= -1;
+			if (w.x < 0)
+				w.xs *= -1;
+			if (w.y + w.height >= s.height)
+				w.ys *= -1;
+			if (w.y < 0)
+				w.ys *= -1;
+		}
+		sleep(1);
+	}
+}
+
 function object_wrap_test()
 {
 	var ar = [];
@@ -38,7 +90,7 @@ function object_wrap_test()
 		var w = new Window();
 		w.create(i*100, i*100, 500, 500);
 		w.visible = true;
-		w.text = "윈도우";
+		w.text = "윈도우 " + i;
 
 		//showObjProperties(w);
 		ar.push(w);
@@ -305,13 +357,16 @@ function mouse_test()
 function screen_test()
 {
     // pick a pixel from point x,y
-    var mouse = system.mouse;
-    var screen = system.screen;
+    var m = system.mouse;
+    var s = system.screen;
+	print("screen metrics: " + s.width + "x" + s.height);
+
+	/*
     for (var i = 1; i < 100; i++) {
         var xy = i * 10;
 
-        mouse.move(xy, xy);
-        var col = screen.getPixel(xy, xy);
+        m.move(xy, xy);
+        var col = s.getPixel(xy, xy);
         var r = parseInt(col / 256 / 256 % 256);
         var g = parseInt(col / 256 % 256);
         var b = parseInt(col % 256);
@@ -320,6 +375,7 @@ function screen_test()
 
         sleep(10);
     }
+	*/
 }
 
 // for debug

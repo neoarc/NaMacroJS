@@ -14,10 +14,12 @@ void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templ
 	Local<Object> global = isolate->GetCurrentContext()->Global();
 	Local<Object> screen_obj = GetScreenObject(isolate);
 
-#define ADD_SCREEN_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(screen_obj, _js_func, _c_func);
 #define ADD_SCREEN_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(screen_obj, _prop, _getter, _setter);
+#define ADD_SCREEN_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(screen_obj, _js_func, _c_func);
 
 	// accessors
+	ADD_SCREEN_ACCESSOR(width, GetWidth, nullptr);
+	ADD_SCREEN_ACCESSOR(height, GetHeight, nullptr);
 
 	// methods
 	ADD_SCREEN_METHOD(capture, CaptureScreen); 
@@ -52,6 +54,28 @@ Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 
 	Local<Object> screen_obj = screen_value->ToObject();
 	return screen_obj;
+}
+
+// description: width property getter
+void NaScreenModule::GetWidth(V8_GETTER_ARGS)
+{
+	Isolate *isolate = info.GetIsolate();
+	int metrics = GetSystemMetrics(SM_CXSCREEN);
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, metrics)
+		);
+}
+
+// description: height property getter
+void NaScreenModule::GetHeight(V8_GETTER_ARGS)
+{
+	Isolate *isolate = info.GetIsolate();
+	int metrics = GetSystemMetrics(SM_CYSCREEN);
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, metrics)
+		);
 }
 
 // description: capture screen area to image object

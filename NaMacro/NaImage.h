@@ -27,6 +27,10 @@ public:
 	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_NaImageTemplate; }
 	static Global<ObjectTemplate> s_NaImageTemplate;
 
+	// accessors
+	DEFINE_CLASS_ACCESSOR(GetWidth, SetWidth);
+	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
+
 	// methods
 	DEFINE_CLASS_METHOD(GetPixel);
 };

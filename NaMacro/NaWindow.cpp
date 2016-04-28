@@ -91,6 +91,9 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	nLen += sizeof(wchar_t);
 	wchar_t *buf = new wchar_t[nLen];
 	GetWindowText(hWnd, buf, nLen);
+	wchar_t *buf2 = new wchar_t[1024];
+	RealGetWindowClass(hWnd, buf2, 1024);
+	NaDebugOut(L"EnumWindowsProc: %s / %s\n", buf, buf2);
 
 	NaWindow::FindWindowsInfo *pInfo = (NaWindow::FindWindowsInfo*)lParam;
 
@@ -102,6 +105,8 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	}
 
 	delete buf;
+	delete buf2;
+
 	return 1;
 }
 
@@ -121,6 +126,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_ACCESSOR(y, GetY, SetY);
 	ADD_WINDOW_ACCESSOR(width, GetWidth, SetWidth);
 	ADD_WINDOW_ACCESSOR(height, GetHeight, SetHeight);
+	ADD_WINDOW_ACCESSOR(class, GetClass, nullptr);
 	ADD_WINDOW_ACCESSOR(text, GetText, SetText);
 	ADD_WINDOW_ACCESSOR(visible, GetVisible, SetVisible);
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
@@ -306,6 +312,22 @@ void NaWindow::SetHeight(V8_SETTER_ARGS)
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
 		::MoveWindow(pWindow->m_hWnd, rc.left, rc.top, rc.right - rc.left, value->Int32Value(), FALSE);
+	}
+}
+
+// description: class property getter/setter
+void NaWindow::GetClass(V8_GETTER_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	if (pWindow)
+	{
+		wchar_t str[1024];
+		::RealGetWindowClass(pWindow->m_hWnd, str, 1024);
+
+		info.GetReturnValue().Set(
+			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
+			);
 	}
 }
 

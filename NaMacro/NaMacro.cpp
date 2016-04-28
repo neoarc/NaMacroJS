@@ -85,8 +85,10 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			if (script.IsEmpty())
 			{
 				// Print errors that happened during compilation.
-				//if (report_exceptions)
-				//	ReportException(isolate, &try_catch);
+				if (report_exceptions)
+					ReportException(isolate, &try_catch);
+
+				NaDebugOut(L"Script is Empty!\n");
 				return 1;
 			}
 		}

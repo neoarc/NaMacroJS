@@ -14,6 +14,11 @@ NaImage::~NaImage()
 {
 	NaDebugOut(L"~NaImage(): 0x%08x\n", this);
 
+	if (m_hMemoryDC)
+	{
+		::DeleteDC(m_hMemoryDC);
+	}
+
 	if (m_hBitmap)
 	{
 		::DeleteObject(m_hBitmap);
@@ -32,7 +37,8 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 #define ADD_IMAGE_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
 
 	// accessor
-	//ADD_IMAGE_ACCESSOR(x, GetX, SetX);
+	ADD_IMAGE_ACCESSOR(width, GetWidth, SetWidth);
+	ADD_IMAGE_ACCESSOR(height, GetHeight, SetHeight);
 
 	// methods
 	ADD_IMAGE_METHOD(getPixel, GetPixel);
@@ -52,7 +58,7 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	::BitBlt(pImage->m_hMemoryDC, 0, 0, width, height, hDC, x, y, SRCCOPY);
 
 	// TODO must delete
-	::DeleteDC(pImage->m_hMemoryDC);
+	//::DeleteDC(pImage->m_hMemoryDC);
 
 	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 
@@ -62,6 +68,56 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	pImage->m_rc.bottom = y + height;
 
 	return pImage;
+}
+
+// description: width property getter/setter
+void NaImage::GetWidth(V8_GETTER_ARGS)
+{
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	int nWidth = 0;
+	if (pImage)
+	{
+		nWidth = pImage->m_rc.right - pImage->m_rc.left;
+	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, nWidth)
+		);
+}
+
+void NaImage::SetWidth(V8_SETTER_ARGS)
+{
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
+	if (pImage)
+	{
+		// Not Impl
+	}
+}
+
+// description: height property getter/setter
+void NaImage::GetHeight(V8_GETTER_ARGS)
+{
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	int nHeight = 0;
+	if (pImage)
+	{
+		nHeight = pImage->m_rc.bottom - pImage->m_rc.top;
+	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, nHeight)
+		);
+}
+
+void NaImage::SetHeight(V8_SETTER_ARGS)
+{
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
+	if (pImage)
+	{
+		// Not Impl
+	}
 }
 
 // description: get pixel from image buffer

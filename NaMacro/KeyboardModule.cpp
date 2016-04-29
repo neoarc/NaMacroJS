@@ -17,8 +17,9 @@ void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_temp
 	// accessors
 
 	// methods
-	ADD_KEYBOARD_METHOD(down,	Down);
-	ADD_KEYBOARD_METHOD(up,		Up);
+	ADD_KEYBOARD_METHOD(down,		Down);
+	ADD_KEYBOARD_METHOD(up,			Up);
+	ADD_KEYBOARD_METHOD(typeString, TypeString);
 }
 
 void NaKeyboardModule::Release()
@@ -45,38 +46,94 @@ Local<Object> NaKeyboardModule::GetKeyboardObject(Isolate *isolate)
 	return keyboard_obj;
 }
 
-// description: 
-// syntax:		
+int NaKeyboardModule::GetKeycodeFromChar(wchar_t ch)
+{
+	int ret = VkKeyScan(ch);
+
+	return ret;
+}
+
+void NaKeyboardModule::KeyDown(int code)
+{
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = code;
+	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
+	::SendInput(1, &input, sizeof(INPUT));
+}
+
+void NaKeyboardModule::KeyUp(int code)
+{
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_KEYBOARD;
+	input.ki.wVk = code;
+	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
+	::SendInput(1, &input, sizeof(INPUT));
+}
+
+// description: make key to down
+// syntax:		system.keyboard.down(keycode)
 void NaKeyboardModule::Down(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
 
 	int nKey = args[0]->Int32Value();
-
-	INPUT input;
-	ZeroMemory(&input, sizeof(INPUT));
-	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = nKey;
-	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
-	::SendInput(1, &input, sizeof(INPUT));
+	KeyDown(nKey);
 }
 
-// description: 
-// syntax:		
+// description: make key to up
+// syntax:		system.keyboard.up(keycode)
 void NaKeyboardModule::Up(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
 
 	int nKey = args[0]->Int32Value();
+	KeyUp(nKey);
+}
 
-	INPUT input;
-	ZeroMemory(&input, sizeof(INPUT));
-	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = nKey;
-	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
-	::SendInput(1, &input, sizeof(INPUT));
+// description: type string
+// syntax:		system.keyboard.typeString(string)
+void NaKeyboardModule::TypeString(V8_FUNCTION_ARGS)
+{
+	if (args.Length() <= 0)
+		return;
+
+	String::Value str(args[0]);
+	int nDelay = 0;
+	if (args.Length() >= 2)
+		nDelay = args[1]->Int32Value();
+
+	wchar_t *wstr = (wchar_t*)*str;
+	int nLen = wcslen(wstr);
+	for (int i = 0; i < nLen; i++)
+	{
+		int nKeyCode = NaKeyboardModule::GetKeycodeFromChar(*wstr);
+		if (nKeyCode == -1)
+			continue;
+		*wstr++;
+
+		int nModifier = nKeyCode >> 8;
+		nKeyCode = nKeyCode & 0xff;
+
+		if (nModifier & 1) KeyDown(VK_LSHIFT);
+		if (nModifier & 2) KeyDown(VK_LCONTROL);
+		if (nModifier & 4) KeyDown(VK_LMENU);
+
+		KeyDown(nKeyCode);
+
+		if (nDelay)
+			::Sleep(nDelay);
+
+		KeyUp(nKeyCode);
+
+		if (nModifier & 1) KeyUp(VK_LSHIFT);
+		if (nModifier & 2) KeyUp(VK_LCONTROL);
+		if (nModifier & 4) KeyUp(VK_LMENU);
+	}
 }
 
 // description: 

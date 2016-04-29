@@ -11,12 +11,16 @@ public:
 	virtual void Release();
 
 	Local<Object> GetKeyboardObject(Isolate *isolate);
+	static int GetKeycodeFromChar(wchar_t ch);
+	static void KeyDown(int code);
+	static void KeyUp(int code);
 
 	// accessors
 
 	// methods
 	DEFINE_CLASS_METHOD(Down);
 	DEFINE_CLASS_METHOD(Up);
+	DEFINE_CLASS_METHOD(TypeString);
 	DEFINE_CLASS_METHOD(RegisterHotkey);
 	DEFINE_CLASS_METHOD(UnregisterHotkey);
 };

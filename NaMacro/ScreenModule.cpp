@@ -23,6 +23,7 @@ void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templ
 
 	// methods
 	ADD_SCREEN_METHOD(capture, CaptureScreen); 
+	ADD_SCREEN_METHOD(findColor, FindColor);
 	ADD_SCREEN_METHOD(getPixel, GetPixel);
 	ADD_SCREEN_METHOD(setAero,	SetAero);
 }
@@ -105,7 +106,67 @@ void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
 		);
 }
 
-// description: get pixel color from point x,y
+// description: find specific color from area
+// syntax:		system.screen.findColor(color[, x, y, width, height])
+void NaScreenModule::FindColor(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+
+	if (args.Length() < 1)
+	{
+		// error
+		args.GetReturnValue().SetNull();
+		return;
+	}
+
+	int color = args[0]->Int32Value();
+	int x = 0, y = 0, w = -1, h = -1;
+	if (args.Length() >= 3)
+	{
+		x = args[1]->Int32Value();
+		y = args[2]->Int32Value();
+		if (args.Length() >= 5)
+		{
+			w = args[3]->Int32Value();
+			h = args[4]->Int32Value();
+		}
+	}
+
+	if (w < 0 || h < 0)
+	{
+		w = GetSystemMetrics(SM_CXSCREEN);
+		h = GetSystemMetrics(SM_CYSCREEN);
+	}
+
+	NaImage *pImage = NaImage::CaptureScreen(x, y, w, h);
+	POINT pt = pImage->FindColor(color);
+	delete pImage;
+
+	if (pt.x == -1 || pt.y == -1)
+	{
+		// error
+		args.GetReturnValue().SetNull();
+		return;
+	}
+
+	// make info object
+	Local<Object> info_obj = Object::New(isolate);
+	info_obj->Set(
+		String::NewFromUtf8(isolate, "x", NewStringType::kNormal).ToLocalChecked(),
+		Integer::New(isolate, x + pt.x)
+	);
+	info_obj->Set(
+		String::NewFromUtf8(isolate, "y", NewStringType::kNormal).ToLocalChecked(),
+		Integer::New(isolate, y + pt.y)
+	);
+
+	// return
+	args.GetReturnValue().Set(
+		info_obj
+	);
+}
+
+// description: get piyel color from point x,y
 // syntax:		system.screen.getPixel(x, y) : color
 void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
 {

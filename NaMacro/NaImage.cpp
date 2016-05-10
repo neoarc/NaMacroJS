@@ -46,6 +46,35 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 	return handle_scope.Escape(templ);
 }
 
+POINT NaImage::FindColor(DWORD dwColor)
+{
+	POINT pt;
+	pt.x = -1;
+	pt.y = -1;
+
+	if (m_hMemoryDC && m_hBitmap)
+	{
+		COLORREF color;
+		int nWidth = m_rc.right - m_rc.left;
+		int nHeight = m_rc.bottom - m_rc.top;
+		for (int x = 0; x < nWidth; x++)
+		{
+			for (int y = 0; y < nHeight; y++)
+			{
+				color = ::GetPixel(m_hMemoryDC, x, y);
+				if (color == dwColor)
+				{
+					pt.x = x;
+					pt.y = y;
+					return pt;
+				}
+			}
+		}
+	}
+
+	return pt;
+}
+
 // description: capture screen & create Image object
 NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 {

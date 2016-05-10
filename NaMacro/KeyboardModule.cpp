@@ -37,7 +37,7 @@ Local<Object> NaKeyboardModule::GetKeyboardObject(Isolate *isolate)
 	Local<Value> keyboard_value = system_obj->Get(keyboard_name);
 	if (!keyboard_value.IsEmpty() && keyboard_value->IsUndefined())
 	{
-		// Initkeyboard
+		// Init keyboard
 		keyboard_value = Object::New(isolate);
 		system_obj->Set(keyboard_name, keyboard_value);
 	}

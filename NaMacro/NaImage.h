@@ -17,6 +17,7 @@ public:
 	HDC m_hMemoryDC;
 	HBITMAP m_hBitmap;
 	RECT m_rc;
+	POINT FindColor(DWORD dwColor);
 
 	// static
 	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);

@@ -9,7 +9,6 @@ function main()
 		consoleWindow.visible = true;
 
 		//complex_test();
-
 		//include_test();
 		//object_wrap_test();
 		//garbage_collection_test();
@@ -17,19 +16,19 @@ function main()
 	    //window_activate_test();
 	    //consoleWindow_test();
 	    //window_test();
-	    key_test();
+	    //key_test();
 	    //tts_test();
 		//mouse_test();
 	    //convGMacro_test();
 	    //screen_test();
 
 		alert("Press a any key to exit", "End of demo script :)", 0);
-		//exit();
 
         // TODO timer
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));
 	}
+	exit();
 }
 
 function include_test()

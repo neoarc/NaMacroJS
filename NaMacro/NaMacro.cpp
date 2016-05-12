@@ -134,6 +134,11 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			}
 		}
 
+		while (!g_bExit)
+		{
+			Sleep(1);
+		}
+
 		// Collect Garbage
 		isolate->IdleNotification(1000);
 

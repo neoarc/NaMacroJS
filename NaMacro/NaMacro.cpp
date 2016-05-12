@@ -134,8 +134,22 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			}
 		}
 
+		// MessageLoop after main()
+		MSG msg = { 0 };
 		while (!g_bExit)
 		{
+			bool bRet;
+			bRet = GetMessage(&msg, NULL, 0, 0);
+			if (msg.message == 0)
+				continue;
+
+			if (msg.message == WM_HOTKEY)
+			{
+				if (bRet == 0)
+					break;
+
+				NaKeyboardModule::ProcessHotkey(isolate, msg.wParam, msg.lParam);
+			}
 			Sleep(1);
 		}
 

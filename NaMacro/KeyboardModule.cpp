@@ -2,7 +2,7 @@
 
 #include "KeyboardModule.h"
 
-#include "Windows.h"
+std::vector <Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_vecKeyEventCallback;
 
 void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
 {
@@ -20,11 +20,21 @@ void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_temp
 	ADD_KEYBOARD_METHOD(down,		Down);
 	ADD_KEYBOARD_METHOD(up,			Up);
 	ADD_KEYBOARD_METHOD(typeString, TypeString);
+	ADD_KEYBOARD_METHOD(on,			BindEvent);
 }
 
 void NaKeyboardModule::Release()
 {
-	VK_SPACE;
+	int nSize = NaKeyboardModule::s_vecKeyEventCallback.size();
+	std::vector <Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it = s_vecKeyEventCallback.begin();
+	for (int i=0; it != NaKeyboardModule::s_vecKeyEventCallback.end(); it++, i++)
+	{
+		::UnregisterHotKey(NULL, i);
+	}
+
+	// TODO check Clear Persistent?
+
+	NaKeyboardModule::s_vecKeyEventCallback.clear();
 }
 
 // description: return 'system.keyboard'
@@ -71,6 +81,35 @@ void NaKeyboardModule::KeyUp(int code)
 	input.ki.wVk = code;
 	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
 	::SendInput(1, &input, sizeof(INPUT));
+}
+
+// description: key event handler
+void NaKeyboardModule::ProcessHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
+{
+	int nIdx = (int)wParam;
+	int nMod = (int)lParam; // MOD_ALT=1 MOD_CONTROL=2 MOD_SHIFT=4 MOD_WIN=8
+
+	std::vector <Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it = s_vecKeyEventCallback.begin();
+	for (int i = 0; it != NaKeyboardModule::s_vecKeyEventCallback.end(); it++, i++)
+	{
+		if (i == nIdx)
+		{
+			Persistent<Function, CopyablePersistentTraits<Function>> percy = *it;
+			Local<Function> callback = Local<Function>::New(isolate, percy);
+			if (!callback.IsEmpty())
+			{
+				Local<Value> recv = isolate->GetCurrentContext()->Global();
+				callback->Call(
+					isolate->GetCurrentContext(),
+					recv,
+					0,
+					NULL
+				);
+			}
+
+			break;
+		}
+	}
 }
 
 // description: make key to down
@@ -136,23 +175,27 @@ void NaKeyboardModule::TypeString(V8_FUNCTION_ARGS)
 	}
 }
 
-// description: 
-// syntax:		
-void NaKeyboardModule::RegisterHotkey(V8_FUNCTION_ARGS)
+// description: bind key event
+// syntax:		system.keyboard.on(keycode, function)
+void NaKeyboardModule::BindEvent(V8_FUNCTION_ARGS)
 {
-	// TODO
-	// HotkeyMap
-	// - Hoykey / EventHandler
-	// - Create PlayformWindow
-	//
-	//RegisterHotKey(NULL, 1, 0, 'a');
-}
+	if (args.Length() < 2)
+		return;
 
-// description: 
-// syntax:		
-void NaKeyboardModule::UnregisterHotkey(V8_FUNCTION_ARGS)
-{
-	// TODO
-	//UnregisterHotKey(NULL, 1);
-}
+	int nKeycode = args[0]->Int32Value();
+	Local<Object> callback = args[1]->ToObject();
+	if (callback->IsFunction())
+	{
+		int nIdx = NaKeyboardModule::s_vecKeyEventCallback.size();
 
+		Isolate *isolate = args.GetIsolate();
+		Local<Function> callback_func = Local<Function>::Cast(args[1]);
+		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+		
+		NaKeyboardModule::s_vecKeyEventCallback.push_back(percy);
+		
+		RegisterHotKey(NULL, nIdx, 0, nKeycode);
+	}
+
+	return;
+}

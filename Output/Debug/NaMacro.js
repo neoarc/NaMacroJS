@@ -8,6 +8,7 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
+		key_event_test();
 		//complex_test();
 		//include_test();
 		//object_wrap_test();
@@ -29,6 +30,14 @@ function main()
 		alert("Error: " + e + " / " + typeof(e));
 	}
 	exit();
+}
+
+function key_event_test()
+{
+	var k = system.keyboard;
+	k.on(32, function() { // space
+		k.typeString("[space]");
+	});
 }
 
 function include_test()

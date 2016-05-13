@@ -107,10 +107,31 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 
 		Local<Script> script;
 		Local<Context> context = isolate->GetCurrentContext();
-		ScriptOrigin origin(script_name.ToLocalChecked());
-		Script::Compile(context, script_source, &origin).ToLocal(&script);
+
+		{
+			TryCatch try_catch(isolate);
+			ScriptOrigin origin(script_name.ToLocalChecked());
+			Script::Compile(context, script_source, &origin).ToLocal(&script);
+			if (script.IsEmpty())
+			{
+				if (g_bReportExceptions)
+					ReportException(isolate, &try_catch);
+
+				NaDebugOut(L"included script is empty!\n");
+				return;
+			}
+		}
 		
-		script->Run(context);
+		{
+			TryCatch try_catch(isolate);
+			script->Run(context);
+			if (try_catch.HasCaught())
+			{
+				if (g_bReportExceptions)
+					ReportException(isolate, &try_catch);
+				return;
+			}
+		}
 	}
 }
 

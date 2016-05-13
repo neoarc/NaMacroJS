@@ -182,6 +182,9 @@ void NaKeyboardModule::BindEvent(V8_FUNCTION_ARGS)
 	if (args.Length() < 2)
 		return;
 
+	// TODO if args[0] is not keycode then parse it
+	//      ex) "ctrl+z"
+
 	int nKeycode = args[0]->Int32Value();
 	Local<Object> callback = args[1]->ToObject();
 	if (callback->IsFunction())

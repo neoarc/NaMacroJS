@@ -5,9 +5,7 @@
 
 using namespace std;
 
-void ReportException(Isolate *isolate, TryCatch* handler);
-bool report_exceptions = true;
-
+extern bool g_bReportExceptions;
 extern bool g_bExit;
 
 // prototypes

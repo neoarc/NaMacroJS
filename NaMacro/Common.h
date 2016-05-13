@@ -5,9 +5,13 @@
 #define MOUSECLICK_SLEEP	10
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
 
+extern bool g_bReportExceptions;
 extern bool g_bExit;
 
 using namespace v8;
+
+// v8 Utility
+void ReportException(Isolate *isolate, TryCatch* handler);
 
 // Utility Functions
 void NaDebugOutA(const char* pszFormat, ...); 

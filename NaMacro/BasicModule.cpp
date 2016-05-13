@@ -28,6 +28,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(trace,		Print);
 	ADD_GLOBAL_METHOD(exit,			Exit);
 	ADD_GLOBAL_METHOD(getWindow,	GetWindow);
+	ADD_GLOBAL_METHOD(getActiveWindow, GetActiveWindow);
 	ADD_GLOBAL_METHOD(findWindows,	FindWindows);
 	ADD_GLOBAL_METHOD(findProcesses, FindProcesses);
 	ADD_GLOBAL_METHOD(findTrays,	FindTrays);
@@ -342,6 +343,18 @@ void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 	int y = args[1]->Int32Value();
 
 	NaWindow *pWindow = NaWindow::GetWindow(x, y);;
+	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
+
+	args.GetReturnValue().Set(result);
+}
+
+// description: get active window 
+// syntax:		getActiveWindow() : window object
+void NaBasicModule::GetActiveWindow(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+
+	NaWindow *pWindow = NaWindow::GetActiveWindow();;
 	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
 
 	args.GetReturnValue().Set(result);

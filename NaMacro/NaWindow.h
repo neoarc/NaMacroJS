@@ -47,6 +47,7 @@ public:
 
 	static void FindWindows(Isolate *isolate, const wchar_t *name, Local<Array> &results);
 	static NaWindow* GetWindow(int x, int y);
+	static NaWindow* GetActiveWindow();
 	static NaWindow* GetWindow(HWND hWnd);
 
 	// wrap object

@@ -191,6 +191,13 @@ NaWindow* NaWindow::GetWindow(int x, int y)
 	return GetWindow(hWnd);
 }
 
+NaWindow * NaWindow::GetActiveWindow()
+{
+	HWND hWnd = ::GetForegroundWindow();
+	
+	return GetWindow(hWnd);
+}
+
 NaWindow* NaWindow::GetWindow(HWND hWnd)
 {
 	// find cached window

@@ -5,7 +5,19 @@
 #include "ModuleBase.h"
 
 #include "Windows.h"
-#include <vector>
+#include <map>
+
+class HotkeyKey {
+public:
+	int keycode;
+	int modifier;
+	int index;
+
+	bool operator <(const HotkeyKey &other) const
+	{
+		return index < other.index;
+	}
+};
 
 class NaKeyboardModule : public ModuleBase
 {
@@ -21,8 +33,8 @@ public:
 	static void KeyUp(int code);
 
 	// for global hotkey event
-	static std::vector <Persistent<Function, CopyablePersistentTraits<Function>>> s_vecKeyEventCallback;
-	static void ProcessHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam);
+	static std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> s_mapKeyEventCallback;
+	static void OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam);
 
 	// accessors
 

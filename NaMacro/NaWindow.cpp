@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "resource.h"
 
+#include "BasicModule.h"
+
 bool NaWindow::s_bRegisterClass = false;
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;
 
@@ -48,7 +50,6 @@ HWND NaWindow::Create()
 	}
 
 	DWORD dwStyle = WS_OVERLAPPEDWINDOW;
-
 	m_hWnd = ::CreateWindow(
 		NA_WINDOW_CLASS,
 		NULL, // _In_opt_ LPCTSTR   lpWindowName,
@@ -64,6 +65,18 @@ HWND NaWindow::Create()
 		);
 
 	return m_hWnd;
+}
+
+void NaWindow::Destroy()
+{
+	if (m_enType == NA_WINDOW_CONSOLE)
+		return;
+
+	if (m_hWnd)
+	{
+		::DestroyWindow(m_hWnd);
+		m_hWnd = NULL;
+	}
 }
 
 LRESULT CALLBACK NaWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)

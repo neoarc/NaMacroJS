@@ -4,6 +4,9 @@
 #include "Common.h"
 #include "ModuleBase.h"
 
+#include "NaWindow.h"
+#include <map>
+
 class NaBasicModule : public ModuleBase
 {
 public:
@@ -11,9 +14,19 @@ public:
 	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
 	virtual void Release();
 
+	// statics
+	static void OnTimer(Isolate *isolate, int nTimerID);
+	static NaWindow* s_pTimerWindow;
+	static std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> s_mapIntervalCallback;
+	static std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> s_mapTimeoutCallback;
+	static int s_nTimerID;
+
 	// methods
 	DEFINE_CLASS_METHOD(Include);
 	DEFINE_CLASS_METHOD(Sleep);
+	DEFINE_CLASS_METHOD(SetInterval);
+	DEFINE_CLASS_METHOD(ClearInterval);
+	DEFINE_CLASS_METHOD(SetTimeout);
 	DEFINE_CLASS_METHOD(Alert);
 	DEFINE_CLASS_METHOD(Print);
 	DEFINE_CLASS_METHOD(Exit);

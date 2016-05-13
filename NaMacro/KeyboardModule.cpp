@@ -2,7 +2,7 @@
 
 #include "KeyboardModule.h"
 
-std::vector <Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_vecKeyEventCallback;
+std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_mapKeyEventCallback;
 
 void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
 {
@@ -25,16 +25,17 @@ void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_temp
 
 void NaKeyboardModule::Release()
 {
-	int nSize = NaKeyboardModule::s_vecKeyEventCallback.size();
-	std::vector <Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it = s_vecKeyEventCallback.begin();
-	for (int i=0; it != NaKeyboardModule::s_vecKeyEventCallback.end(); it++, i++)
+	std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+	it = s_mapKeyEventCallback.begin();
+	for (; it != NaKeyboardModule::s_mapKeyEventCallback.end(); it++)
 	{
-		::UnregisterHotKey(NULL, i);
+		HotkeyKey key = it->first;
+		::UnregisterHotKey(NULL, key.index);
 	}
 
 	// TODO check Clear Persistent?
 
-	NaKeyboardModule::s_vecKeyEventCallback.clear();
+	NaKeyboardModule::s_mapKeyEventCallback.clear();
 }
 
 // description: return 'system.keyboard'
@@ -84,27 +85,34 @@ void NaKeyboardModule::KeyUp(int code)
 }
 
 // description: key event handler
-void NaKeyboardModule::ProcessHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
+void NaKeyboardModule::OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
 {
 	int nIdx = (int)wParam;
 	int nMod = (int)lParam; // MOD_ALT=1 MOD_CONTROL=2 MOD_SHIFT=4 MOD_WIN=8
 
-	std::vector <Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it = s_vecKeyEventCallback.begin();
-	for (int i = 0; it != NaKeyboardModule::s_vecKeyEventCallback.end(); it++, i++)
+	std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+	it = s_mapKeyEventCallback.begin();
+	for (; it != NaKeyboardModule::s_mapKeyEventCallback.end(); it++)
 	{
-		if (i == nIdx)
+		HotkeyKey key = it->first;
+		if (key.index == nIdx)
 		{
-			Persistent<Function, CopyablePersistentTraits<Function>> percy = *it;
+			Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
 			Local<Function> callback = Local<Function>::New(isolate, percy);
 			if (!callback.IsEmpty())
 			{
 				Local<Value> recv = isolate->GetCurrentContext()->Global();
+
+				::UnregisterHotKey(NULL, key.index);
+
 				callback->Call(
 					isolate->GetCurrentContext(),
 					recv,
 					0,
 					NULL
 				);
+
+				::RegisterHotKey(NULL, key.index, key.modifier, key.keycode);
 			}
 
 			break;
@@ -189,13 +197,23 @@ void NaKeyboardModule::BindEvent(V8_FUNCTION_ARGS)
 	Local<Object> callback = args[1]->ToObject();
 	if (callback->IsFunction())
 	{
-		int nIdx = NaKeyboardModule::s_vecKeyEventCallback.size();
+		int nIdx = NaKeyboardModule::s_mapKeyEventCallback.size();
 
 		Isolate *isolate = args.GetIsolate();
 		Local<Function> callback_func = Local<Function>::Cast(args[1]);
 		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
 		
-		NaKeyboardModule::s_vecKeyEventCallback.push_back(percy);
+		HotkeyKey key;
+		key.keycode = nKeycode;
+		key.modifier = 0;
+		key.index = nIdx;
+
+		NaKeyboardModule::s_mapKeyEventCallback.insert(
+			std::pair<HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>(
+				key,
+				percy
+				)
+		);
 		
 		RegisterHotKey(NULL, nIdx, 0, nKeycode);
 	}

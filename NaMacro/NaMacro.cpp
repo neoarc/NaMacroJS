@@ -142,13 +142,16 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			bRet = GetMessage(&msg, NULL, 0, 0);
 			if (msg.message == 0)
 				continue;
-
-			if (msg.message == WM_HOTKEY)
+			if (bRet == 0)
+				break;
+			switch (msg.message)
 			{
-				if (bRet == 0)
-					break;
-
-				NaKeyboardModule::ProcessHotkey(isolate, msg.wParam, msg.lParam);
+			case WM_HOTKEY:
+				NaKeyboardModule::OnHotkey(isolate, msg.wParam, msg.lParam);
+				break;
+			case WM_TIMER:
+				NaBasicModule::OnTimer(isolate, (int)msg.wParam);
+				break;
 			}
 			Sleep(1);
 		}

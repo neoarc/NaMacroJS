@@ -31,6 +31,12 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Manager">
+      <UniqueIdentifier>{c5eebc94-99e0-439b-944d-ec8ca698d6c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Manager">
+      <UniqueIdentifier>{a73089fc-a75b-4316-8f72-ea28ab2203d9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">

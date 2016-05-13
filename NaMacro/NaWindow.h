@@ -18,6 +18,7 @@ enum NaWindowTypes
 	NA_WINDOW_NORMAL,
 	NA_WINDOW_CONSOLE,
 	NA_WINDOW_USERCREATED,
+	NA_WINDOW_INTERNAL,
 };
 
 class NaWindow : public NaObject
@@ -27,6 +28,7 @@ public:
 	virtual ~NaWindow();
 
 	HWND Create();
+	void Destroy();
 
 	// Member
 	NaWindowTypes m_enType;
@@ -40,8 +42,8 @@ public:
 	};
 
 	// static
-	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static bool s_bRegisterClass;
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 	static void FindWindows(Isolate *isolate, const wchar_t *name, Local<Array> &results);
 	static NaWindow* GetWindow(int x, int y);

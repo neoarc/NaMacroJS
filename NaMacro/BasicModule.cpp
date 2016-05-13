@@ -8,6 +8,11 @@
 
 #include <iostream>
 
+NaWindow* NaBasicModule::s_pTimerWindow = NULL;
+std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
+std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapTimeoutCallback;
+int NaBasicModule::s_nTimerID = 1; // begin from 0 causes hard to store variable
+
 void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 #define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
@@ -15,6 +20,9 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	// methods
 	ADD_GLOBAL_METHOD(include,		Include);
 	ADD_GLOBAL_METHOD(sleep,		Sleep);
+	ADD_GLOBAL_METHOD(setInterval,	SetInterval);
+	ADD_GLOBAL_METHOD(clearInterval, ClearInterval);
+	ADD_GLOBAL_METHOD(setTimeout,	SetTimeout);
 	ADD_GLOBAL_METHOD(alert,		Alert);
 	ADD_GLOBAL_METHOD(print,		Print);
 	ADD_GLOBAL_METHOD(trace,		Print);
@@ -62,13 +70,69 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 
 			global->Set(window_name, templ->GetFunction());
 		}
+	}
 
+	{
+		// Create Timer Window
+		s_pTimerWindow = new NaWindow(NULL, NA_WINDOW_INTERNAL);
+		s_pTimerWindow->Create();
 	}
 }
 
 void NaBasicModule::Release()
 {
-	
+	// Destroy Console Window
+
+	// Destroy Timer Window
+	if (s_pTimerWindow != NULL)
+	{
+		s_pTimerWindow->Destroy();
+
+		delete s_pTimerWindow;
+		s_pTimerWindow = NULL;
+	}
+}
+
+void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
+{
+	std::map <int, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+	it = NaBasicModule::s_mapIntervalCallback.find(nTimerID);
+	if (it != NaBasicModule::s_mapIntervalCallback.end())
+	{
+		Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
+		Local<Function> callback = Local<Function>::New(isolate, percy);
+		if (!callback.IsEmpty())
+		{
+			Local<Value> recv = isolate->GetCurrentContext()->Global();
+			callback->Call(
+				isolate->GetCurrentContext(),
+				recv,
+				0,
+				NULL
+			);
+		}
+	}
+
+	it = NaBasicModule::s_mapTimeoutCallback.find(nTimerID);
+	if (it != NaBasicModule::s_mapTimeoutCallback.end())
+	{
+		Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
+		Local<Function> callback = Local<Function>::New(isolate, percy);
+		if (!callback.IsEmpty())
+		{
+			Local<Value> recv = isolate->GetCurrentContext()->Global();
+			callback->Call(
+				isolate->GetCurrentContext(),
+				recv,
+				0,
+				NULL
+			);
+		}
+
+		::KillTimer(NaBasicModule::s_pTimerWindow->m_hWnd, nTimerID);
+
+		NaBasicModule::s_mapIntervalCallback.erase(nTimerID);
+	}
 }
 
 // description: Include external source file
@@ -177,6 +241,9 @@ void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 		);
 }
 
+// description: suspends the excution script
+// syntax:		sleep(time)
+// param(time):	time interval in milliseconds
 void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
 {
 	int nTime = args[0]->Int32Value();
@@ -184,11 +251,90 @@ void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
 	::Sleep(args.Length() > 0 ? nTime : 1);
 }
 
+// description: 
+// syntax:		setInterval(interval, callback_function) : timer_id
+void NaBasicModule::SetInterval(V8_FUNCTION_ARGS)
+{
+	if (args.Length() < 2)
+		return;
+
+	int nTime = args[0]->Int32Value();
+	Local<Object> callback = args[1]->ToObject();
+	if (callback->IsFunction())
+	{
+		int nTimerID = NaBasicModule::s_nTimerID++;
+		::SetTimer(s_pTimerWindow->m_hWnd, nTimerID, nTime, NULL);
+
+		Isolate *isolate = args.GetIsolate();
+		Local<Function> callback_func = Local<Function>::Cast(args[1]);
+		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+		NaBasicModule::s_mapIntervalCallback.insert(
+			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
+		);
+
+		args.GetReturnValue().Set(
+			Integer::New(isolate, nTimerID)
+		);
+	}
+}
+
+// description: 
+// syntax:		clearInterval(timer_id)
+void NaBasicModule::ClearInterval(V8_FUNCTION_ARGS)
+{
+	if (args.Length() < 1)
+		return;
+
+	int nTimerID = args[0]->Int32Value();
+	std::map <int, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+	it = NaBasicModule::s_mapIntervalCallback.find(nTimerID);
+	if (it != NaBasicModule::s_mapIntervalCallback.end())
+	{
+		::KillTimer(NaBasicModule::s_pTimerWindow->m_hWnd, nTimerID);
+
+		NaBasicModule::s_mapIntervalCallback.erase(nTimerID);
+	}
+}
+
+// description: 
+// syntax:		
+void NaBasicModule::SetTimeout(V8_FUNCTION_ARGS)
+{
+	if (args.Length() < 2)
+		return;
+
+	int nTime = args[0]->Int32Value();
+	Local<Object> callback = args[1]->ToObject();
+	if (callback->IsFunction())
+	{
+		int nTimerID = NaBasicModule::s_nTimerID++;
+		::SetTimer(s_pTimerWindow->m_hWnd, nTimerID, nTime, NULL);
+
+		Isolate *isolate = args.GetIsolate();
+		Local<Function> callback_func = Local<Function>::Cast(args[1]);
+		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+		NaBasicModule::s_mapTimeoutCallback.insert(
+			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
+		);
+
+		args.GetReturnValue().Set(
+			Integer::New(isolate, nTimerID)
+		);
+	}
+
+}
+
+// description: exit current event loop
+// syntax:		exit()
 void NaBasicModule::Exit(V8_FUNCTION_ARGS)
 {
 	g_bExit = true;
 }
 
+// description: pick a window from point
+// syntax:		getWindow(x, y) : window object
 void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
@@ -201,6 +347,8 @@ void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(result);
 }
 
+// description: find windows which contains specific text
+// syntax:		findWindows(text)
 void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
@@ -211,6 +359,8 @@ void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(results);
 }
 
+// description:
+// syntax:
 void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
 {
 	// Not Impl
@@ -219,6 +369,8 @@ void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(result);
 }
 
+// description:
+// syntax:
 void NaBasicModule::FindTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl

@@ -8,7 +8,8 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		key_event_test();
+		print("Array: " + ([1,2] instanceof Array));
+		//key_event_test();
 		//complex_test();
 		//include_test();
 		//object_wrap_test();

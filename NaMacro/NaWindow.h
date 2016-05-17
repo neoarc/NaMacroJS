@@ -63,6 +63,7 @@ public:
 	DEFINE_CLASS_ACCESSOR_RO(GetClass);
 	DEFINE_CLASS_ACCESSOR(GetText, SetText);
 	DEFINE_CLASS_ACCESSOR(GetVisible, SetVisible);
+	DEFINE_CLASS_ACCESSOR(GetTopmost, SetTopmost);
 	DEFINE_CLASS_ACCESSOR(GetHandle, SetHandle);
 
 	// methods

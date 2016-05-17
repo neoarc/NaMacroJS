@@ -8,7 +8,8 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		print("Array: " + ([1,2] instanceof Array));
+		operator_overloading_test();
+		//print("Array: " + ([1,2] instanceof Array));
 		//key_event_test();
 		//complex_test();
 		//include_test();
@@ -25,12 +26,35 @@ function main()
 	    //screen_test();
 
 		alert("Press a any key to exit", "End of demo script :)", 0);
-
-        // TODO timer
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));
 	}
 	exit();
+}
+
+function operator_overloading_test()
+{
+	var m = system.mouse;
+
+	// not work yet
+	Window.prototype.valueOf = function () {
+		return this.handle;
+	};
+
+	var w1 = getWindow(m.x, m.y);
+	var w2 = getWindow(m.x, m.y);
+
+	w1.valueOf = function () {
+		return this.handle;
+	};
+
+	w2.valueOf = function () {
+		return this.handle;
+	};
+
+	print("w1.valueOf(): " + w1.valueOf());
+	print("w2.valueOf(): " + w2.valueOf());
+	print("w1 == w2 ? " + (w1 == w2));
 }
 
 function key_event_test()

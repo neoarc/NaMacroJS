@@ -142,6 +142,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_ACCESSOR(class, GetClass, nullptr);
 	ADD_WINDOW_ACCESSOR(text, GetText, SetText);
 	ADD_WINDOW_ACCESSOR(visible, GetVisible, SetVisible);
+	ADD_WINDOW_ACCESSOR(topmost, GetTopmost, SetTopmost);
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
 
 	// methods
@@ -446,6 +447,41 @@ void NaWindow::SetVisible(Local<String> name, Local<Value> value, const Property
 			::ShowWindow(pWindow->m_hWnd, bVisible ? SW_SHOW : SW_HIDE);
 		break;
 	}
+}
+
+// description: topmost property getter/setter
+void NaWindow::GetTopmost(Local<String> name, const PropertyCallbackInfo<Value>& info)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+
+	bool bTopmost = false;
+	if (pWindow)
+	{
+		DWORD dwExStyle = ::GetWindowLong(pWindow->m_hWnd, GWL_EXSTYLE);
+		if ((dwExStyle & WS_EX_TOPMOST) != 0)
+			bTopmost = true;
+	}
+
+	info.GetReturnValue().Set(
+		Boolean::New(isolate, bTopmost)
+	);
+}
+
+void NaWindow::SetTopmost(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+{
+	Isolate *isolate = info.GetIsolate();
+	Local<Object> obj = info.This();
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
+
+	bool bTopmost = value->BooleanValue();
+	if (pWindow && pWindow->m_hWnd)
+		::SetWindowPos(
+			pWindow->m_hWnd, 
+			bTopmost ? HWND_TOPMOST : HWND_NOTOPMOST,
+			0, 0, 0, 0, 
+			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOREPOSITION | SWP_NOSIZE
+		);
 }
 
 // description: handle property getter/setter

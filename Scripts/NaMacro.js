@@ -67,7 +67,7 @@ function key_event_test()
 
 function include_test()
 {
-	include("ModuleNeoarc.js");
+	include("Module/Neoarc.js");
 
 	var a = new Neoarc();
 	a.func();

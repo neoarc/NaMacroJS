@@ -60,8 +60,15 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 
 		script_source = ReadFile(isolate, str);
 		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
-		if (script_source.IsEmpty()) {
-			fprintf(stderr, "Error reading '%s'\n", str);
+		if (script_source.IsEmpty()) 
+		{
+			NaString str;
+			str.Format("Error reading:\n%s", str);
+
+			NaDebugOut(L"==========================================\n");
+			NaDebugOut(str);
+			NaDebugOut(L"==========================================\n");
+			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return 1;
 		}
 
@@ -127,8 +134,12 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		Local<Value> main_value = global->Get(main_name);
 		if (main_value.IsEmpty() || main_value->IsUndefined())
 		{
-			// error
-			fprintf(stderr, "Cannot find main function\n");
+			NaString str = L"Cannot find main function!";
+
+			NaDebugOut(L"==========================================\n");
+			NaDebugOut(str);
+			NaDebugOut(L"==========================================\n");
+			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return 0;
 		}
 

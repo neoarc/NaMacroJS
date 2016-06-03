@@ -112,6 +112,12 @@ void NaKeyboardModule::OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
 					NULL
 				);
 
+				if (it._Getcont() != NaKeyboardModule::s_mapKeyEventCallback.end()._Getcont())
+				{
+					// user unregistered this hotkey!
+					break;
+				}
+
 				::RegisterHotKey(NULL, key.index, key.modifier, key.keycode);
 			}
 
@@ -194,29 +200,58 @@ void NaKeyboardModule::BindEvent(V8_FUNCTION_ARGS)
 	//      ex) "ctrl+z"
 
 	int nKeycode = args[0]->Int32Value();
-	Local<Object> callback = args[1]->ToObject();
-	if (callback->IsFunction())
+	int nModifier = 0;
+	if (args[1]->IsNull())
 	{
-		int nIdx = NaKeyboardModule::s_mapKeyEventCallback.size();
+		std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+		it = s_mapKeyEventCallback.begin();
+		for (; it != NaKeyboardModule::s_mapKeyEventCallback.end(); it++)
+		{
+			HotkeyKey key = it->first;
+			if (key.keycode == nKeycode &&
+				key.modifier == nModifier)
+			{
+				BOOL bRet = UnregisterHotKey(NULL, key.index);
+				if (!bRet)
+				{
+					DWORD dwError = GetLastError();
+					if (dwError == 1419)
+					{
+						//DebugBreak();
+					}
+				}
+				NaKeyboardModule::s_mapKeyEventCallback.erase(it);
+				break;
+			}
+		}
 
-		Isolate *isolate = args.GetIsolate();
-		Local<Function> callback_func = Local<Function>::Cast(args[1]);
-		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
-		
-		HotkeyKey key;
-		key.keycode = nKeycode;
-		key.modifier = 0;
-		key.index = nIdx;
-
-		NaKeyboardModule::s_mapKeyEventCallback.insert(
-			std::pair<HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>(
-				key,
-				percy
-				)
-		);
-		
-		RegisterHotKey(NULL, nIdx, 0, nKeycode);
 	}
+	else 
+	{
+		Local<Object> callback = args[1]->ToObject();
+		if (callback->IsFunction())
+		{
+			int nIdx = NaKeyboardModule::s_mapKeyEventCallback.size();
+
+			Isolate *isolate = args.GetIsolate();
+			Local<Function> callback_func = Local<Function>::Cast(args[1]);
+			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+			HotkeyKey key;
+			key.keycode = nKeycode;
+			key.modifier = 0;
+			key.index = nIdx;
+
+			NaKeyboardModule::s_mapKeyEventCallback.insert(
+				std::pair<HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>(
+					key,
+					percy
+					)
+			);
+
+			RegisterHotKey(NULL, nIdx, 0, nKeycode);
+		}
+	}	
 
 	return;
 }

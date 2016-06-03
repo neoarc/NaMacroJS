@@ -27,8 +27,14 @@ function main() {
         }
 
         // test3: hotkey in hotkey
-        if (1) {
+        if (0) {
             bindHotkeyInHotkey();
+            return;
+        };
+
+        // test4: unbind
+        if (1) {
+            unbindHotkey();
             return;
         };
 
@@ -37,6 +43,26 @@ function main() {
         alert(e, "Exception!");
     }
     exit();
+}
+
+function unbindHotkey() {
+    print("Space key will typing '[space]'");
+    print("Tab key removes hotkey bind of Space-key.");
+    var k = system.keyboard;
+	k.on(VK.space, function() {
+		k.typeString("[space]");
+
+        // unbind
+        //k.on(VK.space, null);
+	});
+
+    k.on(VK.tab, function () {
+        k.on(VK.space, null);
+    });
+
+    k.on(VK.esc, function() {
+		exit();
+	});
 }
 
 function bindHotkeyInHotkey() {

@@ -104,12 +104,13 @@ if (!_GlobalContext.Debug) {
 
     _pDebug.showWindowProperties = function (w)
     {
-        print("Window pos: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ")");
-        //print("   -> client pos: " + (m.x-w.x) + ", " + (m.y-w.y));
-        print("   -> handle: " + String(w.handle).toString(16));
-        print("   -> text: " + w.text);
-        print("   -> class: " + w.class);
-        print("   -> visible: " + w.visible);
+        print("Window");
+        print("   - text: " + w.text);
+    	print("   - class: " + w.class);
+    	print("   - position: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ")");
+    	print("   - handle: " + this.to_hex8(w.handle) + " (" + w.handle + ")");
+    	print("   - topmost: " + w.topmost);
+    	print("   - visible: " + w.visible);
     };
 
 
@@ -120,7 +121,14 @@ if (!_GlobalContext.Debug) {
     		space += "   ";
 
     	return space;
-    }
+    };
+
+    _pDebug.to_hex8  = function (value)
+    {
+    	var hex = value.toString(16);
+    	hex = ("000000"+hex).substring(hex.length);
+    	return "0x" + hex;
+    };
 
     _pDebug.log = function (str)
     {

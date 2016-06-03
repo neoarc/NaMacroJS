@@ -1,6 +1,7 @@
 #pragma once
 
 #include <v8.h>
+#include "../NaLib/NaString.h"
 
 #define MOUSECLICK_SLEEP	10
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
@@ -11,7 +12,7 @@ extern bool g_bExit;
 using namespace v8;
 
 // v8 Utility
-void ReportException(Isolate *isolate, TryCatch* handler);
+NaString ReportException(Isolate *isolate, TryCatch* handler);
 
 // Utility Functions
 void NaDebugOutA(const char* pszFormat, ...); 

@@ -86,9 +86,16 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			{
 				// Print errors that happened during compilation.
 				if (g_bReportExceptions)
-					ReportException(isolate, &try_catch);
+				{
+					NaString str, strE;
+					strE = ReportException(isolate, &try_catch);
+					str.Format(L"Script Compile Error:\n%s", strE.wstr());
 
-				NaDebugOut(L"Script is Empty!\n");
+					NaDebugOut(L"==========================================\n");
+					NaDebugOut(str);
+					NaDebugOut(L"==========================================\n");
+					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
+				}
 				return 1;
 			}
 		}
@@ -100,7 +107,16 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			if (try_catch.HasCaught())
 			{
 				if (g_bReportExceptions)
-					ReportException(isolate, &try_catch);
+				{
+					NaString str, strE;
+					strE = ReportException(isolate, &try_catch);
+					str.Format(L"Script Runtime Error:\n%s", strE.wstr());
+
+					NaDebugOut(L"==========================================\n");
+					NaDebugOut(str);
+					NaDebugOut(L"==========================================\n");
+					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
+				}
 				return 1;
 			}
 		}
@@ -129,7 +145,16 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			if (try_catch.HasCaught())
 			{
 				if (g_bReportExceptions)
-					ReportException(isolate, &try_catch);
+				{
+					NaString str, strE;
+					strE = ReportException(isolate, &try_catch);
+					str.Format(L"Script Exception Occurred:\n%s", strE.wstr());
+
+					NaDebugOut(L"==========================================\n");
+					NaDebugOut(str);
+					NaDebugOut(L"==========================================\n");
+					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
+				}
 				return 1;
 			}
 		}

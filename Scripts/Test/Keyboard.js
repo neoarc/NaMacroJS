@@ -5,7 +5,7 @@
 var k = system.keyboard;
 var c = consoleWindow;
 
-include("../Module/VirtualKey.js");
+include("../Addon/VirtualKey.js");
 
 function main() {
     try {

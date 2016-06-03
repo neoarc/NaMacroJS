@@ -3,7 +3,7 @@
 // 2016.05.13 neoarc (neoarcturus@gmail.com)
 //
 
-include("Module/VirtualKey.js");
+include("../Addon/VirtualKey.js");
 
 var m = system.mouse;
 var k = system.keyboard;
@@ -18,11 +18,17 @@ k.du = function(vk, repeat) {
 var painter_win;
 var cur_mode = -1;
 var cur_brush_size = -1;
+var img;
+var simplify_factor = 32; // 1=original
 
 function main() {
     consoleWindow.visible = true;
     try {
         painter_win = launch_mspaint();
+        painter_win.click = function (x, y) {
+            m.click(this.x + x, this.y + y);
+        };
+
         initialize();
         calibrate(painter_win);
     } catch(e) {
@@ -58,8 +64,19 @@ function findWindowsWait(name) {
 }
 
 function initialize() {
+    print("press 'esc' to exit");
     k.on(VK.esc, function() {
         exit();
+    });
+
+    print("press 'f1' to capture image");
+    k.on(VK.f1, function() {
+        captureImage();
+    });
+
+    print("press 'f2' to draw captured image");
+    k.on(VK.f2, function() {
+        drawCapturedImage();
     });
 
     k.on(VK.t, function() {
@@ -73,7 +90,7 @@ function calibrate(w) {
 }
 
 function test() {
-    draw();
+    ;
 }
 
 function changeCanvasSize(w, h) {
@@ -94,6 +111,7 @@ function changeColor(rgb) {
     m.click(737, 88);
     var ar = findWindowsWait("색 편집");
     var w = ar[0];
+    sleep(200);
 
     var _x = w.x + 521;
     var _y = w.y + 222;
@@ -108,12 +126,25 @@ function changeColor(rgb) {
         _y += 25;
     }
     k.du(VK.enter);
+
+    while (true) {
+        ar = findWindows("색 편집");
+        if (ar.length == 0)
+            break;
+    }
 }
 
-function draw() {
+function captureImage() {
     var w = 50;
     var h = 50;
-    var img = system.screen.capture(m.x - (w/2), m.y - (h/2), w, h);
+
+    img = system.screen.capture(m.x - (w/2), m.y - (h/2), w, h);
+}
+
+function drawCapturedImage() {
+    if (!img)
+        return;
+
     var colors = [];
     for (var y=0; y<img.height; y++) {
         for (var x=0; x<img.width; x++) {
@@ -134,9 +165,8 @@ function draw() {
     for (var c=0; c<colors.length; c++) {
         var color = colors[c];
         var rgb = color_to_rgb(color);
-        print("color #" + (c+1) + ": " + color);
+        print("color #" + (c+1) + "/" + colors.length + ": " + color);
         changeColor(rgb);
-        sleep(500);
 
         for (var y=0; y<img.height; y+=jump) {
             var old_color;
@@ -173,12 +203,10 @@ function draw() {
                 }
             }
         }
-        //alert("...");
     }
 }
 
 function drawLine(x, y, x2, y2, test) {
-    print(test + ") draw line (" + x + "," + y + ") to (" + x2 + "," + y2 + ")");
     if (cur_mode != 1) {
         // alt+h, s, h, enter
         k.down(VK.lalt);
@@ -192,38 +220,48 @@ function drawLine(x, y, x2, y2, test) {
     }
 
     if (cur_brush_size != 1) {
-        m.click(painter_win.x + 386, painter_win.y + 77);
-        sleep(500);
-
-        m.click(painter_win.x + 386, painter_win.y + 150);
-        sleep(1000);
+        k.down(VK.lalt);
+        k.du(VK.h);
+        k.up(VK.lalt);
+        k.du(VK.s);
+        k.du(VK.z);
+        k.du(VK.space);
 
         cur_brush_size = 1;
     }
 
-    m.lbuttonDown(painter_win.x + 13 + x, painter_win.y + 157 + y);
+    var client_x = painter_win.x + 13;
+    var client_y = painter_win.y + 157;
+
+    m.lbuttonDown(client_x + x, client_y + y);
     sleep(10);
-    m.lbuttonUp(painter_win.x + 13 + x2, painter_win.y + 157 + y2);
+    m.lbuttonUp(client_x + x2, client_y + y2);
     sleep(10);
 
-    m.click(painter_win.x + 13 + x2 + 30, painter_win.y + 157 + y2);
+    // to exit line drawing mode
+    //m.click(client_x + x2 + 30, client_y + y2);
+    {
+        k.down(VK.lalt);
+        k.du(VK.h);
+        k.up(VK.lalt);
+        k.du(VK.p);
+        cur_mode = 0;
+    }
 }
 
 function drawPixel(x, y) {
     if (cur_mode != 0) {
-        // alt+h, b, enter
+        // alt+h, p
         k.down(VK.lalt);
         k.du(VK.h);
         k.up(VK.lalt);
-        k.du(VK.b);
-        k.du(VK.enter);
+        k.du(VK.p);
 
         cur_mode = 0;
     }
-    x = painter_win.x + 13 + x;
-    y = painter_win.y + 157 + y;
-    m.click(x, y);
-    m.click(x, y);
+
+    painter_win.click(13 + x, 157 + y);
+    painter_win.click(13 + x, 157 + y);
 }
 
 function color_to_rgb(color) {
@@ -235,8 +273,8 @@ function color_to_rgb(color) {
 }
 
 function simplify_rgb(rgb) {
-    //var f = 16;
-    var f = 1;
+    var f = simplify_factor;
+
     rgb[0] = parseInt(rgb[0] / f) * f;
     rgb[1] = parseInt(rgb[1] / f) * f;
     rgb[2] = parseInt(rgb[2] / f) * f;

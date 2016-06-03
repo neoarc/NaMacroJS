@@ -1,17 +1,20 @@
 #include "stdafx.h"
 
 #include "Common.h"
+#include "../NaLib/NaString.h"
 
-#include "stdio.h"
-#include "stdarg.h"
-#include "Windows.h"
+#include <stdio.h>
+#include <stdarg.h>
+#include <Windows.h>
 
 // Global Var
 bool g_bReportExceptions = true;
 bool g_bExit = false;
 
-void ReportException(Isolate *isolate, TryCatch* try_catch)
+NaString ReportException(Isolate *isolate, TryCatch* try_catch)
 {
+	NaString str = L"";
+
 	HandleScope handle_scope(isolate);
 	String::Utf8Value exception(try_catch->Exception());
 	const char* exception_string = *exception;
@@ -20,7 +23,7 @@ void ReportException(Isolate *isolate, TryCatch* try_catch)
 	{
 		// V8 didn't provide any extra information about this error; just
 		// print the exception.
-		printf("%s\n", exception_string);
+		str.Format("%s\n", exception_string);
 	}
 	else
 	{
@@ -28,32 +31,26 @@ void ReportException(Isolate *isolate, TryCatch* try_catch)
 		String::Utf8Value filename(message->GetScriptResourceName());
 		const char* filename_string = *filename;
 		int linenum = message->GetLineNumber();
-		printf("%s:%i: %s\n", filename_string, linenum, exception_string);
-		NaDebugOutA("%s:%i: %s\n", filename_string, linenum, exception_string);
+		str.AppendFormat("%s:%i: %s\n", filename_string, linenum, exception_string);
 
 		// Print line of source code.
 		String::Utf8Value sourceline(message->GetSourceLine());
 		const char* sourceline_string = *sourceline;
-		printf("%s\n", sourceline_string);
-		NaDebugOutA("%s\n", sourceline_string);
+		str.AppendFormat("%s\n", sourceline_string);
 
 		// Print wavy underline (GetUnderline is deprecated).
 		int start = message->GetStartColumn();
 		for (int i = 0; i < start; i++)
-		{
-			printf(" ");
-			NaDebugOutA(" ");
-		}
+			str += L" ";
 
 		int end = message->GetEndColumn();
 		for (int i = start; i < end; i++)
-		{
-			printf("^");
-			NaDebugOutA("^");
-		}
-		printf("\n");
-		NaDebugOutA("\n");
+			str += L"^";
+		
+		str += L"\n";
 	}
+
+	return str;
 }
 
 void NaDebugOutA(const char* pszFormat, ...)
@@ -89,6 +86,7 @@ void NaDebugOut(const wchar_t* pszFormat, ...)
 
 	OutputDebugStringW(str);
 }
+
 // Reads a file into a v8 string.
 Local<String> ReadFile(Isolate *isolate, const char* name)
 {

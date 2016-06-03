@@ -31,11 +31,8 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Manager">
-      <UniqueIdentifier>{c5eebc94-99e0-439b-944d-ec8ca698d6c3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Manager">
-      <UniqueIdentifier>{a73089fc-a75b-4316-8f72-ea28ab2203d9}</UniqueIdentifier>
+    <Filter Include="NaLib">
+      <UniqueIdentifier>{1de93d5a-96bc-4462-960f-ba747e69144f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +71,9 @@
     </ClCompile>
     <ClCompile Include="NaObject.cpp">
       <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NaLib\NaString.cpp">
+      <Filter>NaLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -115,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="NaObject.h">
       <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NaLib\NaString.h">
+      <Filter>NaLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

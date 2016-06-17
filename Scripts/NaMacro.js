@@ -8,7 +8,8 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		operator_overloading_test();
+		prompt("I am prompt");
+
 		//print("Array: " + ([1,2] instanceof Array));
 		//key_event_test();
 		//complex_test();
@@ -25,6 +26,9 @@ function main()
 	    //convGMacro_test();
 	    //screen_test();
 
+		if (0) {
+			operator_overloading_test();
+		}
 		alert("Press a any key to exit", "End of demo script :)", 0);
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));

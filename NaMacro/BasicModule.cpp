@@ -141,6 +141,8 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 void NaBasicModule::Include(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
+	Local<Context> context = isolate->GetCurrentContext();
+
 	for (int i = 0; i < args.Length(); i++) 
 	{
 		Local<String> script_source;
@@ -149,30 +151,34 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 		String::Value arg_value(args[i]);
 		wchar_t *wstr = (wchar_t*)(*arg_value);
 
-		int nChars = WideCharToMultiByte(CP_ACP, 0, wstr, -1, NULL, 0, 0, 0);
-		char *str = new char[nChars];
-		WideCharToMultiByte(CP_ACP, 0, wstr, -1, str, nChars, 0, 0);
+		// converting relative path
+		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
+		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
+		NaString strBase(cur_frame->GetScriptName());
 
-		script_source = ReadFile(isolate, str);
-		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
-		if (script_source.IsEmpty()) {
-			/*
-			GetCurrentDirectoryA(1024, buf);
-			strcat(buf, str);
-			strcpy(str, (const char*)&buf);
-			*/
+		NaDebugOut(L"================================================\n");
+		NaDebugOut(L"Include src: %s\n", wstr);
+		NaDebugOut(L"Include base: %s\n", strBase.wstr());
 
-			fprintf(stderr, "Error reading '%s'\n", str);
+		NaString strUrl(wstr);
+		NaUrl url;
+		url.SetBase(strBase);
+		url.SetUrl(strUrl);
+
+		NaString strFullUrl(url.GetFullUrl());
+		NaDebugOut(L"Include full: %s\n", strFullUrl.wstr());
+
+		script_source = ReadFile(isolate, strFullUrl.cstr());
+		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
+		if (script_source.IsEmpty())
+		{
+			NaDebugOut(L"Error reading '%s'\n", strFullUrl.wstr());
 
 			// TODO ThrowException
-			delete str;
 			return;
 		}
-		delete str;
 
 		Local<Script> script;
-		Local<Context> context = isolate->GetCurrentContext();
-
 		{
 			TryCatch try_catch(isolate);
 			ScriptOrigin origin(script_name.ToLocalChecked());

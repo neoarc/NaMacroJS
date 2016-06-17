@@ -2,6 +2,7 @@
 
 #include <v8.h>
 #include "../NaLib/NaString.h"
+#include "../NaLib/NaUrl.h"
 
 #define MOUSECLICK_SLEEP	10
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535

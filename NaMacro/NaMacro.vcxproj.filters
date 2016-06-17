@@ -75,6 +75,9 @@
     <ClCompile Include="..\NaLib\NaString.cpp">
       <Filter>NaLib</Filter>
     </ClCompile>
+    <ClCompile Include="..\NaLib\NaUrl.cpp">
+      <Filter>NaLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -117,6 +120,9 @@
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="..\NaLib\NaString.h">
+      <Filter>NaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NaLib\NaUrl.h">
       <Filter>NaLib</Filter>
     </ClInclude>
   </ItemGroup>

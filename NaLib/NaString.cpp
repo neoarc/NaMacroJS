@@ -193,7 +193,6 @@ int NaString::Compare(const wchar_t * lpsz)
 	int minlen = m_nLen < arglen ? m_nLen : arglen;
 
 	return wcscmp((wchar_t*)m_pBuf, lpsz);
-	//return memcmp(m_pBuf, lpsz, minlen);
 }
 
 int NaString::CompareNoCase(const wchar_t * lpsz)

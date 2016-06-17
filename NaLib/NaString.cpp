@@ -411,16 +411,26 @@ wchar_t NaString::GetLast()
 
 const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
 {
-	if (len < 0)
+	if (lpsz == nullptr)
 	{
-		m_nLen = wcslen(lpsz);
+		m_nLen = 0;
 		m_nBufLen = (int)(sizeof(wchar_t) * (m_nLen + 1));
+		AllocBuf(m_nBufLen);
+		*((wchar_t*)m_pBuf + m_nLen) = 0;
 	}
+	else
+	{
+		if (len < 0)
+		{
+			m_nLen = wcslen(lpsz);
+			m_nBufLen = (int)(sizeof(wchar_t) * (m_nLen + 1));
+		}
 
-	AllocBuf(m_nBufLen);
-	memcpy(m_pBuf, lpsz, m_nBufLen);
+		AllocBuf(m_nBufLen);
+		memcpy(m_pBuf, lpsz, m_nBufLen);
 
-	*((wchar_t*)m_pBuf + m_nLen) = 0;
+		*((wchar_t*)m_pBuf + m_nLen) = 0;
+	}
 
 	return *this;
 }

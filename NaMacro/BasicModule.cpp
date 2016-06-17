@@ -5,6 +5,7 @@
 
 #include "Windows.h"
 #include "NaWindow.h"
+#include "../NaLib/NaMessageBox.h"
 
 #include <iostream>
 
@@ -24,6 +25,8 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(clearInterval, ClearInterval);
 	ADD_GLOBAL_METHOD(setTimeout,	SetTimeout);
 	ADD_GLOBAL_METHOD(alert,		Alert);
+	ADD_GLOBAL_METHOD(confirm,		Confirm);
+	ADD_GLOBAL_METHOD(prompt,		Prompt);
 	ADD_GLOBAL_METHOD(print,		Print);
 	ADD_GLOBAL_METHOD(trace,		Print);
 	ADD_GLOBAL_METHOD(exit,			Exit);
@@ -246,6 +249,57 @@ void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(
 		Integer::New(isolate, nRet)
 		);
+}
+
+// description: show MessageBox with message
+// syntax:		confirm(message, title)
+void NaBasicModule::Confirm(V8_FUNCTION_ARGS)
+{
+	String::Value msg(args[0]);
+	String::Value title(args[1]);
+
+	int nRet = ::MessageBoxW(NULL,
+		(const wchar_t*)*msg,
+		args.Length() >= 2 ? (const wchar_t*)*title : L"Confirm",
+		MB_OKCANCEL
+	);
+
+	bool bRet = false;
+	switch (nRet)
+	{
+	case IDOK:
+		bRet = true;
+		break;
+	case IDCANCEL:
+	default:
+		break;
+	}
+
+	Isolate *isolate = args.GetIsolate();
+	args.GetReturnValue().Set(
+		//Integer::New(isolate, nRet)
+		Boolean::New(isolate, bRet)
+	);
+}
+
+// description: show MessageBox with message
+// syntax:		prompt(message, title)
+void NaBasicModule::Prompt(V8_FUNCTION_ARGS)
+{
+	String::Value msg(args[0]);
+	String::Value title(args[1]);
+
+	NaMessageBox MsgBox;
+	NaString strRet = 
+		MsgBox.DoModal(NULL,
+			(wchar_t*)*msg,
+			args.Length() >= 2 ? (const wchar_t*)*title : L"Prompt"
+		);
+
+	Isolate *isolate = args.GetIsolate();
+	args.GetReturnValue().Set(
+		String::NewFromUtf8(isolate, strRet.cstr(), NewStringType::kNormal, strRet.GetLength()).ToLocalChecked()
+	);
 }
 
 // description: suspends the excution script

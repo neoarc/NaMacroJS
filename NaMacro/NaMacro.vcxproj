@@ -119,6 +119,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\NaLib\NaMessageBox.cpp" />
     <ClCompile Include="..\NaLib\NaString.cpp" />
     <ClCompile Include="..\NaLib\NaUrl.cpp" />
     <ClCompile Include="BasicModule.cpp" />
@@ -138,6 +139,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NaLib\NaMessageBox.h" />
     <ClInclude Include="..\NaLib\NaString.h" />
     <ClInclude Include="..\NaLib\NaUrl.h" />
     <ClInclude Include="BasicModule.h" />

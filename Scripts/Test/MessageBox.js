@@ -8,9 +8,15 @@ include("../Addon/VirtualKey.js");
 
 function main() {
     try {
-        c.visible = true;
-        bindHotkey();
-        return;
+        if (0) {
+            var ret = prompt("Input anything", "I am prompt");
+            alert("Your input: " + ret);
+        }
+        if (1) {
+            c.visible = true;
+            bindHotkey();
+            return;
+        }
     } catch(e) {
         alert(e, "Exception!");
     }

@@ -20,7 +20,7 @@ NaMessageBox::~NaMessageBox()
 {
 }
 
-NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title)
+NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title, wchar_t* defaultStr)
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -43,6 +43,7 @@ NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title)
 	}
 
 	m_strMessage = message;
+	m_strRet = defaultStr;
 
 	// Move to Center
 	int nScreenW = GetSystemMetrics(SM_CXSCREEN);
@@ -96,8 +97,8 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				10, 10, nWidth - 20, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
 
-			pThis->m_hEdit = CreateWindow(L"Edit", L"",
-				WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_LEFT | ES_MULTILINE,
+			pThis->m_hEdit = CreateWindow(L"Edit", pThis->m_strRet.wstr(),
+				WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL,
 				10, 40, nWidth - 20, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
 			pThis->m_OldEditProc = (WNDPROC)SetWindowLong(pThis->m_hEdit, GWL_WNDPROC, (LONG)&NaMessageBox::EditProc);

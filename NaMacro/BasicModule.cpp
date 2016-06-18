@@ -283,17 +283,19 @@ void NaBasicModule::Confirm(V8_FUNCTION_ARGS)
 }
 
 // description: show MessageBox with message
-// syntax:		prompt(message, title)
+// syntax:		prompt(message, title[, defaultmessage])
 void NaBasicModule::Prompt(V8_FUNCTION_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
+	String::Value default_string(args[2]);
 
 	NaMessageBox MsgBox;
 	NaString strRet = 
 		MsgBox.DoModal(NULL,
 			(wchar_t*)*msg,
-			args.Length() >= 2 ? (const wchar_t*)*title : L"Prompt"
+			args.Length() >= 2 ? (const wchar_t*)*title : L"Prompt",
+			args.Length() >= 3 ? (const wchar_t*)*default_string : L""
 		);
 
 	Isolate *isolate = args.GetIsolate();

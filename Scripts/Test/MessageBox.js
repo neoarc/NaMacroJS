@@ -25,24 +25,24 @@ function main() {
 
 function bindHotkey() {
     print("Press a key to test. (esc: exit)");
-    print("1: alert");
-    print("2: confirm");
-    print("3: prompt");
+    print("F1: alert");
+    print("F2: confirm");
+    print("F3: prompt");
 
     var k = system.keyboard;
     var ret;
-	k.on(VK["1"], function() {
-        ret = alert("alert");
+	k.on(VK["f1"], function() {
+        ret = alert("alert message", "alert title");
         print("-> " + ret);
 	});
 
-    k.on(VK["2"], function() {
-        ret = confirm("confirm");
+    k.on(VK["f2"], function() {
+        ret = confirm("confirm message", "confirm title");
         print("-> " + ret);
     });
 
-    k.on(VK["3"], function() {
-        ret = prompt("prompt");
+    k.on(VK["f3"], function() {
+        ret = prompt("prompt message", "prompt title");
         print("-> " + ret);
 	});
 

@@ -13,7 +13,7 @@ public:
 	NaMessageBox();
 	~NaMessageBox();
 
-	NaString DoModal(HWND hParent, wchar_t* message, wchar_t* title);
+	NaString DoModal(HWND hParent, wchar_t* message, wchar_t* title, wchar_t* defaultStr);
 	NaString m_strMessage;
 	NaString m_strRet;
 	HWND m_hEdit;

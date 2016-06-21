@@ -189,7 +189,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 				NaBasicModule::OnTimer(isolate, (int)msg.wParam);
 				break;
 			}
-			Sleep(1);
+
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
 
 		// Collect Garbage

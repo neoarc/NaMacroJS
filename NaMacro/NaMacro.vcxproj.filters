@@ -81,6 +81,9 @@
     <ClCompile Include="..\NaLib\NaMessageBox.cpp">
       <Filter>NaLib</Filter>
     </ClCompile>
+    <ClCompile Include="NaControl.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -130,6 +133,9 @@
     </ClInclude>
     <ClInclude Include="..\NaLib\NaMessageBox.h">
       <Filter>NaLib</Filter>
+    </ClInclude>
+    <ClInclude Include="NaControl.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

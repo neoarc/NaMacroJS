@@ -34,6 +34,7 @@ public:
 	NaWindowTypes m_enType;
 	HWND m_hWnd;
 	int m_x, m_y, m_width, m_height;
+	std::list<HWND> m_arControls;
 
 	// internal struct
 	struct FindWindowsInfo {
@@ -72,6 +73,7 @@ public:
 	DEFINE_CLASS_METHOD(Move);
 	DEFINE_CLASS_METHOD(Activate);
 	DEFINE_CLASS_METHOD(Alert);
+	DEFINE_CLASS_METHOD(AddControl);
 };
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);

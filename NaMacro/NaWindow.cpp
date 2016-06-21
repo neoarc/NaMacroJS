@@ -5,6 +5,8 @@
 
 #include "BasicModule.h"
 
+#include "NaControl.h"
+
 bool NaWindow::s_bRegisterClass = false;
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;
 
@@ -150,6 +152,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_METHOD(move, Move);
 	ADD_WINDOW_METHOD(activate, Activate);
 	ADD_WINDOW_METHOD(alert, Alert);
+	ADD_WINDOW_METHOD(addControl, AddControl);
 
 	return handle_scope.Escape(templ);
 }
@@ -623,4 +626,23 @@ void NaWindow::Alert(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(
 		Integer::New(isolate, nRet)
 		);
+}
+
+// description: add control object on window
+// syntax:		windowObj.addControl(type, x, y, width, height[, text[, visible]])
+void NaWindow::AddControl(V8_FUNCTION_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	NaControl *pControl = new NaControl;
+	Local<Object> obj = WrapObject(args.GetIsolate(), pControl);
+
+	if (args.Length() < 5)
+	{
+		// TODO error? exception?
+		return;
+	}
+
+	pControl->Create(args, pWindow);
+
+	args.GetReturnValue().Set(obj);
 }

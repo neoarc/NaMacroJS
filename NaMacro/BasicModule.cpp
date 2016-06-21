@@ -5,6 +5,8 @@
 
 #include "Windows.h"
 #include "NaWindow.h"
+#include "NaControl.h"
+
 #include "../NaLib/NaMessageBox.h"
 
 #include <iostream>
@@ -74,6 +76,17 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 
 			global->Set(window_name, templ->GetFunction());
 		}
+
+		// Init Control class
+		/*
+		Local<String> control_name = String::NewFromUtf8(isolate, "Control", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> control_value = global->Get(control_name);
+		if (!control_value.IsEmpty() && control_value->IsUndefined())
+		{
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaControl::Constructor);
+			global->Set(control_name, templ->GetFunction());
+		}
+		*/
 	}
 
 	{

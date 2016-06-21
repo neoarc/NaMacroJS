@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="SimpleJS"
+	Name="NaMacro"
 	ProjectGUID="{3336ACF4-2208-432F-816F-40B9E4B47A08}"
-	RootNamespace="SimpleJS"
+	RootNamespace="NaMacro"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -178,7 +178,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\SimpleJS.cpp"
+				RelativePath=".\NaMacro.cpp"
 				>
 			</File>
 			<File

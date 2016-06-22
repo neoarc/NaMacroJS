@@ -91,6 +91,15 @@ LRESULT CALLBACK NaWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
+	case WM_COMMAND:
+		{
+			HWND hControlWnd = (HWND)lParam;
+			int nCode = HIWORD(wParam);
+
+			Isolate *isolate = Isolate::GetCurrent();
+			NaControl::OnCommand(isolate, hControlWnd, nCode);
+		}
+		break;
 	}
 
 	return DefWindowProc(hWnd, message, wParam, lParam);
@@ -560,6 +569,7 @@ void NaWindow::Create(V8_FUNCTION_ARGS)
 
 // description: move window to x,y, width, height
 // syntax:      windowObj.move(x, y, width, height)
+// syntax:		windowObj.move(("left" | "center" | "right"), ("top" | "middle" | "bottom"))
 void NaWindow::Move(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 2)
@@ -574,16 +584,56 @@ void NaWindow::Move(V8_FUNCTION_ARGS)
 
 	// move window
 	int x, y, w, h;
-	x = args[0]->IntegerValue();
-	y = args[1]->IntegerValue();
-	if (args.Length() < 3)
+	RECT rc;
+	::GetWindowRect(pWindow->m_hWnd, &rc);
+	w = rc.right - rc.left;
+	h = rc.bottom - rc.top;
+
+	if (args[0]->IsString() && args[1]->IsString())
 	{
-		RECT rc;
-		::GetWindowRect(pWindow->m_hWnd, &rc);
-		w = rc.right - rc.left;
-		h = rc.bottom - rc.top;
+		String::Value halign(args[0]);
+		String::Value valign(args[1]);
+		NaString strHA(halign);
+		NaString strVA(valign);
+
+		int nScreenW = GetSystemMetrics(SM_CXSCREEN);
+		int nScreenH = GetSystemMetrics(SM_CYSCREEN);
+
+		// calc h-align
+		if (strHA.Compare(L"left") == 0)
+		{
+			x = 0;
+		}
+		else if (strHA.Compare(L"center") == 0)
+		{
+			x = nScreenW / 2 - w / 2;
+		}
+		else if (strHA.Compare(L"right") == 0)
+		{
+			x = nScreenW - w;
+		}
+
+		// calc v-align
+		if (strVA.Compare(L"top") == 0)
+		{
+			y = 0;
+		}
+		else if (strVA.Compare(L"middle") == 0)
+		{
+			y = nScreenH / 2 - h / 2;
+		}
+		else if (strVA.Compare(L"bottom") == 0)
+		{
+			y = nScreenH - h;
+		}
 	}
 	else
+	{
+		x = args[0]->IntegerValue();
+		y = args[1]->IntegerValue();
+	}
+
+	if (args.Length() >= 3)
 	{
 		w = args[2]->IntegerValue();
 		h = args[3]->IntegerValue();
@@ -629,7 +679,7 @@ void NaWindow::Alert(V8_FUNCTION_ARGS)
 }
 
 // description: add control object on window
-// syntax:		windowObj.addControl(type, x, y, width, height[, text[, visible]])
+// syntax:		windowObj.addControl(type, x, y, width, height[, text[, visible[, command_callback]]])
 void NaWindow::AddControl(V8_FUNCTION_ARGS)
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));

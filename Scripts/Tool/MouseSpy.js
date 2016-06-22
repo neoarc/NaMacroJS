@@ -2,69 +2,84 @@
 // mouse spy
 // 2015.12.02 neoarc (neoarcturus@gmail.com)
 //
+var _static;
 
 function main()
 {
 	try {
+		createLogWindow();
 		spy();
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));
 	}
 }
 
+function createLogWindow()
+{
+	var width = 550;
+	var height = 360;
+	var logger = new Window(0, 0, width, height);
+	logger.create();
+	logger.topmost = true;
+	logger.text = "MouseSpy v2 by neoarc";
+	logger.move("right", "top");
+	logger.visible = true;
+
+	_static = logger.addControl("Static", 0, 0, width, height, "", true);
+}
+
 function spy()
 {
-	var c = consoleWindow;
-    c.visible = true;
-	c.topmost = true;
-	c.text = "MouseSpy by neoarc";
-
 	var m = system.mouse;
-
 	var old = {};
-	while (true)
-	{
+
+	setInterval(10, function () {
+		var str = "";
 	    if (m.x != old.x || m.y != old.y) {
 			var w = getWindow(m.x, m.y);
-			print("---------------------------------------------");
-			print("1) Mouse info");
-	        print("   - in screen: " + m.x + ", " + m.y);
-			print("   - in window: " + (m.x-w.x) + ", " + (m.y-w.y));
+			str += ("1) Mouse info\n");
+	        str += ("   - in screen: " + m.x + ", " + m.y + "\n");
+			str += ("   - in window: " + (m.x-w.x) + ", " + (m.y-w.y) + "\n");
 
-			print("2) Hover info");
+			str += ("2) Hover info\n");
 			var color = system.screen.getPixel(m.x, m.y);
 			var rgb = to_rgb(color);
-			print("   - color: " + rgb.hex +
+			str += ("   - color: " + rgb.hex +
 				" (r:" + rgb.rh + ", g:" + rgb.gh + ", b:" + rgb.bh + ") / " +
-				rgb.value + " (r:" + rgb.r + ", g:" + rgb.g + ", b:" + rgb.b + ") "
+				rgb.value + " (r:" + rgb.r + ", g:" + rgb.g + ", b:" + rgb.b + ") \n"
 			);
 
-			print("3) Hover Window info");
-			printWindowProperties(w);
+			str += ("3) Hover Window info\n");
+			str += sprintWindowProperties(w) + "\n";
 
 			var wa = getActiveWindow();
-			print("4) Active Window info");
-			printWindowProperties(wa);
+			str += ("4) Active Window info\n");
+			str += sprintWindowProperties(wa) + "\n";
+
+			_static.text = str;
 	    }
 
 	    old.x = m.x;
 	    old.y = m.y;
 		sleep(10);
-	}
+	});
 }
 
-function printWindowProperties(w)
+function sprintWindowProperties(w)
 {
+	var str = "";
 	if (!w) {
-		return;
+		return "";
 	}
 
-	print("   - text: " + w.text);
-	print("   - class: " + w.class);
-	print("   - position: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ")");
-	print("   - handle: " + to_hex8(w.handle) + " (" + w.handle + ")");
-	print("   - topmost: " + w.topmost);
-	print("   - visible: " + w.visible);
+	str += ("   - text: " + w.text + "\n");
+	str += ("   - class: " + w.class + "\n");
+	str += ("   - position: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ")\n");
+	str += ("   - handle: " + to_hex8(w.handle) + " (" + w.handle + ")\n");
+	str += ("   - topmost: " + w.topmost + "\n");
+	str += ("   - visible: " + w.visible);
+
+	return str;
 }
 
 function to_rgb(rgb)

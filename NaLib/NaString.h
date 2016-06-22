@@ -34,6 +34,7 @@ public:
 	NaString(const NaString &nstr);
 #if defined(USE_V8)
 	NaString(Local<String> &str);
+	NaString(String::Value &str);
 #endif
 	// destructor
 	~NaString();

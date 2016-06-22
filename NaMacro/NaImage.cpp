@@ -83,8 +83,9 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	HDC hDC = NaScreenModule::GetDesktopDC();
 	pImage->m_hMemoryDC = ::CreateCompatibleDC(hDC);
 	pImage->m_hBitmap = ::CreateCompatibleBitmap(hDC, width, height);
-	::SelectObject(pImage->m_hMemoryDC, pImage->m_hBitmap);
+	HGDIOBJ hOldBitmap = ::SelectObject(pImage->m_hMemoryDC, pImage->m_hBitmap);
 	::BitBlt(pImage->m_hMemoryDC, 0, 0, width, height, hDC, x, y, SRCCOPY);
+	::SelectObject(pImage->m_hMemoryDC, hOldBitmap);
 
 	// TODO must delete
 	//::DeleteDC(pImage->m_hMemoryDC);

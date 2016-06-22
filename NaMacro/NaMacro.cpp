@@ -54,20 +54,20 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		Local<String> script_source;
 		MaybeLocal<String> script_name;
 
-		char *str = "NaMacro.js";
+		char *scriptfile = "NaMacro.js";
 		if (__argc > 1)
-			str = __argv[1];
+			scriptfile = __argv[1];
 
-		script_source = ReadFile(isolate, str);
-		script_name = String::NewFromUtf8(isolate, str, NewStringType::kNormal);
+		script_source = ReadFile(isolate, scriptfile);
+		script_name = String::NewFromUtf8(isolate, scriptfile, NewStringType::kNormal);
 		if (script_source.IsEmpty()) 
 		{
 			NaString str;
-			str.Format("Error reading:\n%s", str);
+			str.Format("Error reading:\n%s", scriptfile);
 
 			NaDebugOut(L"==========================================\n");
 			NaDebugOut(str);
-			NaDebugOut(L"==========================================\n");
+			NaDebugOut(L"\n==========================================\n");
 			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return 1;
 		}

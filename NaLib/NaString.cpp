@@ -47,6 +47,15 @@ NaString::NaString(Local<String>& str)
 	String::Utf8Value value(str);
 	SetBuf(*value);
 }
+
+NaString::NaString(String::Value & str)
+{
+	m_pBuf = nullptr;
+	m_nBufLen = 0;
+	m_nLen = 0;
+
+	SetBuf((const wchar_t*)*str);
+}
 #endif
 
 NaString::~NaString()

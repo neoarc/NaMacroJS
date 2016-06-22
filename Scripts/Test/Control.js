@@ -3,40 +3,37 @@
 // 2016.05.03 neoarc (neoarcturus@gmail.com)
 //
 include("../AddOn/VirtualKey.js");
-var c = consoleWindow;
 
 function main() {
     test();
 }
 
 function test() {
-    c.visible = true;
+    consoleWindow.visible = true;
 
     // create window
     print("Create window.");
-    var w = new Window();
+    var w = new Window(0, 0, 300, 300);
     w.create();
-    w.x = 0;
-    w.y = 0;
-    w.width = 300;
-    w.height = 300;
     w.text = "Window";
+    w.move("center", "middle");
     w.visible = true;
 
     // create control
     print("Create some control.");
-    /*
-    var ctrl = new Control("Button", 0, 0, 100, 100, w);
-    ctrl.parent = w;
-    ctrl.create();
-    ctrl.text = "Control";
-    ctrl.visible = true;
-    w.addControl(ctrl);
-    */
 
-    var ctrl = w.addControl("Button", 0, 0, 100, 100, "Control", true);
-    setInterval(1000, function () {
-        var d = new Date();
-        ctrl.text = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+    // simple control
+    w.addControl("Button", 10, 10, 100, 100, "Button", true, function () {
+        print("OnCommand: Button");
     });
+    w.addControl("Edit", 10, 120, 100, 30, "Edit", true);
+    w.addControl("Static", 10, 160, 100, 30, "Static", true);
+
+    // image control
+    var c, img;
+    c = w.addControl("Button", 120, 10, 100, 100, "Button", true);
+    c.image = img = system.screen.capture(0, 0, c.width, c.height);
+
+    c = w.addControl("Static", 120, 160, 100, 30, "Static", true);
+    c.image = img = system.screen.capture(0, 0, c.width, c.height);
 }

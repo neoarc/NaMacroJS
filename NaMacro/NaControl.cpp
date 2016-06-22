@@ -1,7 +1,10 @@
 #include "NaControl.h"
+
 #include "NaWindow.h"
+#include "NaImage.h"
 
 Global<ObjectTemplate> NaControl::s_NaControlTemplate;
+std::map<HWND, Persistent<Function, CopyablePersistentTraits<Function>>> NaControl::s_mapControlCallback;
 
 NaControl::NaControl()
 {
@@ -54,6 +57,7 @@ HWND NaControl::Create()
 		hInstance,
 		NULL // _In_opt_ LPVOID    lpParam
 	);
+	::SetMenu(m_hWnd, (HMENU)m_hWnd);
 
 	return m_hWnd;
 }
@@ -97,10 +101,58 @@ void NaControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
 		bool bVisible = args[6]->BooleanValue();
 		::ShowWindow(pControl->m_hWnd, bVisible ? SW_SHOW : SW_HIDE);
 	}
+
+	if (args.Length() >= 8)
+	{
+		Local<Object> callback = args[7]->ToObject();
+		if (callback->IsFunction())
+		{
+			Isolate *isolate = args.GetIsolate();
+			Local<Function> callback_func = Local<Function>::Cast(args[7]);
+			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+			NaControl::s_mapControlCallback.insert(
+				std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
+			);
+		}
+	}
 }
 
 void NaControl::Destroy()
 {
+	if (m_hWnd)
+	{
+		std::map <HWND, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+		it = NaControl::s_mapControlCallback.find(m_hWnd);
+		if (it != NaControl::s_mapControlCallback.end())
+		{
+			NaControl::s_mapControlCallback.erase(m_hWnd);
+		}
+
+		// TODO check
+		// DestroyWindow ?
+	}
+}
+
+void NaControl::OnCommand(Isolate *isolate, HWND hWnd, int nCode)
+{
+	std::map <HWND, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
+	it = NaControl::s_mapControlCallback.find(hWnd);
+	if (it != NaControl::s_mapControlCallback.end())
+	{
+		Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
+		Local<Function> callback = Local<Function>::New(isolate, percy);
+		if (!callback.IsEmpty())
+		{
+			Local<Value> recv = isolate->GetCurrentContext()->Global();
+			callback->Call(
+				isolate->GetCurrentContext(),
+				recv,
+				0,
+				NULL
+			);
+		}
+	}
 }
 
 Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
@@ -122,6 +174,7 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 	ADD_CONTROL_ACCESSOR(text, GetText, SetText);
 	ADD_CONTROL_ACCESSOR(visible, GetVisible, SetVisible);
 	ADD_CONTROL_ACCESSOR(parent, GetParent, nullptr);
+	ADD_CONTROL_ACCESSOR(image, GetImage, SetImage);
 
 	// methods
 
@@ -303,10 +356,61 @@ void NaControl::GetParent(Local<String> name, const PropertyCallbackInfo<Value>&
 	Isolate *isolate = info.GetIsolate();
 
 	// TODO Impl
-	/*
 	info.GetReturnValue().Set(
-		
-
+		Undefined(isolate)
 	);
-	*/
+}
+
+// description: image property getter/setter
+void NaControl::GetImage(Local<String> name, const PropertyCallbackInfo<Value>& info)
+{
+	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+
+	// TODO Impl
+	info.GetReturnValue().Set(
+		Undefined(isolate)
+	);
+}
+
+void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+{
+	// get window object(this)
+	Isolate *isolate = info.GetIsolate();
+	Local<Object> obj = info.This();
+	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(obj));
+
+	if (value->IsObject())
+	{
+		NaImage *pImage = reinterpret_cast<NaImage*>(
+			NaImage::UnwrapObject(value->ToObject())
+			);
+
+		BITMAP bitmap;
+		GetObject(pImage->m_hBitmap, sizeof(BITMAP), &bitmap);
+
+		LONG lStyle = GetWindowLong(pControl->m_hWnd, GWL_STYLE);
+		switch (pControl->m_enType)
+		{
+		case NA_CONTROL_BUTTON:
+			SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | BS_BITMAP);
+			SendMessage(pControl->m_hWnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
+			break;
+		case NA_CONTROL_EDIT:
+			// TODO
+			break;
+		case NA_CONTROL_STATIC:
+			SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | SS_BITMAP);
+			SendMessage(pControl->m_hWnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
+			break;
+		}		
+	}
+	else if (value->IsString())
+	{
+		// TODO
+		String::Value strvalue(value);
+		NaString str(strvalue);
+
+		//NaImage *pImage = NaImage::LoadImage(str.wstr());
+	}
 }

@@ -34,6 +34,9 @@ function test() {
     c = w.addControl("Button", 120, 10, 100, 100, "Button", true);
     c.image = img = system.screen.capture(0, 0, c.width, c.height);
 
-    c = w.addControl("Static", 120, 160, 100, 30, "Static", true);
+    c = w.addControl("Button", 120, 120, 100, 100, "Button", true);
+    c.image = "./Image/Question Block.png";
+
+    c = w.addControl("Static", 120, 230, 100, 30, "Static", true);
     c.image = img = system.screen.capture(0, 0, c.width, c.height);
 }

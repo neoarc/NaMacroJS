@@ -379,38 +379,49 @@ void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyC
 	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(obj));
+	NaImage *pImage = nullptr;
 
 	if (value->IsObject())
 	{
-		NaImage *pImage = reinterpret_cast<NaImage*>(
+		pImage = reinterpret_cast<NaImage*>(
 			NaImage::UnwrapObject(value->ToObject())
-			);
-
-		BITMAP bitmap;
-		GetObject(pImage->m_hBitmap, sizeof(BITMAP), &bitmap);
-
-		LONG lStyle = GetWindowLong(pControl->m_hWnd, GWL_STYLE);
-		switch (pControl->m_enType)
-		{
-		case NA_CONTROL_BUTTON:
-			SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | BS_BITMAP);
-			SendMessage(pControl->m_hWnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
-			break;
-		case NA_CONTROL_EDIT:
-			// TODO
-			break;
-		case NA_CONTROL_STATIC:
-			SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | SS_BITMAP);
-			SendMessage(pControl->m_hWnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
-			break;
-		}		
+			);		
 	}
 	else if (value->IsString())
 	{
 		// TODO
-		String::Value strvalue(value);
-		NaString str(strvalue);
+		String::Value filepath(value);
 
-		//NaImage *pImage = NaImage::LoadImage(str.wstr());
+		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
+		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
+		NaString strBase(cur_frame->GetScriptName());
+		NaString strFilePath(filepath);
+
+		NaUrl url;
+		url.SetBase(strBase);
+		url.SetUrl(strFilePath);
+
+		NaString strFullPath(url.GetFullUrl());
+
+		pImage = NaImage::Load(strFullPath.wstr());
+	}
+
+	BITMAP bitmap;
+	GetObject(pImage->m_hBitmap, sizeof(BITMAP), &bitmap);
+
+	LONG lStyle = GetWindowLong(pControl->m_hWnd, GWL_STYLE);
+	switch (pControl->m_enType)
+	{
+	case NA_CONTROL_BUTTON:
+		SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | BS_BITMAP);
+		SendMessage(pControl->m_hWnd, BM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
+		break;
+	case NA_CONTROL_EDIT:
+		// TODO
+		break;
+	case NA_CONTROL_STATIC:
+		SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | SS_BITMAP);
+		SendMessage(pControl->m_hWnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
+		break;
 	}
 }

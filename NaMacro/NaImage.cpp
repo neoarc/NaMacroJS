@@ -2,6 +2,8 @@
 
 #include "ScreenModule.h"
 
+#include <gdiplus.h>
+
 Global<ObjectTemplate> NaImage::s_NaImageTemplate;
 
 NaImage::NaImage()
@@ -96,6 +98,37 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	pImage->m_rc.top = y;
 	pImage->m_rc.right = x + width;
 	pImage->m_rc.bottom = y + height;
+
+	return pImage;
+}
+
+// description: load image from file using gdi+
+NaImage * NaImage::Load(const wchar_t * filename)
+{
+	NaImage *pImage = new NaImage;
+	HDC hDC = NaScreenModule::GetDesktopDC();
+	pImage->m_hMemoryDC = ::CreateCompatibleDC(hDC);
+
+	// initialize gdi+
+	Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+	ULONG_PTR gdiplusToken;
+	GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+	// load image
+	Gdiplus::Image* pGdiImage = new Gdiplus::Image(filename);
+
+	// converting to bitmap
+	Gdiplus::Bitmap* pGdiBitmap = static_cast<Gdiplus::Bitmap*>(pGdiImage);
+	pGdiBitmap->GetHBITMAP(Gdiplus::Color(0, 0, 0), &pImage->m_hBitmap);
+
+	pImage->m_rc.left = 0;
+	pImage->m_rc.top = 0;
+	pImage->m_rc.right = pGdiImage->GetWidth();
+	pImage->m_rc.bottom = pGdiImage->GetHeight();
+
+	// shutdown gdi+
+	delete pGdiImage;
+	Gdiplus::GdiplusShutdown(gdiplusToken);
 
 	return pImage;
 }

@@ -22,6 +22,7 @@ public:
 	// static
 	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);
 	static NaImage* CaptureScreen(int x, int y, int width, int height);
+	static NaImage* Load(const wchar_t *filename);
 	
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);

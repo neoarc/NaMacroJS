@@ -73,7 +73,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>ws2_32.lib;winmm.lib;$(SolutionDir)\Build\$(Configuration)\v8_libplatform.lib;$(SolutionDir)\Build\$(Configuration)\icui18n.lib;$(SolutionDir)\Build\$(Configuration)\icuuc.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_0.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_1.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_2.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_3.lib;$(SolutionDir)\Build\$(Configuration)\v8_libbase.lib;$(SolutionDir)\Build\$(Configuration)\v8_external_snapshot.lib;%(AdditionalDependencies);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;$(SolutionDir)\Build\$(Configuration)\v8_libplatform.lib;$(SolutionDir)\Build\$(Configuration)\icui18n.lib;$(SolutionDir)\Build\$(Configuration)\icuuc.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_0.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_1.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_2.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_3.lib;$(SolutionDir)\Build\$(Configuration)\v8_libbase.lib;$(SolutionDir)\Build\$(Configuration)\v8_external_snapshot.lib;%(AdditionalDependencies);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -101,7 +101,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>sapi.lib;ws2_32.lib;winmm.lib;$(SolutionDir)\Build\$(Configuration)\v8_libplatform.lib;$(SolutionDir)\Build\$(Configuration)\icui18n.lib;$(SolutionDir)\Build\$(Configuration)\icuuc.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_0.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_1.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_2.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_3.lib;$(SolutionDir)\Build\$(Configuration)\v8_libbase.lib;$(SolutionDir)\Build\$(Configuration)\v8_external_snapshot.lib;%(AdditionalDependencies);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;sapi.lib;ws2_32.lib;winmm.lib;$(SolutionDir)\Build\$(Configuration)\v8_libplatform.lib;$(SolutionDir)\Build\$(Configuration)\icui18n.lib;$(SolutionDir)\Build\$(Configuration)\icuuc.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_0.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_1.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_2.lib;$(SolutionDir)\Build\$(Configuration)\v8_base_3.lib;$(SolutionDir)\Build\$(Configuration)\v8_libbase.lib;$(SolutionDir)\Build\$(Configuration)\v8_external_snapshot.lib;%(AdditionalDependencies);C:\Program Files (x86)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>

@@ -50,6 +50,6 @@ public:
 	DEFINE_CLASS_ACCESSOR(GetImage, SetImage);
 
 	// methods
-
+	DEFINE_CLASS_METHOD(Focus);
 };
 

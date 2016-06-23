@@ -144,12 +144,17 @@ void NaControl::OnCommand(Isolate *isolate, HWND hWnd, int nCode)
 		Local<Function> callback = Local<Function>::New(isolate, percy);
 		if (!callback.IsEmpty())
 		{
+			int argc = 1;
+			Local<Value> argv = {
+				Integer::New(isolate, nCode)
+			};
+			
 			Local<Value> recv = isolate->GetCurrentContext()->Global();
 			callback->Call(
 				isolate->GetCurrentContext(),
 				recv,
-				0,
-				NULL
+				argc,
+				&argv
 			);
 		}
 	}
@@ -177,6 +182,7 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 	ADD_CONTROL_ACCESSOR(image, GetImage, SetImage);
 
 	// methods
+	ADD_CONTROL_METHOD(focus, Focus);
 
 	return handle_scope.Escape(templ);
 }
@@ -389,7 +395,6 @@ void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyC
 	}
 	else if (value->IsString())
 	{
-		// TODO
 		String::Value filepath(value);
 
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
@@ -424,4 +429,27 @@ void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyC
 		SendMessage(pControl->m_hWnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
 		break;
 	}
+}
+
+// description: set focus to control
+// syntax:		controlObj.focus();
+void NaControl::Focus(V8_FUNCTION_ARGS)
+{
+	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(args.This()));
+
+	HWND hWnd = pControl->m_hWnd;
+	Isolate *isolate = args.GetIsolate();
+	if (hWnd)
+	{
+		SetFocus(hWnd);
+
+		args.GetReturnValue().Set(
+			Boolean::New(isolate, true)
+		);
+		return;
+	}
+
+	args.GetReturnValue().Set(
+		Boolean::New(isolate, false)
+	);
 }

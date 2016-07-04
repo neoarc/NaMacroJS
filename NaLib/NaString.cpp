@@ -106,6 +106,11 @@ bool NaString::operator==(NaString & str)
 	return Compare(str.wstr()) == 0;
 }
 
+bool NaString::operator<(NaString & str)
+{
+	return Compare(str.wstr());
+}
+
 wchar_t NaString::operator[](int index)
 {
 	if (index >= 0 && index < m_nLen)
@@ -153,6 +158,7 @@ void NaString::ToUpper()
 
 const NaString & NaString::Format(const wchar_t * fmt, ...)
 {
+	/*
 	wchar_t buf[NASTRING_FORMAT_BUFFER_SIZE];
 	memset(&buf, 0, sizeof(wchar_t) * NASTRING_FORMAT_BUFFER_SIZE);
 
@@ -162,6 +168,20 @@ const NaString & NaString::Format(const wchar_t * fmt, ...)
 	va_end(arglist);
 	
 	SetBuf(buf);
+	*/
+
+	const int nBufSize = 5 * NASTRING_FORMAT_BUFFER_SIZE;
+	wchar_t *buf = new wchar_t[nBufSize];
+	memset(buf, 0, sizeof(wchar_t) * nBufSize);
+
+	va_list arglist;
+	va_start(arglist, fmt);
+	vswprintf_s(buf, nBufSize, fmt, arglist);
+	va_end(arglist);
+
+	SetBuf(buf);
+	delete buf;
+
 	return *this;
 }
 

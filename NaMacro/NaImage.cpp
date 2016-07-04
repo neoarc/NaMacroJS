@@ -56,6 +56,7 @@ POINT NaImage::FindColor(DWORD dwColor)
 
 	if (m_hMemoryDC && m_hBitmap)
 	{
+		HGDIOBJ hOldBitmap = ::SelectObject(m_hMemoryDC, m_hBitmap);
 		COLORREF color;
 		int nWidth = m_rc.right - m_rc.left;
 		int nHeight = m_rc.bottom - m_rc.top;
@@ -68,10 +69,13 @@ POINT NaImage::FindColor(DWORD dwColor)
 				{
 					pt.x = x;
 					pt.y = y;
+					::SelectObject(m_hMemoryDC, hOldBitmap);
 					return pt;
 				}
 			}
 		}
+
+		::SelectObject(m_hMemoryDC, hOldBitmap);
 	}
 
 	return pt;

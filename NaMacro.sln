@@ -13,6 +13,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodePage", "UnitTest\CodePa
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaStringTest", "UnitTest\NaStringTest\NaStringTest.vcxproj", "{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaHttpTest", "UnitTest\NaHttpTest\NaHttpTest.vcxproj", "{DB93DB62-61BF-4D63-99F4-90A550B3DF69}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -51,6 +53,14 @@ Global
 		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|Win32.Build.0 = Release|Win32
 		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|x64.ActiveCfg = Release|x64
 		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|x64.Build.0 = Release|x64
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|Win32.Build.0 = Debug|Win32
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|x64.ActiveCfg = Debug|x64
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|x64.Build.0 = Debug|x64
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|Win32.ActiveCfg = Release|Win32
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|Win32.Build.0 = Release|Win32
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|x64.ActiveCfg = Release|x64
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -58,5 +68,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
 		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
+		{DB93DB62-61BF-4D63-99F4-90A550B3DF69} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
 	EndGlobalSection
 EndGlobal

@@ -27,7 +27,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v140_xp</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
@@ -73,7 +73,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;$(IntDir)..\v8_libplatform.lib;$(IntDir)..\icui18n.lib;$(IntDir)..\icuuc.lib;$(IntDir)..\v8_base_0.lib;$(IntDir)..\v8_base_1.lib;$(IntDir)..\v8_base_2.lib;$(IntDir)..\v8_base_3.lib;$(IntDir)..\v8_libbase.lib;$(IntDir)..\v8_external_snapshot.lib;%(AdditionalDependencies);$(ProgramFiles)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;$(IntDir)..\v8_libplatform.lib;$(IntDir)..\icui18n.lib;$(IntDir)..\icuuc.lib;$(IntDir)..\v8_base_0.lib;$(IntDir)..\v8_base_1.lib;$(IntDir)..\v8_base_2.lib;$(IntDir)..\v8_base_3.lib;$(IntDir)..\v8_libbase.lib;$(IntDir)..\v8_external_snapshot.lib;%(AdditionalDependencies);$(ProgramFiles)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib;Wldap32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -82,6 +82,7 @@
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <FixedBaseAddress>false</FixedBaseAddress>
+      <AdditionalLibraryDirectories>$(IntDir)..\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -101,14 +102,16 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;$(IntDir)..\v8_libplatform.lib;$(IntDir)..\icui18n.lib;$(IntDir)..\icuuc.lib;$(IntDir)..\v8_base_0.lib;$(IntDir)..\v8_base_1.lib;$(IntDir)..\v8_base_2.lib;$(IntDir)..\v8_base_3.lib;$(IntDir)..\v8_libbase.lib;$(IntDir)..\v8_external_snapshot.lib;%(AdditionalDependencies);$(ProgramFiles)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;$(IntDir)..\v8_libplatform.lib;$(IntDir)..\icui18n.lib;$(IntDir)..\icuuc.lib;$(IntDir)..\v8_base_0.lib;$(IntDir)..\v8_base_1.lib;$(IntDir)..\v8_base_2.lib;$(IntDir)..\v8_base_3.lib;$(IntDir)..\v8_libbase.lib;$(IntDir)..\v8_external_snapshot.lib;%(AdditionalDependencies);$(ProgramFiles)\Microsoft Speech SDK 5.1\Lib\i386\sapi.lib;Wldap32.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
+      <AdditionalLibraryDirectories>$(IntDir)..\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\NaLib\NaHttp.cpp" />
     <ClCompile Include="..\NaLib\NaMessageBox.cpp" />
     <ClCompile Include="..\NaLib\NaString.cpp" />
     <ClCompile Include="..\NaLib\NaUrl.cpp" />
@@ -128,8 +131,10 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="TwitterModule.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NaLib\NaHttp.h" />
     <ClInclude Include="..\NaLib\NaMessageBox.h" />
     <ClInclude Include="..\NaLib\NaString.h" />
     <ClInclude Include="..\NaLib\NaUrl.h" />
@@ -147,6 +152,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScreenModule.h" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="TwitterModule.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Architecture.txt" />

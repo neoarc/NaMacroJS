@@ -50,6 +50,8 @@ public:
 	bool operator==(const wchar_t *lpsz);
 	bool operator==(NaString &str);
 
+	bool operator<(NaString &str);
+
 	wchar_t operator[](int index);
 
 	operator const char* () const;

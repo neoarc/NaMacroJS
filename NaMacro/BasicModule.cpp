@@ -171,7 +171,12 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
 		NaString strBase(cur_frame->GetScriptName());
-
+		
+		//
+		// 2016.07.27
+		// GetScriptName Unicode Issue:
+		// Wrong Conversion if Special character included.
+		//
 		NaDebugOut(L"================================================\n");
 		NaDebugOut(L"Include src: %s\n", wstr);
 		NaDebugOut(L"Include base: %s\n", strBase.wstr());

@@ -8,7 +8,10 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		prompt("I am prompt");
+		var img = system.screen.capture(0, 0, 100, 100);
+		img.getPixel(0, 0);
+
+		//prompt("I am prompt");
 
 		//print("Array: " + ([1,2] instanceof Array));
 		//key_event_test();

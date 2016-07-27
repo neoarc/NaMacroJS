@@ -211,7 +211,9 @@ void NaImage::GetPixel(V8_FUNCTION_ARGS)
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
 
+	HGDIOBJ hOldBitmap = ::SelectObject(pImage->m_hMemoryDC, pImage->m_hBitmap);
 	COLORREF color = ::GetPixel(pImage->m_hMemoryDC, x, y);
+	::SelectObject(pImage->m_hMemoryDC, hOldBitmap);
 
 	// return
 	args.GetReturnValue().Set(Integer::New(isolate, color));

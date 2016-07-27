@@ -348,6 +348,8 @@ void CNaMacroRecorderDlg::RecordStop()
 		GlobalUnlock(hClipboardData);
 		SetClipboardData(CF_TEXT, hClipboardData);
 		CloseClipboard();
+
+		AfxMessageBox(L"Script has been copied to clipboard.");
 	}
 }
 
@@ -378,7 +380,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 	strOutput.Format(
 		L"// Auto generated script by NaMacroRecorder\n"
 		L"// %04d.%02d.%02d\n"
-		L"main() {\n",
+		L"function main() {\n",
 		time.GetYear(), time.GetMonth(), time.GetDay()
 	);
 

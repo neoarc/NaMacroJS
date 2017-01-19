@@ -44,10 +44,11 @@ function spy()
 			str += ("2) Hover info\n");
 			var color = system.screen.getPixel(m.x, m.y);
 			var rgb = to_rgb(color);
-			str += ("   - color: " + rgb.hex +
+			str += ("   - color: (BGR)" + rgb.hex_bgr +
 				" (r:" + rgb.rh + ", g:" + rgb.gh + ", b:" + rgb.bh + ") / " +
 				rgb.value + " (r:" + rgb.r + ", g:" + rgb.g + ", b:" + rgb.b + ") \n"
 			);
+			str += ("   - color: (RGB)" + rgb.hex_rgb + "\n");
 
 			str += ("3) Hover Window info\n");
 			str += sprintWindowProperties(w) + "\n";
@@ -94,11 +95,13 @@ function to_rgb(rgb)
 	rh = ('00'+rh).substring(rh.length);
 	gh = ('00'+gh).substring(gh.length);
 	bh = ('00'+bh).substring(bh.length);
-	var hex = "0x" + bh + gh + rh;
+	var hex_bgr = "0x" + bh + gh + rh;
+	var hex_rgb = "0x" + rh + gh + bh;
 
 	return {
 		value: rgb,
-		hex: hex,
+		hex_bgr: hex_bgr,
+		hex_rgb: hex_rgb,
 		r: r,
 		g: g,
 		b: b,

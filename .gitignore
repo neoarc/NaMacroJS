@@ -11,16 +11,24 @@
 *.userprefs
 
 # Build results
-[Dd]ebug/
+# [Dd]ebug/
 [Dd]ebugPublic/
-[Rr]elease/
+# [Rr]elease/
 [Rr]eleases/
 x64/
 x86/
-build/
+# build/
 bld/
 [Bb]in/
 [Oo]bj/
+*.iobj
+*.ipdb
+*.manifest
+*.idb
+*.res
+*.obj.enc
+*.lastbuildstate
+*.unsuccessfulbuild
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -211,12 +219,19 @@ GeneratedArtifacts/
 _Pvt_Extensions/
 ModelManifest.xml
 *.tlog
-/third_party/LineCounter.ini
-/NaMacroRecorder/res/LineCounter.ini
-/NaMacro/LineCounter.ini
+LineCounter.ini
 /NaMacro.psd
 /NaMacro.png
 /NaMacro.VC.db
 /NaMacro.VC.VC.opendb
 /Scripts/Private
 /Scripts/_Temporary
+/UnitTest/CodePage/Debug
+/UnitTest/NaStringTest/Debug/vc140.idb
+/Output/Release/HealthTraining
+/Output/Release/Piano2
+/Output/Release/NaMacro_Bongsik.js
+/Output/Release/NaMacro.js
+/Output/Release/GMacro.gmc
+/Output/Debug/NaMacroRecorder.cfg
+/_temp/

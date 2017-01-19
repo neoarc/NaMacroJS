@@ -52,7 +52,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 			NaWindow *pWindow = new NaWindow(0, NA_WINDOW_CONSOLE);
 			Local<Object> consolewindow_object = NaWindow::WrapObject(isolate, pWindow);
 			consolewindow_value = consolewindow_object;
-			
+
 			global->Set(consolewindow_name, consolewindow_value);
 		}
 	}
@@ -159,11 +159,11 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 	Isolate *isolate = args.GetIsolate();
 	Local<Context> context = isolate->GetCurrentContext();
 
-	for (int i = 0; i < args.Length(); i++) 
+	for (int i = 0; i < args.Length(); i++)
 	{
 		Local<String> script_source;
 		MaybeLocal<String> script_name;
-		
+
 		String::Value arg_value(args[i]);
 		wchar_t *wstr = (wchar_t*)(*arg_value);
 
@@ -171,7 +171,7 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
 		NaString strBase(cur_frame->GetScriptName());
-		
+
 		//
 		// 2016.07.27
 		// GetScriptName Unicode Issue:
@@ -213,7 +213,7 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 				return;
 			}
 		}
-		
+
 		{
 			TryCatch try_catch(isolate);
 			script->Run(context);
@@ -228,7 +228,7 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 }
 
 // description: Print message to console
-// syxtax:		print(message) 
+// syxtax:		print(message)
 void NaBasicModule::Print(V8_FUNCTION_ARGS)
 {
 	bool first = true;
@@ -309,7 +309,7 @@ void NaBasicModule::Prompt(V8_FUNCTION_ARGS)
 	String::Value default_string(args[2]);
 
 	NaMessageBox MsgBox;
-	NaString strRet = 
+	NaString strRet =
 		MsgBox.DoModal(NULL,
 			(wchar_t*)*msg,
 			args.Length() >= 2 ? (const wchar_t*)*title : L"Prompt",
@@ -332,7 +332,7 @@ void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
 	::Sleep(args.Length() > 0 ? nTime : 1);
 }
 
-// description: 
+// description:
 // syntax:		setInterval(interval, callback_function) : timer_id
 void NaBasicModule::SetInterval(V8_FUNCTION_ARGS)
 {
@@ -360,7 +360,7 @@ void NaBasicModule::SetInterval(V8_FUNCTION_ARGS)
 	}
 }
 
-// description: 
+// description:
 // syntax:		clearInterval(timer_id)
 void NaBasicModule::ClearInterval(V8_FUNCTION_ARGS)
 {
@@ -378,8 +378,8 @@ void NaBasicModule::ClearInterval(V8_FUNCTION_ARGS)
 	}
 }
 
-// description: 
-// syntax:		
+// description:
+// syntax:
 void NaBasicModule::SetTimeout(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 2)
@@ -422,13 +422,13 @@ void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
 
-	NaWindow *pWindow = NaWindow::GetWindow(x, y);;
+	NaWindow *pWindow = NaWindow::GetWindow(x, y);
 	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
 
 	args.GetReturnValue().Set(result);
 }
 
-// description: get active window 
+// description: get active window
 // syntax:		getActiveWindow() : window object
 void NaBasicModule::GetActiveWindow(V8_FUNCTION_ARGS)
 {

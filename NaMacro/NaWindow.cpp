@@ -47,7 +47,7 @@ HWND NaWindow::Create()
 		WndClass.lpszMenuName = NULL;
 		WndClass.style = CS_HREDRAW | CS_VREDRAW;
 		RegisterClass(&WndClass);
-		
+
 		s_bRegisterClass = true;
 	}
 
@@ -182,15 +182,12 @@ void NaWindow::FindWindows(Isolate *isolate, const wchar_t * name, Local<Array> 
 	it = info.foundlist.begin();
 	for (; it != info.foundlist.end(); ++it) {
 		HWND hWnd = *it;
-		
-		NaWindow *pNaWindow = new NaWindow;
-		pNaWindow->m_hWnd = hWnd;
-
+		NaWindow *pNaWindow = GetWindow(hWnd);
 		Local<Value> obj = WrapObject(isolate, pNaWindow);
 
 		// Fill V8Object Array
 		results->Set(nIndex++, obj);
-	}	
+	}
 }
 
 NaWindow* NaWindow::GetWindow(int x, int y)
@@ -207,7 +204,7 @@ NaWindow* NaWindow::GetWindow(int x, int y)
 NaWindow * NaWindow::GetActiveWindow()
 {
 	HWND hWnd = ::GetForegroundWindow();
-	
+
 	return GetWindow(hWnd);
 }
 
@@ -229,7 +226,7 @@ NaWindow* NaWindow::GetWindow(HWND hWnd)
 	*/
 
 	NaWindow *pNaWindow = (NaWindow*)GetWindowLong(hWnd, NA_WINDOW_MARK);
-	if (pNaWindow) 
+	if (pNaWindow)
 		return pNaWindow;
 
 	// not found
@@ -239,7 +236,7 @@ NaWindow* NaWindow::GetWindow(HWND hWnd)
 // description: x property getter/setter
 void NaWindow::GetX(V8_GETTER_ARGS)
 {
-	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
 	{
@@ -316,14 +313,14 @@ void NaWindow::SetWidth(V8_SETTER_ARGS)
 	{
 		RECT rc;
 		::GetWindowRect(pWindow->m_hWnd, &rc);
-		::MoveWindow(pWindow->m_hWnd, rc.left, rc.top, value->Int32Value(), rc.bottom - rc.top, FALSE);	
+		::MoveWindow(pWindow->m_hWnd, rc.left, rc.top, value->Int32Value(), rc.bottom - rc.top, FALSE);
 	}
 }
 
 // description: height property getter/setter
 void NaWindow::GetHeight(V8_GETTER_ARGS)
 {
-	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This())); 
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
 	{
@@ -373,7 +370,7 @@ void NaWindow::GetText(V8_GETTER_ARGS)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pWindow->m_hWnd, str, 1024);
-		
+
 		info.GetReturnValue().Set(
 			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
 			);
@@ -395,7 +392,7 @@ void NaWindow::GetVisible(Local<String> name, const PropertyCallbackInfo<Value>&
 {
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
-	
+
 	bool bVisible = false;
 	if (pWindow)
 	{
@@ -413,7 +410,7 @@ void NaWindow::SetVisible(Local<String> name, Local<Value> value, const Property
 	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
-	
+
 	bool bVisible = value->BooleanValue();
 	switch (pWindow->m_enType)
 	{
@@ -489,9 +486,9 @@ void NaWindow::SetTopmost(Local<String> name, Local<Value> value, const Property
 	bool bTopmost = value->BooleanValue();
 	if (pWindow && pWindow->m_hWnd)
 		::SetWindowPos(
-			pWindow->m_hWnd, 
+			pWindow->m_hWnd,
 			bTopmost ? HWND_TOPMOST : HWND_NOTOPMOST,
-			0, 0, 0, 0, 
+			0, 0, 0, 0,
 			SWP_NOACTIVATE | SWP_NOMOVE | SWP_NOREPOSITION | SWP_NOSIZE
 		);
 }

@@ -1,8 +1,8 @@
-﻿//
+//
 // mouse spy
 // 2015.12.02 neoarc (neoarcturus@gmail.com)
 //
-var _static;
+var _static; //, _color;
 
 function main()
 {
@@ -26,6 +26,7 @@ function createLogWindow()
 	logger.visible = true;
 
 	_static = logger.addControl("Static", 0, 0, width, height, "", true);
+	//_color = logger.addControl("Static", width, 0, 100, 100, "Static", true);
 }
 
 function spy()
@@ -37,27 +38,28 @@ function spy()
 		var str = "";
 	    if (m.x != old.x || m.y != old.y) {
 			var w = getWindow(m.x, m.y);
+			var wa = getActiveWindow();
+
 			str += ("1) Mouse info\n");
 	        str += ("   - in screen: " + m.x + ", " + m.y + "\n");
-			str += ("   - in window: " + (m.x-w.x) + ", " + (m.y-w.y) + "\n");
+			str += ("   - in active window: " + (m.x-wa.x) + ", " + (m.y-wa.y) + "\n");
+			str += ("   - in hover window: " + (m.x-w.x) + ", " + (m.y-w.y) + "\n");
 
-			str += ("2) Hover info\n");
 			var color = system.screen.getPixel(m.x, m.y);
 			var rgb = to_rgb(color);
-			str += ("   - color: (BGR)" + rgb.hex_bgr +
+			str += ("   - Color(bgr): " + rgb.hex +
 				" (r:" + rgb.rh + ", g:" + rgb.gh + ", b:" + rgb.bh + ") / " +
 				rgb.value + " (r:" + rgb.r + ", g:" + rgb.g + ", b:" + rgb.b + ") \n"
 			);
-			str += ("   - color: (RGB)" + rgb.hex_rgb + "\n");
 
-			str += ("3) Hover Window info\n");
-			str += sprintWindowProperties(w) + "\n";
+			str += ("2) Hover Window info\n");
+			str += getWindowProperties(w) + "\n";
 
-			var wa = getActiveWindow();
-			str += ("4) Active Window info\n");
-			str += sprintWindowProperties(wa) + "\n";
+			str += ("3) Active Window info\n");
+			str += getWindowProperties(wa) + "\n";
 
 			_static.text = str;
+			//_color.image = system.screen.capture(m.x, m.y, 100, 100);
 	    }
 
 	    old.x = m.x;
@@ -66,7 +68,7 @@ function spy()
 	});
 }
 
-function sprintWindowProperties(w)
+function getWindowProperties(w)
 {
 	var str = "";
 	if (!w) {
@@ -95,13 +97,11 @@ function to_rgb(rgb)
 	rh = ('00'+rh).substring(rh.length);
 	gh = ('00'+gh).substring(gh.length);
 	bh = ('00'+bh).substring(bh.length);
-	var hex_bgr = "0x" + bh + gh + rh;
-	var hex_rgb = "0x" + rh + gh + bh;
+	var hex = "0x" + bh + gh + rh;
 
 	return {
 		value: rgb,
-		hex_bgr: hex_bgr,
-		hex_rgb: hex_rgb,
+		hex: hex,
 		r: r,
 		g: g,
 		b: b,

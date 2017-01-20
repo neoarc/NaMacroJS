@@ -1,4 +1,4 @@
-﻿//
+//
 // Architecture Generator
 // 2016.04.27 neoarc (neoarcturus@gmail.com)
 //
@@ -19,6 +19,9 @@ function _generate()
 {
 	consoleWindow.visible = true;
 	_showObjProperties(this);
+
+	_showObjProperties(new Window(), 1, "Window");
+	_showObjProperties(system.screen.capture(0,0,1,1), 1, "Image");
 }
 
 // for debug
@@ -36,6 +39,10 @@ function _showObjProperties(obj, level, typename)
 
 	if (obj == this) {
 		typename = "Global";
+		print(typename);
+	}
+	else if (typename.indexOf(".") < 0)
+	{
 		print(typename);
 	}
 

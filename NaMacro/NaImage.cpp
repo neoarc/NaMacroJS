@@ -44,6 +44,7 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 
 	// methods
 	ADD_IMAGE_METHOD(getPixel, GetPixel);
+	ADD_IMAGE_METHOD(findImage, FindImage);
 
 	return handle_scope.Escape(templ);
 }
@@ -137,6 +138,63 @@ NaImage * NaImage::Load(const wchar_t * filename)
 	return pImage;
 }
 
+POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource)
+{
+	POINT pt = { -1, -1 };
+	if (pTarget != nullptr && pSource != nullptr)
+	{
+		int nTargetWidth = pTarget->m_rc.right - pTarget->m_rc.left;
+		int nTargetHeight = pTarget->m_rc.bottom - pTarget->m_rc.top;
+		int nSourceWidth = pSource->m_rc.right - pSource->m_rc.left;
+		int nSourceHeight = pSource->m_rc.bottom - pSource->m_rc.top;
+
+		if (nTargetWidth >= nSourceWidth && nTargetHeight >= nSourceHeight)
+		{
+			HGDIOBJ hObjTarget = ::SelectObject(pTarget->m_hMemoryDC, pTarget->m_hBitmap);
+			HGDIOBJ hObjSource = ::SelectObject(pSource->m_hMemoryDC, pSource->m_hBitmap);
+
+			bool bMismatch;
+			for (int y = 0; y < nTargetHeight - nSourceHeight; y++)
+			{
+				for (int x = 0; x < nTargetWidth - nSourceWidth; x++)
+				{
+					bMismatch = false;
+					for (int y2 = 0; y2 < nSourceHeight; y2++)
+					{
+						for (int x2 = 0; x2 < nSourceWidth; x2++)
+						{
+							COLORREF nCol1 = ::GetPixel(pTarget->m_hMemoryDC, x + x2, y + y2);
+							COLORREF nCol2 = ::GetPixel(pSource->m_hMemoryDC, x2, y2);
+							if (nCol1 != nCol2)
+							{
+								bMismatch = true;
+								break;
+							}
+						}
+						if (bMismatch)
+							break;
+					}
+
+					if (bMismatch == false)
+					{
+						pt.x = x;
+						pt.y = y;
+						::SelectObject(pTarget->m_hMemoryDC, hObjTarget);
+						::SelectObject(pSource->m_hMemoryDC, hObjSource);
+
+						return pt;
+					}
+				}
+			}
+
+			::SelectObject(pTarget->m_hMemoryDC, hObjTarget);
+			::SelectObject(pSource->m_hMemoryDC, hObjSource);
+		}
+	}
+
+	return pt;
+}
+
 // description: width property getter/setter
 void NaImage::GetWidth(V8_GETTER_ARGS)
 {
@@ -187,6 +245,36 @@ void NaImage::SetHeight(V8_SETTER_ARGS)
 	}
 }
 
+// description: constructor function
+// syntax:		new Window([x, y[, width, height]]) : windowObj
+void NaImage::Constructor(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 1)
+	{
+		String::Value filepath(args[0]);
+
+		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(
+			args.GetIsolate(), 1, StackTrace::kScriptName);
+		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
+		NaString strBase(cur_frame->GetScriptName());
+		NaString strFilePath(filepath);
+
+		NaUrl url;
+		url.SetBase(strBase);
+		url.SetUrl(strFilePath);
+
+		NaString strFullPath(url.GetFullUrl());
+
+		NaImage *pImage = NaImage::Load(strFullPath.wstr());
+		Local<Object> obj = WrapObject(args.GetIsolate(), pImage);
+
+		args.GetReturnValue().Set(obj);
+		return;
+	}
+
+	args.GetReturnValue().Set(Null(args.GetIsolate()));
+}
+
 // description: get pixel from image buffer
 // syntax:		imageObj.getPixel(x, y);
 void NaImage::GetPixel(V8_FUNCTION_ARGS)
@@ -217,4 +305,50 @@ void NaImage::GetPixel(V8_FUNCTION_ARGS)
 
 	// return
 	args.GetReturnValue().Set(Integer::New(isolate, color));
+}
+
+// description: find image(argument) from image(this)
+// syntax:		imageObj.findImage(image object)
+void NaImage::FindImage(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+	Local<Object> objThis = args.This();
+	NaImage *pImageThis = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
+	if (pImageThis == nullptr)
+	{
+		// error
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		return;
+	}
+
+	if (args.Length() < 1)
+	{
+		// error
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		return;
+	}
+
+	Local<Object> objFind = args[0]->ToObject();
+	NaImage *pImageFind = reinterpret_cast<NaImage*>(UnwrapObject(objFind));
+	if (pImageFind == nullptr)
+	{
+		// error
+		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		return;
+	}
+
+	POINT pt = SearchImageInImage(pImageThis, pImageFind);
+
+	Local<Object> objRet = Object::New(isolate);
+	objRet->Set(
+		String::NewFromUtf8(isolate, "x", NewStringType::kNormal).ToLocalChecked(),
+		Integer::New(isolate, pt.x)
+	);
+	objRet->Set(
+		String::NewFromUtf8(isolate, "y", NewStringType::kNormal).ToLocalChecked(),
+		Integer::New(isolate, pt.y)
+	);
+
+	// return
+	args.GetReturnValue().Set(objRet);
 }

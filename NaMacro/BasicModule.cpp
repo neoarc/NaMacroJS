@@ -6,8 +6,11 @@
 #include "Windows.h"
 #include "NaWindow.h"
 #include "NaControl.h"
+#include "NaImage.h"
+#include "NaFile.h"
 
 #include "../NaLib/NaMessageBox.h"
+#include "../NaLib/NaNotifyWindow.h"
 
 #include <iostream>
 
@@ -31,6 +34,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(prompt,		Prompt);
 	ADD_GLOBAL_METHOD(print,		Print);
 	ADD_GLOBAL_METHOD(trace,		Print);
+	ADD_GLOBAL_METHOD(notify,		Notify);
 	ADD_GLOBAL_METHOD(exit,			Exit);
 	ADD_GLOBAL_METHOD(getWindow,	GetWindow);
 	ADD_GLOBAL_METHOD(getActiveWindow, GetActiveWindow);
@@ -87,6 +91,24 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 			global->Set(control_name, templ->GetFunction());
 		}
 		*/
+
+		// Init Image class
+		Local<String> image_name = String::NewFromUtf8(isolate, "Image", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> image_value = global->Get(image_name);
+		if (!image_value.IsEmpty() && image_value->IsUndefined())
+		{
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaImage::Constructor);
+			global->Set(image_name, templ->GetFunction());
+		}
+
+		// Init File class
+		Local<String> file_name = String::NewFromUtf8(isolate, "File", NewStringType::kNormal).ToLocalChecked();
+		Local<Value> file_value = global->Get(file_name);
+		if (!file_value.IsEmpty() && file_value->IsUndefined())
+		{
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaFile::Constructor);
+			global->Set(file_name, templ->GetFunction());
+		}
 	}
 
 	{
@@ -249,6 +271,23 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 	fflush(stdout);
 }
 
+// description: Notify message via notify window
+// syxtax:		notify(message)
+void NaBasicModule::Notify(V8_FUNCTION_ARGS)
+{
+	String::Value message(args[0]);
+	NaString strMessage((wchar_t*)*message);
+	NaString strTitle = L"NaMacro";
+
+	if (args.Length() > 1)
+	{
+		String::Value title(args[1]);
+		strTitle = (wchar_t*)*message;
+	}
+
+	NaNotifyWindow::AddNotifyWindow(strMessage, strTitle);
+}
+
 // description: show MessageBox with message
 // syntax:		alert(message, title, type)
 void NaBasicModule::Alert(V8_FUNCTION_ARGS)
@@ -404,7 +443,6 @@ void NaBasicModule::SetTimeout(V8_FUNCTION_ARGS)
 			Integer::New(isolate, nTimerID)
 		);
 	}
-
 }
 
 // description: exit current event loop

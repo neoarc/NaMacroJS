@@ -44,8 +44,8 @@ NaString NaUrl::GetFullUrl()
 		strUrl.ReplaceAll(L"\\", L"/");
 		strBase.ReplaceAll(L"\\", L"/");
 
-		NaStrArray arUrl = strUrl.Split(L'/');
-		NaStrArray arBase = strBase.Split(L'/');
+		NaStrArray arUrl = strUrl.Split(L"/");
+		NaStrArray arBase = strBase.Split(L"/");
 		if (strBase.GetLast() != L'/')
 		{
 			// Maybe filename

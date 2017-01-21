@@ -23,6 +23,7 @@ public:
 	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);
 	static NaImage* CaptureScreen(int x, int y, int width, int height);
 	static NaImage* Load(const wchar_t *filename);
+	static POINT SearchImageInImage(NaImage* pTarget, NaImage *pSource);
 	
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
@@ -34,5 +35,7 @@ public:
 	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
 
 	// methods
+	DEFINE_CLASS_METHOD(Constructor);
 	DEFINE_CLASS_METHOD(GetPixel);
+	DEFINE_CLASS_METHOD(FindImage);
 };

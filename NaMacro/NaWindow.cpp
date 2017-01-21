@@ -6,6 +6,7 @@
 #include "BasicModule.h"
 
 #include "NaControl.h"
+#include "NaNotifyWindow.h"
 
 bool NaWindow::s_bRegisterClass = false;
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;

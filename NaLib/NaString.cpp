@@ -4,15 +4,14 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-#include <Windows.h>
-
-NaString::NaString() : m_pBuf(nullptr), m_nBufLen(0), m_nLen(0)
+NaString::NaString() : m_pBuf(nullptr), m_nBufLen(0), m_nLen(0), m_pCstrBuf(nullptr)
 {
 }
 
 NaString::NaString(const char * lpsz)
 {
 	m_pBuf = nullptr;
+	m_pCstrBuf = nullptr;
 	m_nBufLen = 0;
 	m_nLen = 0;
 
@@ -22,6 +21,7 @@ NaString::NaString(const char * lpsz)
 NaString::NaString(const wchar_t * lpsz)
 {
 	m_pBuf = nullptr;
+	m_pCstrBuf = nullptr;
 	m_nBufLen = 0;
 	m_nLen = 0;
 
@@ -31,6 +31,7 @@ NaString::NaString(const wchar_t * lpsz)
 NaString::NaString(const NaString & nstr)
 {
 	m_pBuf = nullptr;
+	m_pCstrBuf = nullptr;
 	m_nBufLen = 0;
 	m_nLen = 0;
 
@@ -41,16 +42,18 @@ NaString::NaString(const NaString & nstr)
 NaString::NaString(Local<String>& str)
 {
 	m_pBuf = nullptr;
+	m_pCstrBuf = nullptr;
 	m_nBufLen = 0;
 	m_nLen = 0;
 
-	String::Value value(str);
-	SetBuf((wchar_t*)*value);
+	String::Utf8Value value(str);
+	SetBuf(*value);
 }
 
 NaString::NaString(String::Value & str)
 {
 	m_pBuf = nullptr;
+	m_pCstrBuf = nullptr;
 	m_nBufLen = 0;
 	m_nLen = 0;
 
@@ -60,10 +63,11 @@ NaString::NaString(String::Value & str)
 
 NaString::~NaString()
 {
-	if (m_pBuf)
+	DeallocBuf();
+	if (m_pCstrBuf != nullptr)
 	{
-		delete m_pBuf;
-		m_pBuf = nullptr;
+		delete[] m_pCstrBuf;
+		m_pCstrBuf = nullptr;
 	}
 }
 
@@ -81,13 +85,19 @@ const NaString& NaString::operator=(const NaString &str)
 
 const NaString& NaString::operator+=(const wchar_t *lpsz)
 {
-	Format(L"%s%s", m_pBuf, lpsz);
+	if (m_pBuf == nullptr || m_nLen == 0)
+		SetBuf(lpsz);
+	else
+		Format(L"%ls%ls", (wchar_t*)m_pBuf, lpsz);
 	return *this;
 }
 
 const NaString& NaString::operator+=(NaString &str)
 {
-	Format(L"%s%s", m_pBuf, str.wstr());
+	if (m_pBuf == nullptr || m_nLen == 0)
+		SetBuf(str.wstr());
+	else
+		Format(L"%ls%ls", (wchar_t*)m_pBuf, str.wstr());
 	return *this;
 }
 
@@ -106,9 +116,9 @@ bool NaString::operator==(NaString & str)
 	return Compare(str.wstr()) == 0;
 }
 
-bool NaString::operator<(NaString & str)
+bool NaString::operator<(const NaString & str) const
 {
-	return Compare(str.wstr());
+	return wcscmp((wchar_t*)m_pBuf, (wchar_t*)str.m_pBuf) < 0;
 }
 
 wchar_t NaString::operator[](int index)
@@ -121,20 +131,8 @@ wchar_t NaString::operator[](int index)
 
 NaString::operator const char* () const
 {
-	if (m_pBuf == nullptr)
-		return "";
-
-	int len = WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)m_pBuf, -1, 0, 0, 0, 0);
-	char *sz = (char*)malloc(len);
-	if (sz == 0)
-		return "";
-	
-	len = WideCharToMultiByte(CP_UTF8, 0, (wchar_t*)m_pBuf, -1, sz, len, 0, 0);
-	if (len == 0)
-	{
-		free(sz);
-		sz = 0;
-	}
+	char *sz = nullptr;
+	ConvertWCharToChar((wchar_t*)m_pBuf, &sz);
 
 	return sz;
 }
@@ -148,39 +146,37 @@ NaString::operator const wchar_t* () const
 
 void NaString::ToLower()
 {
-	_wcslwr_s((wchar_t*)m_pBuf, m_nLen+1);
+#ifdef WIN32
+	_wcslwr_s((wchar_t*)m_pBuf, m_nLen + 1);
+#else
+#endif
 }
 
 void NaString::ToUpper()
 {
-	_wcsupr_s((wchar_t*)m_pBuf, m_nLen+1);
+#ifdef WIN32
+	_wcsupr_s((wchar_t*)m_pBuf, m_nLen + 1);
+#else
+#endif
 }
 
 const NaString & NaString::Format(const wchar_t * fmt, ...)
 {
-	/*
-	wchar_t buf[NASTRING_FORMAT_BUFFER_SIZE];
-	memset(&buf, 0, sizeof(wchar_t) * NASTRING_FORMAT_BUFFER_SIZE);
-
-	va_list arglist;
-	va_start(arglist, fmt);
-	vswprintf_s(buf, NASTRING_FORMAT_BUFFER_SIZE, fmt, arglist);
-	va_end(arglist);
-	
-	SetBuf(buf);
-	*/
-
 	const int nBufSize = 5 * NASTRING_FORMAT_BUFFER_SIZE;
 	wchar_t *buf = new wchar_t[nBufSize];
 	memset(buf, 0, sizeof(wchar_t) * nBufSize);
 
 	va_list arglist;
 	va_start(arglist, fmt);
+#ifdef WIN32
 	vswprintf_s(buf, nBufSize, fmt, arglist);
+#else
+	vswprintf(buf, nBufSize, fmt, arglist);
+#endif
 	va_end(arglist);
 
 	SetBuf(buf);
-	delete buf;
+	delete[] buf;
 
 	return *this;
 }
@@ -192,21 +188,19 @@ const NaString & NaString::Format(const char * fmt, ...)
 
 	va_list arglist;
 	va_start(arglist, fmt);
+#ifdef WIN32
 	vsprintf_s(buf, NASTRING_FORMAT_BUFFER_SIZE, fmt, arglist);
+#else
+	vsprintf(buf, fmt, arglist);
+#endif
 	va_end(arglist);
 
+	DeallocBuf();
+
 	// convert to wstr
-	int len = MultiByteToWideChar(CP_UTF8, 0, buf, -1, 0, 0);
-	if (m_pBuf)
-		delete m_pBuf;
-
-	m_nLen = len + 1;
-	m_nBufLen = sizeof(wchar_t) * (len + 1);
-	AllocBuf(m_nBufLen);
-
-	len = MultiByteToWideChar(CP_UTF8, 0, buf, -1, (wchar_t*)m_pBuf, len);
-	if (len == 0)
-		assert(0);
+	int nLen = ConvertCharToWChar(buf, (wchar_t**)&m_pBuf);
+	m_nLen = nLen - 1;
+	m_nBufLen = sizeof(wchar_t) * (nLen);
 
 	return *this;
 }
@@ -228,7 +222,7 @@ int NaString::CompareNoCase(const wchar_t * lpsz)
 {
 	NaString str(*this);
 	str.ToLower();
-	
+
 	NaString str2(lpsz);
 	str2.ToLower();
 
@@ -237,9 +231,23 @@ int NaString::CompareNoCase(const wchar_t * lpsz)
 
 int NaString::Find(wchar_t * ch, int begin /*= 0*/)
 {
-	for (int i = begin; i < m_nLen; i++)
+	int itemlen = wcslen(ch);
+	if (m_nLen < itemlen)
+		return -1;
+
+	for (int i = begin; i < m_nLen - itemlen + 1; i++)
 	{
-		if (*((wchar_t*)m_pBuf + i) == *ch)
+		bool bMatch = true;
+		for (int j = 0; j < itemlen; j++)
+		{
+			if (*((wchar_t*)m_pBuf + i + j) != *(ch + j))
+			{
+				bMatch = false;
+				break;
+			}
+		}
+
+		if (bMatch == true)
 			return i;
 	}
 	return -1;
@@ -263,7 +271,7 @@ NaString NaString::Left(int len)
 	*((wchar_t*)buf + len) = 0;
 
 	strRet.SetBuf((wchar_t*)buf);
-	delete buf;
+	delete[] buf;
 
 	return strRet;
 }
@@ -283,7 +291,6 @@ NaString NaString::Mid(int index, int len /*= -1*/)
 
 	NaString strRet;
 	unsigned char *buf;
-	int nNewLen = len;
 	int nNewBufLen = sizeof(wchar_t) * (len + 1);
 	buf = new unsigned char[nNewBufLen];
 
@@ -291,7 +298,7 @@ NaString NaString::Mid(int index, int len /*= -1*/)
 	*((wchar_t*)buf + len) = 0;
 
 	strRet.SetBuf((wchar_t*)buf);
-	delete buf;
+	delete[] buf;
 
 	return strRet;
 }
@@ -308,7 +315,6 @@ NaString NaString::Right(int len)
 
 	NaString strRet;
 	unsigned char *buf;
-	int nNewLen = len;
 	int nNewBufLen = sizeof(wchar_t) * (len + 1);
 	buf = new unsigned char[nNewBufLen];
 
@@ -316,12 +322,12 @@ NaString NaString::Right(int len)
 	*((wchar_t*)buf + len) = 0;
 
 	strRet.SetBuf((wchar_t*)buf);
-	delete buf;
+	delete[] buf;
 
 	return strRet;
 }
 
-NaStrArray NaString::Split(wchar_t ch)
+NaStrArray NaString::Split(wchar_t *ch)
 {
 	NaStrArray ar;
 
@@ -332,7 +338,7 @@ NaStrArray NaString::Split(wchar_t ch)
 	while (!bBreak)
 	{
 		NaString token;
-		int index = this->Find(&ch, from);
+		int index = this->Find(ch, from);
 		if (index < 0)
 		{
 			bBreak = true;
@@ -367,7 +373,7 @@ int NaString::ReplaceAll(wchar_t * from, wchar_t * to)
 		temp += Mid(begin, index - begin);
 		temp += to;
 
-		begin = index + 1;
+		begin = index + wcslen(from);
 	}
 
 	SetBuf(temp.wstr());
@@ -382,10 +388,14 @@ const NaString & NaString::AppendFormat(const wchar_t * fmt, ...)
 
 	va_list arglist;
 	va_start(arglist, fmt);
+#ifdef WIN32
 	vswprintf_s(buf, NASTRING_FORMAT_BUFFER_SIZE, fmt, arglist);
+#else
+	vswprintf(buf, NASTRING_FORMAT_BUFFER_SIZE, fmt, arglist);
+#endif
 	va_end(arglist);
 
-	Format(L"%s%s", m_pBuf, buf);
+	Format(L"%ls%ls", (wchar_t*)m_pBuf, buf);
 	return *this;
 }
 
@@ -396,21 +406,14 @@ const NaString & NaString::AppendFormat(const char * fmt, ...)
 
 	va_list arglist;
 	va_start(arglist, fmt);
+#ifdef WIN32
 	vsprintf_s(buf, NASTRING_FORMAT_BUFFER_SIZE, fmt, arglist);
+#else
+	vsprintf(buf, fmt, arglist);
+#endif
 	va_end(arglist);
 
-	// convert to wstr
-	/*
-	int len = MultiByteToWideChar(CP_UTF8, 0, buf, -1, 0, 0);
-	int buflen = sizeof(wchar_t) * (len + 1);
-	wchar_t *wbuf = new wchar_t[buflen];
-
-	len = MultiByteToWideChar(CP_UTF8, 0, buf, -1, (wchar_t*)wbuf, len);
-	if (len == 0)
-		assert(0);
-	*/
-
-	Format("%s%s", (const char*)*this, buf);
+	Format("%s%s", cstr(), buf);
 	return *this;
 }
 
@@ -423,11 +426,15 @@ const wchar_t * NaString::wstr()
 
 const char * NaString::cstr()
 {
-	int nChars = WideCharToMultiByte(CP_ACP, 0, (wchar_t*)m_pBuf, -1, NULL, 0, 0, 0);
-	char *str = new char[nChars];
-	WideCharToMultiByte(CP_ACP, 0, (wchar_t*)m_pBuf, -1, str, nChars, 0, 0);
-	
-	return str;
+	if (m_pCstrBuf != nullptr)
+	{
+		delete[] m_pCstrBuf;
+		m_pCstrBuf = nullptr;
+	}
+
+	ConvertWCharToChar((wchar_t*)m_pBuf, &m_pCstrBuf);
+
+	return m_pCstrBuf;
 }
 
 wchar_t NaString::GetLast()
@@ -438,8 +445,64 @@ wchar_t NaString::GetLast()
 	return *((wchar_t*)m_pBuf + m_nLen);
 }
 
+int NaString::ConvertWCharToChar(const wchar_t* wstr, char** str)
+{
+#ifdef WIN32
+	int nChars = WideCharToMultiByte(CP_ACP, 0, (wchar_t*)wstr, -1, NULL, 0, 0, 0);
+	if (nChars == 0)
+	{
+		*str = new char[1];
+		*(*str) = '\0';
+		return 0;
+	}
+
+	*str = new char[nChars];
+	WideCharToMultiByte(CP_ACP, 0, (wchar_t*)wstr, -1, *str, nChars, 0, 0);
+#else
+	int nChars = wcstombs(nullptr, wstr, 0);
+	*str = new char[nChars + 1];
+
+	size_t szTest = wcstombs(*str, wstr, nChars);
+	*((char*)(*str) + nChars) = '\0';
+
+	//NaDebugOut(L"* ConvWCharToChar\n* (1) %ls\n", wstr);
+	//printf("* (2) %s\n", *str);
+#endif
+
+	return nChars;
+}
+
+int NaString::ConvertCharToWChar(const char* str, wchar_t** wstr)
+{
+#ifdef WIN32
+	// MBTWC = contains end byte(zero)
+	int nWChars = MultiByteToWideChar(CP_UTF8, 0, str, -1, 0, 0);
+	if (nWChars == 0)
+	{
+		*wstr = new wchar_t[1];
+		*(*wstr) = L'\0';
+		return 0;
+	}
+
+	*wstr = new wchar_t[nWChars];
+	MultiByteToWideChar(CP_UTF8, 0, str, -1, (wchar_t*)*wstr, nWChars);
+#else
+	// strlen = just text length
+	int nWChars = strlen(str) + 1;
+
+	*wstr = new wchar_t[nWChars];
+	mbstowcs((wchar_t*)*wstr, str, nWChars);
+
+	*((*wstr) + nWChars - 1) = L'\0';
+#endif
+
+	return nWChars;
+}
+
 const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
 {
+	unsigned char* pCurBuf = m_pBuf;
+
 	if (lpsz == nullptr)
 	{
 		m_nLen = 0;
@@ -461,23 +524,19 @@ const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
 		*((wchar_t*)m_pBuf + m_nLen) = 0;
 	}
 
+	delete pCurBuf;
+
 	return *this;
 }
 
 const NaString & NaString::SetBuf(const char * sz, int len)
 {
+	DeallocBuf();
+
 	// convert to wstr
-	len = MultiByteToWideChar(CP_UTF8, 0, sz, -1, 0, 0);
-	if (m_pBuf)
-		delete m_pBuf;
-
-	m_nLen = len;
-	m_nBufLen = sizeof(wchar_t) * (len + 1);
-	AllocBuf(m_nBufLen);
-
-	len = MultiByteToWideChar(CP_UTF8, 0, sz, -1, (wchar_t*)m_pBuf, len);
-	if (len == 0)
-		assert(0);
+	int nLen = ConvertCharToWChar(sz, (wchar_t**)&m_pBuf);
+	m_nLen = nLen;
+	m_nBufLen = sizeof(wchar_t) * (nLen + 1);
 
 	return *this;
 }
@@ -493,6 +552,23 @@ void NaString::AllocBuf(int len)
 		assert(0);
 
 	m_pBuf = new unsigned char[len];
+}
+
+void NaString::DeallocBuf(unsigned char *pBuf)
+{
+	if (pBuf == nullptr)
+		pBuf = m_pBuf;
+
+	if (pBuf)
+	{
+		// for debug
+		//OutputDebugStringW(L"DeleteBuf: ");
+		//OutputDebugStringW((wchar_t*)m_pBuf);
+		//OutputDebugStringW(L"\n");
+
+		delete[] pBuf;
+		pBuf = nullptr;
+	}
 }
 
 //
@@ -511,7 +587,7 @@ NaStrArray::~NaStrArray()
 NaString NaStrArray::operator[](int nIndex)
 {
 	std::list<NaString>::iterator it = m_Array.begin();
-	for (int i=0; it != m_Array.end(); ++it,++i)
+	for (int i = 0; it != m_Array.end(); ++it, ++i)
 	{
 		if (i == nIndex)
 			return (*it);
@@ -545,6 +621,17 @@ int NaStrArray::GetCount()
 	return m_Array.size();
 }
 
+int NaStrArray::Find(NaString str)
+{
+	std::list<NaString>::iterator it = m_Array.begin();
+	for (int i = 0; it != m_Array.end(); ++it, ++i)
+	{
+		if (str.Compare(*it) == 0)
+			return i;
+	}
+	return -1;
+}
+
 NaString NaStrArray::Join(wchar_t * ch)
 {
 	int nCnt = GetCount();
@@ -553,7 +640,7 @@ NaString NaStrArray::Join(wchar_t * ch)
 	for (int i = 0; it != m_Array.end(); ++it, ++i)
 	{
 		str += *it;
-		if (i < nCnt-1)
+		if (i < nCnt - 1)
 			str += ch;
 	}
 
@@ -572,7 +659,7 @@ NaString NaStrArray::Pop()
 			strRet = *it;
 			m_Array.erase(it);
 			break;
-		}		
+		}
 	}
 	return strRet;
 }

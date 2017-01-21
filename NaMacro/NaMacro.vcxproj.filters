@@ -90,6 +90,12 @@
     <ClCompile Include="..\NaLib\NaHttp.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NaFile.cpp">
+      <Filter>Source Files\Objects</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NaLib\NaNotifyWindow.cpp">
+      <Filter>NaLib</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -148,6 +154,12 @@
     </ClInclude>
     <ClInclude Include="..\NaLib\NaHttp.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaFile.h">
+      <Filter>Header Files\Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="..\NaLib\NaNotifyWindow.h">
+      <Filter>NaLib</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -8,8 +8,10 @@ function main()
 	try {
 		consoleWindow.visible = true;
 
-		var img = system.screen.capture(0, 0, 100, 100);
-		img.getPixel(0, 0);
+		var img1 = system.screen.capture(150, 150, 100, 100);
+		var img2 = system.screen.capture(0, 0, 300, 300);
+		var ret = img2.findImage(img1);
+		alert(ret.x + ", " + ret.y);
 
 		//prompt("I am prompt");
 

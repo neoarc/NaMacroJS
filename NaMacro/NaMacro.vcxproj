@@ -113,6 +113,7 @@
   <ItemGroup>
     <ClCompile Include="..\NaLib\NaHttp.cpp" />
     <ClCompile Include="..\NaLib\NaMessageBox.cpp" />
+    <ClCompile Include="..\NaLib\NaNotifyWindow.cpp" />
     <ClCompile Include="..\NaLib\NaString.cpp" />
     <ClCompile Include="..\NaLib\NaUrl.cpp" />
     <ClCompile Include="BasicModule.cpp" />
@@ -121,6 +122,7 @@
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
     <ClCompile Include="NaControl.cpp" />
+    <ClCompile Include="NaFile.cpp" />
     <ClCompile Include="NaImage.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
@@ -136,6 +138,7 @@
   <ItemGroup>
     <ClInclude Include="..\NaLib\NaHttp.h" />
     <ClInclude Include="..\NaLib\NaMessageBox.h" />
+    <ClInclude Include="..\NaLib\NaNotifyWindow.h" />
     <ClInclude Include="..\NaLib\NaString.h" />
     <ClInclude Include="..\NaLib\NaUrl.h" />
     <ClInclude Include="BasicModule.h" />
@@ -144,6 +147,7 @@
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />
     <ClInclude Include="NaControl.h" />
+    <ClInclude Include="NaFile.h" />
     <ClInclude Include="NaImage.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />

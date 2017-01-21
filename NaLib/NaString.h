@@ -25,6 +25,7 @@ private:
 	};
 	int m_nBufLen;
 	int m_nLen;
+	char *m_pCstrBuf;
 
 public:
 	// constructor
@@ -50,7 +51,7 @@ public:
 	bool operator==(const wchar_t *lpsz);
 	bool operator==(NaString &str);
 
-	bool operator<(NaString &str);
+	bool operator<(const NaString &str) const;
 
 	wchar_t operator[](int index);
 
@@ -65,12 +66,12 @@ public:
 	int GetLength();
 	int Compare(const wchar_t *lpsz);
 	int CompareNoCase(const wchar_t *lpsz);
-	
+
 	int Find(wchar_t* ch, int begin = 0);
 	NaString Left(int len);
 	NaString Mid(int index, int len = -1);
 	NaString Right(int len);
-	NaStrArray Split(wchar_t ch);
+	NaStrArray Split(wchar_t *ch);
 	int ReplaceAll(wchar_t* from, wchar_t* to);
 
 	// utility
@@ -79,13 +80,17 @@ public:
 	const wchar_t* wstr();
 	const char* cstr();
 	wchar_t GetLast();
-	
+
+	static int ConvertWCharToChar(const wchar_t* wstr, char** str);
+	static int ConvertCharToWChar(const char* str, wchar_t** wstr);
+
 protected:
 	// internal function
 	const NaString& SetBuf(const wchar_t *wsz, int len = -1);
 	const NaString& SetBuf(const char *sz, int len = -1);
 	const wchar_t *GetBuf();
 	void AllocBuf(int len);
+	void DeallocBuf(unsigned char *pBuf = nullptr);
 };
 
 class NaStrArray
@@ -99,6 +104,7 @@ public:
 	int Add(NaString str);
 	int Remove(int nIndex);
 	int GetCount();
+	int Find(NaString str);
 
 	NaString Join(wchar_t* ch);
 	NaString Pop(); // remove last element

@@ -24,10 +24,10 @@ NaNotifyWindow::~NaNotifyWindow()
 {
 }
 
-void NaNotifyWindow::Create(HWND hParent, NaString strMessage, NaString strTitle)
+void NaNotifyWindow::Create(NaString strMessage, NaString strTitle)
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
-	
+
 	m_strMessage = strMessage;
 	m_strTitle = strTitle;
 
@@ -54,7 +54,7 @@ void NaNotifyWindow::Create(HWND hParent, NaString strMessage, NaString strTitle
 			s_ptLastNotifyWindow.x,
 			s_ptLastNotifyWindow.y - nH - 2
 		};
-		
+
 		if (pt.y < 0)
 		{
 			pt = {
@@ -72,10 +72,7 @@ void NaNotifyWindow::Create(HWND hParent, NaString strMessage, NaString strTitle
 		NA_NOTIFYWINDOW_CLASS,
 		strTitle.wstr(), // _In_opt_ LPCTSTR   lpWindowName,
 		dwStyle, // _In_     DWORD     dwStyle,
-		pt.x,
-		pt.y,
-		nW,
-		nH,
+		pt.x, pt.y, nW, nH,
 		s_hMasterWindow, // _In_opt_ HWND      hWndParent,
 		NULL, // _In_opt_ HMENU     hMenu,
 		hInstance,
@@ -107,7 +104,7 @@ void NaNotifyWindow::Create(HWND hParent, NaString strMessage, NaString strTitle
 LRESULT NaNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	NaNotifyWindow *pThis = (NaNotifyWindow*)GetWindowLong(hWnd, GWL_USERDATA);
-	
+
 	switch (message)
 	{
 	case WM_SHOWWINDOW:
@@ -124,7 +121,7 @@ LRESULT NaNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 
 			HWND hMessage = CreateWindow(L"Static", pThis->m_strMessage.wstr(),
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
-				4, 30, nWidth, nHeight - 30,
+				0, 30, nWidth, nHeight - 30,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
 
 			LONG lStyle = GetWindowLong(hMessage, GWL_EXSTYLE);
@@ -179,18 +176,10 @@ void NaNotifyWindow::AddNotifyWindow(NaString strMessage, NaString strTitle)
 		// Create master window
 		if (s_hMasterWindow == nullptr)
 		{
+			// Hidden window for hide from taskbar
 			s_hMasterWindow = ::CreateWindow(
 				NA_NOTIFYWINDOW_CLASS,
-				L"", // _In_opt_ LPCTSTR   lpWindowName,
-				0, // _In_     DWORD     dwStyle,
-				0,
-				0,
-				0,
-				0,
-				nullptr, // _In_opt_ HWND      hWndParent,
-				NULL, // _In_opt_ HMENU     hMenu,
-				hInstance,
-				NULL // _In_opt_ LPVOID    lpParam
+				L"", 0,	0, 0, 0, 0, nullptr, NULL, hInstance, NULL
 			);
 		}
 	}
@@ -198,11 +187,7 @@ void NaNotifyWindow::AddNotifyWindow(NaString strMessage, NaString strTitle)
 	std::thread([strMessage, strTitle]// () -> void
 	{
 		NaNotifyWindow *pWindow = new NaNotifyWindow;
-
-		pWindow->Create(
-			nullptr,
-			strMessage,
-			strTitle);
+		pWindow->Create(strMessage, strTitle);
 
 		::Sleep(1);
 	}

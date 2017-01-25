@@ -13,7 +13,7 @@ public:
 	NaNotifyWindow();
 	~NaNotifyWindow();
 
-	void Create(HWND hParent, NaString strMessage, NaString strTitle);
+	void Create(NaString strMessage, NaString strTitle);
 	NaString m_strMessage;
 	NaString m_strTitle;
 
@@ -25,4 +25,3 @@ public:
 
 	static void AddNotifyWindow(NaString strMessage, NaString strTitle);
 };
-

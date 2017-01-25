@@ -21,7 +21,14 @@ function main()
     }
     */
 
+    /*
     notify("안녕하세요!");
     alert("Click to exit");
+    */
+
+    // Bug 170124
+    notify("Message pump not works");
+    sleep(10000);
+
     exit();
 }

@@ -2,12 +2,16 @@
 // File
 // 2017.01.21 neoarc (neoarcturus@gmail.com)
 //
-function main() {
+function main()
+{
+    var filename = "./FileIO.txt";
+
     /*
-    var f = new File("./_Temp.txt", "w");
+    var f = new File(filename, "w");
     f.write("test");
     */
-    var f = new File("./_Temp.txt", "r");
+
+    var f = new File(filename, "r");
     var r = f.read();
     f.close();
 

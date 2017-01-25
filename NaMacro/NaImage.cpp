@@ -138,7 +138,63 @@ NaImage * NaImage::Load(const wchar_t * filename)
 	return pImage;
 }
 
-POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource)
+// description: Make image object to byte array
+LPCOLORREF NaImage::ImageToBuffer(NaImage * pImage)
+{
+	if (pImage == nullptr)
+		return nullptr;
+
+	HDC hCompatibleDC = CreateCompatibleDC(pImage->m_hMemoryDC);
+	if (!hCompatibleDC)
+		return nullptr;
+
+	LPCOLORREF buf = nullptr;
+	HGDIOBJ hOldObj = nullptr;
+	bool bFail = true;
+	do 
+	{		
+		struct BITMAPINFO3
+		{
+			BITMAPINFOHEADER bmiHeader;
+			RGBQUAD bmiColors[260];
+		} bmi;
+
+		bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+		bmi.bmiHeader.biBitCount = 0;
+		if (!GetDIBits(hCompatibleDC, pImage->m_hBitmap, 0, 0, nullptr, (LPBITMAPINFO)&bmi, DIB_RGB_COLORS))
+			break;
+
+		int nWidth = bmi.bmiHeader.biWidth;
+		int nHeight = bmi.bmiHeader.biHeight;
+
+		LONG nPixelCount = nWidth * nHeight;
+		buf = new DWORD[bmi.bmiHeader.biSizeImage];
+
+		bmi.bmiHeader.biBitCount = 32;
+		bmi.bmiHeader.biHeight = -bmi.bmiHeader.biHeight;
+		
+		hOldObj = SelectObject(hCompatibleDC, pImage->m_hBitmap);													  
+ 		if (!(GetDIBits(hCompatibleDC, pImage->m_hBitmap, 0, nHeight, buf, (LPBITMAPINFO)&bmi, DIB_RGB_COLORS)))
+			break;
+
+		bFail = false;
+	} while (false);
+
+	if (hOldObj)
+		SelectObject(hCompatibleDC, hOldObj);
+	DeleteDC(hCompatibleDC);
+	
+	if (bFail && buf)
+	{
+		delete[] buf;
+		buf = nullptr;
+	}
+
+	return buf;
+}
+
+// description: Search sourch image from target image
+POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource, int nAccuracyFactor)
 {
 	POINT pt = { -1, -1 };
 	if (pTarget != nullptr && pSource != nullptr)
@@ -150,6 +206,81 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource)
 
 		if (nTargetWidth >= nSourceWidth && nTargetHeight >= nSourceHeight)
 		{
+			// FindImage Logic V2: Compare memory
+			LPCOLORREF lpTargetBuf = ImageToBuffer(pTarget);
+			LPCOLORREF lpSourceBuf = ImageToBuffer(pSource);
+
+			if (lpTargetBuf == nullptr || lpSourceBuf == nullptr)
+			{
+				if (lpTargetBuf)
+					delete[] lpTargetBuf;
+				if (lpSourceBuf)
+					delete[] lpSourceBuf;
+				return pt;
+			}
+
+			bool bMismatch;
+			for (int y = 0; y < nTargetHeight - nSourceHeight; y++)
+			{
+				for (int x = 0; x < nTargetWidth - nSourceWidth; x++)
+				{
+					bMismatch = false;
+					for (int y2 = 0; y2 < nSourceHeight; y2++)
+					{
+						for (int x2 = 0; x2 < nSourceWidth; x2++)
+						{
+							COLORREF nCol1 = lpTargetBuf[(x + x2) + (y + y2) * (pTarget->m_rc.right - pTarget->m_rc.left)];
+							COLORREF nCol2 = lpSourceBuf[(x2) + (y2) * (pSource->m_rc.right - pSource->m_rc.left)];
+							if (nAccuracyFactor == 0)
+							{
+								if (nCol1 != nCol2)
+								{
+									bMismatch = true;
+									break;
+								}
+							}
+							else
+							{
+								BYTE r1 = GetRValue(nCol1);
+								BYTE g1 = GetRValue(nCol1);
+								BYTE b1 = GetRValue(nCol1);
+								BYTE r2 = GetRValue(nCol2);
+								BYTE g2 = GetRValue(nCol2);
+								BYTE b2 = GetRValue(nCol2);
+								if (abs(r1 - r2) > nAccuracyFactor ||
+									abs(g1 - g2) > nAccuracyFactor ||
+									abs(b1 - b2) > nAccuracyFactor)
+								{
+									bMismatch = true;
+									break;
+								}
+							}
+						}
+						if (bMismatch)
+							break;
+					}
+
+					if (bMismatch == false)
+					{
+						pt.x = x;
+						pt.y = y;
+						if (lpTargetBuf)
+							delete[] lpTargetBuf;
+						if (lpSourceBuf)
+							delete[] lpSourceBuf;
+
+						return pt;
+					}
+				}
+			}
+
+			if (lpTargetBuf)
+				delete[] lpTargetBuf;
+			if (lpSourceBuf)
+				delete[] lpSourceBuf;
+
+			// FindImage Logic V1
+			/*
 			HGDIOBJ hObjTarget = ::SelectObject(pTarget->m_hMemoryDC, pTarget->m_hBitmap);
 			HGDIOBJ hObjSource = ::SelectObject(pSource->m_hMemoryDC, pSource->m_hBitmap);
 
@@ -189,6 +320,7 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource)
 
 			::SelectObject(pTarget->m_hMemoryDC, hObjTarget);
 			::SelectObject(pSource->m_hMemoryDC, hObjSource);
+			*/
 		}
 	}
 
@@ -308,7 +440,7 @@ void NaImage::GetPixel(V8_FUNCTION_ARGS)
 }
 
 // description: find image(argument) from image(this)
-// syntax:		imageObj.findImage(image object)
+// syntax:		imageObj.findImage(image_object, accuracy_factor)
 void NaImage::FindImage(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
@@ -337,7 +469,15 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	POINT pt = SearchImageInImage(pImageThis, pImageFind);
+	int nAccuracyFactor = 0;
+	if (args.Length() >= 2)
+	{
+		nAccuracyFactor = args[1]->Int32Value();
+		if (nAccuracyFactor < 0)
+			nAccuracyFactor = 0;
+	}
+
+	POINT pt = SearchImageInImage(pImageThis, pImageFind, nAccuracyFactor);
 
 	Local<Object> objRet = Object::New(isolate);
 	objRet->Set(

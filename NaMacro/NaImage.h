@@ -23,7 +23,8 @@ public:
 	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);
 	static NaImage* CaptureScreen(int x, int y, int width, int height);
 	static NaImage* Load(const wchar_t *filename);
-	static POINT SearchImageInImage(NaImage* pTarget, NaImage *pSource);
+	static LPCOLORREF ImageToBuffer(NaImage *pImage);
+	static POINT SearchImageInImage(NaImage *pTarget, NaImage *pSource, int nAccuracyFactor = 0);
 	
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);

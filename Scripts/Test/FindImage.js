@@ -40,7 +40,22 @@ function test() {
     c = w.addControl("Static", 0, 110, 500, 500, "", true);
     c.image = img2;
 
+    var time1 = Date.now();
     var ret = img2.findImage(img1);
-    system.mouse.move(ret.x + img1.width / 2, ret.y + img1.height / 2);
-    alert(ret.x + ", " + ret.y);
+    var time2 = Date.now();
+    if (ret.x == -1 && ret.y == -1)
+    {
+        alert("Fail!");
+    }
+    else
+    {
+        system.mouse.move(ret.x + img1.width / 2, ret.y + img1.height / 2);
+
+        // logic1: 4000ms
+        // logic2: 40ms
+        alert(
+            "Found! " +
+            ret.x + "," + ret.y + " : " +
+            (time2 - time1) + "ms");
+    }
 }

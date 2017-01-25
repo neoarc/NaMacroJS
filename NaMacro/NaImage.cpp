@@ -242,11 +242,11 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource, int nAcc
 							else
 							{
 								BYTE r1 = GetRValue(nCol1);
-								BYTE g1 = GetRValue(nCol1);
-								BYTE b1 = GetRValue(nCol1);
+								BYTE g1 = GetGValue(nCol1);
+								BYTE b1 = GetBValue(nCol1);
 								BYTE r2 = GetRValue(nCol2);
-								BYTE g2 = GetRValue(nCol2);
-								BYTE b2 = GetRValue(nCol2);
+								BYTE g2 = GetGValue(nCol2);
+								BYTE b2 = GetBValue(nCol2);
 								if (abs(r1 - r2) > nAccuracyFactor ||
 									abs(g1 - g2) > nAccuracyFactor ||
 									abs(b1 - b2) > nAccuracyFactor)
@@ -460,6 +460,9 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 		return;
 	}
 
+	//
+	// TODO Need validation!!!
+	//
 	Local<Object> objFind = args[0]->ToObject();
 	NaImage *pImageFind = reinterpret_cast<NaImage*>(UnwrapObject(objFind));
 	if (pImageFind == nullptr)

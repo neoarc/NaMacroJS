@@ -472,7 +472,7 @@ void NaBasicModule::GetActiveWindow(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
-	NaWindow *pWindow = NaWindow::GetActiveWindow();;
+	NaWindow *pWindow = NaWindow::GetActiveWindow();
 	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
 
 	args.GetReturnValue().Set(result);

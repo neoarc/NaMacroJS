@@ -45,6 +45,7 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 	// methods
 	ADD_IMAGE_METHOD(getPixel, GetPixel);
 	ADD_IMAGE_METHOD(findImage, FindImage);
+	ADD_IMAGE_METHOD(reset, Reset);
 
 	return handle_scope.Escape(templ);
 }
@@ -448,27 +449,27 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 	NaImage *pImageThis = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
 	if (pImageThis == nullptr)
 	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Null(isolate));
 		return;
 	}
 
 	if (args.Length() < 1)
 	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Null(isolate));
 		return;
 	}
 
-	//
-	// TODO Need validation!!!
-	//
+	if (!args[0]->IsObject())
+	{
+		args.GetReturnValue().Set(Null(isolate));
+		return;
+	}
+
 	Local<Object> objFind = args[0]->ToObject();
 	NaImage *pImageFind = reinterpret_cast<NaImage*>(UnwrapObject(objFind));
 	if (pImageFind == nullptr)
 	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		args.GetReturnValue().Set(Null(isolate));
 		return;
 	}
 
@@ -481,6 +482,12 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 	}
 
 	POINT pt = SearchImageInImage(pImageThis, pImageFind, nAccuracyFactor);
+	if (pt.x == -1 || pt.y == -1)
+	{
+		// not found!
+		args.GetReturnValue().Set(Null(isolate));
+		return;
+	}
 
 	Local<Object> objRet = Object::New(isolate);
 	objRet->Set(
@@ -494,4 +501,34 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 
 	// return
 	args.GetReturnValue().Set(objRet);
+}
+
+// description: reset image buffer
+// syntax:		imageObj.reset()
+void NaImage::Reset(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+	Local<Object> objThis = args.This();
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
+	if (pImage == nullptr)
+	{
+		args.GetReturnValue().Set(Boolean::New(isolate, false));
+		return;
+	}
+
+	if (pImage->m_hMemoryDC)
+	{
+		::DeleteDC(pImage->m_hMemoryDC);
+		pImage->m_hMemoryDC = nullptr;
+	}
+	
+	if (pImage->m_hBitmap)
+	{
+		::DeleteObject(pImage->m_hBitmap);
+		pImage->m_hBitmap = nullptr;
+	}
+
+	pImage->m_rc = { 0, 0, 0, 0 };	
+	
+	args.GetReturnValue().Set(Boolean::New(isolate, true));
 }

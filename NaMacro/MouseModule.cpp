@@ -28,6 +28,8 @@ void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_templat
 	ADD_MOUSE_METHOD(rbuttonUp,		RButtonUp);
 	ADD_MOUSE_METHOD(wheelDown,		WheelDown);
 	ADD_MOUSE_METHOD(wheelUp,		WheelUp);
+	ADD_MOUSE_METHOD(postLbuttonDown,	PostLButtonDown);
+	ADD_MOUSE_METHOD(postLbuttonUp,		PostLButtonUp);
 }
 
 void NaMouseModule::Release()
@@ -162,7 +164,6 @@ void NaMouseModule::LButtonUp(V8_FUNCTION_ARGS)
 	::SendInput(1, &input, sizeof(INPUT));
 }
 
-
 // description: 
 void NaMouseModule::RButtonDown(V8_FUNCTION_ARGS)
 {
@@ -200,7 +201,6 @@ void NaMouseModule::WheelDown(V8_FUNCTION_ARGS)
 	// TODO implement
 }
 
-
 // description: 
 void NaMouseModule::WheelUp(V8_FUNCTION_ARGS)
 {
@@ -208,4 +208,42 @@ void NaMouseModule::WheelUp(V8_FUNCTION_ARGS)
 		Move(args);
 
 	// TODO implement
+}
+
+// description: 
+void NaMouseModule::PostLButtonDown(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		int x = args[0]->Int32Value();
+		int y = args[1]->Int32Value();
+
+		POINT pt = { x, y };
+		HWND hWnd = WindowFromPoint(pt);
+		RECT rc;
+		GetWindowRect(hWnd, &rc);
+		x -= rc.left;
+		y -= rc.top;
+
+		PostMessage(hWnd, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(x, y));
+	}
+}
+
+// description: 
+void NaMouseModule::PostLButtonUp(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		int x = args[0]->Int32Value();
+		int y = args[1]->Int32Value();
+
+		POINT pt = { x, y };
+		HWND hWnd = WindowFromPoint(pt);
+		RECT rc;
+		GetWindowRect(hWnd, &rc);
+		x -= rc.left;
+		y -= rc.top;
+
+		PostMessage(hWnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(x, y));
+	}
 }

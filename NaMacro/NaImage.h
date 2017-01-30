@@ -39,4 +39,5 @@ public:
 	DEFINE_CLASS_METHOD(Constructor);
 	DEFINE_CLASS_METHOD(GetPixel);
 	DEFINE_CLASS_METHOD(FindImage);
+	DEFINE_CLASS_METHOD(Reset);
 };

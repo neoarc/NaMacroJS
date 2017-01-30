@@ -33,7 +33,7 @@ public:
 	// Member
 	NaWindowTypes m_enType;
 	HWND m_hWnd;
-	int m_x, m_y, m_width, m_height;
+	int m_x, m_y, m_width, m_height, m_clientWidth, m_clientHeight;
 	std::list<HWND> m_arControls;
 
 	// internal struct
@@ -61,11 +61,14 @@ public:
 	DEFINE_CLASS_ACCESSOR(GetY, SetY);
 	DEFINE_CLASS_ACCESSOR(GetWidth, SetWidth);
 	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
+	DEFINE_CLASS_ACCESSOR_RO(GetClientWidth); 
+	DEFINE_CLASS_ACCESSOR_RO(GetClientHeight); 
 	DEFINE_CLASS_ACCESSOR_RO(GetClass);
 	DEFINE_CLASS_ACCESSOR(GetText, SetText);
 	DEFINE_CLASS_ACCESSOR(GetVisible, SetVisible);
 	DEFINE_CLASS_ACCESSOR(GetTopmost, SetTopmost);
 	DEFINE_CLASS_ACCESSOR(GetHandle, SetHandle);
+	DEFINE_CLASS_ACCESSOR(GetState, SetState);
 
 	// methods
 	DEFINE_CLASS_METHOD(Constructor);

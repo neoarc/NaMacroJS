@@ -77,10 +77,11 @@ function getWindowProperties(w)
 
 	str += ("   - text: " + w.text + "\n");
 	str += ("   - class: " + w.class + "\n");
-	str += ("   - position: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ")\n");
+	str += ("   - position: " + w.x + "," + w.y + " (" + w.width + "x" + w.height + ") client: (" + w.clientWidth + "x" + w.clientHeight + ")\n");
 	str += ("   - handle: " + to_hex8(w.handle) + " (" + w.handle + ")\n");
 	str += ("   - topmost: " + w.topmost + "\n");
 	str += ("   - visible: " + w.visible);
+	str += ("   - state: " + w.state);
 
 	return str;
 }

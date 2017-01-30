@@ -19,6 +19,8 @@ NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 	m_y = 0;
 	m_width = 0;
 	m_height = 0;
+	m_clientWidth = 0;
+	m_clientHeight = 0;
 
 	NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
@@ -151,11 +153,14 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_ACCESSOR(y, GetY, SetY);
 	ADD_WINDOW_ACCESSOR(width, GetWidth, SetWidth);
 	ADD_WINDOW_ACCESSOR(height, GetHeight, SetHeight);
+	ADD_WINDOW_ACCESSOR(clientWidth, GetClientWidth, nullptr);
+	ADD_WINDOW_ACCESSOR(clientHeight, GetClientHeight, nullptr);
 	ADD_WINDOW_ACCESSOR(class, GetClass, nullptr);
 	ADD_WINDOW_ACCESSOR(text, GetText, SetText);
 	ADD_WINDOW_ACCESSOR(visible, GetVisible, SetVisible);
 	ADD_WINDOW_ACCESSOR(topmost, GetTopmost, SetTopmost);
 	ADD_WINDOW_ACCESSOR(handle, GetHandle, SetHandle);
+	ADD_WINDOW_ACCESSOR(state, GetState, SetState);
 
 	// methods
 	ADD_WINDOW_METHOD(create, Create);
@@ -346,6 +351,40 @@ void NaWindow::SetHeight(V8_SETTER_ARGS)
 	}
 }
 
+// description: client width property getter
+void NaWindow::GetClientWidth(V8_GETTER_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	if (pWindow && pWindow->m_hWnd)
+	{
+		RECT rc;
+		::GetClientRect(pWindow->m_hWnd, &rc);
+		pWindow->m_clientWidth = rc.right - rc.left;
+	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_clientWidth)
+	);
+}
+
+// description: client height property getter
+void NaWindow::GetClientHeight(V8_GETTER_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	if (pWindow && pWindow->m_hWnd)
+	{
+		RECT rc;
+		::GetClientRect(pWindow->m_hWnd, &rc);
+		pWindow->m_clientHeight = rc.bottom - rc.top;
+	}
+
+	info.GetReturnValue().Set(
+		Integer::New(isolate, pWindow->m_clientHeight)
+	);
+}
+
 // description: class property getter/setter
 void NaWindow::GetClass(V8_GETTER_ARGS)
 {
@@ -517,6 +556,70 @@ void NaWindow::SetHandle(Local<String> name, Local<Value> value, const PropertyC
 	if (pWindow)
 	{
 		pWindow->m_hWnd = (HWND)value->Int32Value();
+	}
+}
+
+// description: state property getter/setter
+void NaWindow::GetState(Local<String> name, const PropertyCallbackInfo<Value>& info)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	if (pWindow)
+	{
+		WINDOWPLACEMENT wndpl;
+		GetWindowPlacement(pWindow->m_hWnd, &wndpl);
+
+		Isolate *isolate = info.GetIsolate();
+		switch(wndpl.showCmd)
+		{
+		case SW_MAXIMIZE:
+			info.GetReturnValue().Set(
+				String::NewFromUtf8(isolate, "maximized", NewStringType::kInternalized).ToLocalChecked()
+			);
+			break;
+		case SW_NORMAL:
+			info.GetReturnValue().Set(
+				String::NewFromUtf8(isolate, "normal", NewStringType::kInternalized).ToLocalChecked()
+			);
+			break;
+		case SW_MINIMIZE:
+			info.GetReturnValue().Set(
+				String::NewFromUtf8(isolate, "minimized", NewStringType::kInternalized).ToLocalChecked()
+			);
+			break;
+		}
+	}
+	else
+	{
+		info.GetReturnValue().SetNull();
+	}
+}
+
+void NaWindow::SetState(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
+	if (pWindow)
+	{
+		String::Value type(value);
+		NaString strType((const wchar_t*)*type);
+		UINT nCmd = 0;
+
+		if (strType.CompareNoCase(L"normal") == 0)
+		{
+			nCmd = SW_NORMAL;
+		}
+		else if (strType.CompareNoCase(L"maximized") == 0)
+		{
+			nCmd = SW_MAXIMIZE;
+		}
+		else if (strType.CompareNoCase(L"minimized") == 0)
+		{
+			nCmd = SW_MINIMIZE;
+		}
+
+		if (nCmd != 0)
+		{
+			ShowWindow(pWindow->m_hWnd, nCmd);
+		}
 	}
 }
 

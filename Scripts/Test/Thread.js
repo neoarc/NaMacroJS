@@ -25,12 +25,18 @@ function main()
         }
         */
 
-        thread(function () {
+        /*
+        setTimeout(10, function () {
             for ( ; ; )
             {
-                trace("current test value = ");// + _test_value);
+                trace("current test value = " + _test_value);
                 sleep(1000);
             }
+        });
+        */
+
+        setInterval(1000, function () {
+            trace("current test value = " + _test_value);
         });
     }
     catch(e) {

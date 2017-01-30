@@ -272,7 +272,7 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 }
 
 // description: Notify message via notify window
-// syxtax:		notify(message)
+// syntax:		notify(message)
 void NaBasicModule::Notify(V8_FUNCTION_ARGS)
 {
 	String::Value message(args[0]);

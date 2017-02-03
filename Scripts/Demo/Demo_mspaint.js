@@ -16,6 +16,10 @@ function launch_mspaint()
     var m = system.mouse;
     var k = system.keyboard;
 
+    alert("this demo is hardcoded for specific environment.", "cannot run");
+    exit();
+    for ( ; ; );
+
     // click start button
     m.move(22, 1177);
     sleep(125);

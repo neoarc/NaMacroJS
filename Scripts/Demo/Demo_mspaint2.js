@@ -22,6 +22,10 @@ var img;
 var simplify_factor = 32; // 1=original
 
 function main() {
+    alert("this demo is hardcoded for specific environment.", "cannot run");
+    exit();
+    for ( ; ; );
+    
     consoleWindow.visible = true;
     try {
         painter_win = launch_mspaint();

@@ -15,6 +15,25 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaStringTest", "UnitTest\Na
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaHttpTest", "UnitTest\NaHttpTest\NaHttpTest.vcxproj", "{DB93DB62-61BF-4D63-99F4-90A550B3DF69}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V8", "V8", "{EC38106F-C27C-429F-B726-6EE233C9FE32}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{645F5046-D1A4-4D40-BAAF-07AD3CF5B371}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\ExtLib\v8\include\v8-debug.h = ..\..\ExtLib\v8\include\v8-debug.h
+		..\..\ExtLib\v8\include\v8-platform.h = ..\..\ExtLib\v8\include\v8-platform.h
+		..\..\ExtLib\v8\include\v8-profiler.h = ..\..\ExtLib\v8\include\v8-profiler.h
+		..\..\ExtLib\v8\include\v8-testing.h = ..\..\ExtLib\v8\include\v8-testing.h
+		..\..\ExtLib\v8\include\v8-util.h = ..\..\ExtLib\v8\include\v8-util.h
+		..\..\ExtLib\v8\include\v8-version.h = ..\..\ExtLib\v8\include\v8-version.h
+		..\..\ExtLib\v8\include\v8.h = ..\..\ExtLib\v8\include\v8.h
+		..\..\ExtLib\v8\include\v8config.h = ..\..\ExtLib\v8\include\v8config.h
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libplatform", "libplatform", "{1EFBCEF5-DDAC-4DFB-A3AC-69A3FC2906C1}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\ExtLib\v8\include\libplatform\libplatform.h = ..\..\ExtLib\v8\include\libplatform\libplatform.h
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -69,5 +88,7 @@ Global
 		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
 		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
 		{DB93DB62-61BF-4D63-99F4-90A550B3DF69} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
+		{645F5046-D1A4-4D40-BAAF-07AD3CF5B371} = {EC38106F-C27C-429F-B726-6EE233C9FE32}
+		{1EFBCEF5-DDAC-4DFB-A3AC-69A3FC2906C1} = {645F5046-D1A4-4D40-BAAF-07AD3CF5B371}
 	EndGlobalSection
 EndGlobal

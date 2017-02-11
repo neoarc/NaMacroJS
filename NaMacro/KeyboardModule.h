@@ -39,9 +39,9 @@ public:
 	// accessors
 
 	// methods
-	DEFINE_CLASS_METHOD(Down);
-	DEFINE_CLASS_METHOD(Up);
-	DEFINE_CLASS_METHOD(TypeString);
-	DEFINE_CLASS_METHOD(BindEvent);
+	DEFINE_CLASS_METHOD(down);
+	DEFINE_CLASS_METHOD(up);
+	DEFINE_CLASS_METHOD(typeString);
+	DEFINE_CLASS_METHOD(on);
 };
 

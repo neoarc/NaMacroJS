@@ -12,24 +12,24 @@ void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_templat
 	Local<Object> global = isolate->GetCurrentContext()->Global();
 	Local<Object> mouse_obj = GetMouseObject(isolate);
 
-#define ADD_MOUSE_ACCESSOR(_prop, _getter, _setter)		ADD_OBJ_ACCESSOR(mouse_obj, _prop, _getter, _setter);
-#define ADD_MOUSE_METHOD(_js_func, _c_func)				ADD_OBJ_METHOD(mouse_obj, _js_func, _c_func);
+#define ADD_MOUSE_ACCESSOR(_prop)		ADD_OBJ_ACCESSOR(mouse_obj, _prop);
+#define ADD_MOUSE_METHOD(_js_func)		ADD_OBJ_METHOD(mouse_obj, _js_func);
 
 	// accessors
-	ADD_MOUSE_ACCESSOR(x, GetX, SetX);
-	ADD_MOUSE_ACCESSOR(y, GetY, SetY);
+	ADD_MOUSE_ACCESSOR(x);
+	ADD_MOUSE_ACCESSOR(y);
 
 	// methods
-	ADD_MOUSE_METHOD(move,			Move);
-	ADD_MOUSE_METHOD(click,			Click);
-	ADD_MOUSE_METHOD(lbuttonDown,	LButtonDown);
-	ADD_MOUSE_METHOD(lbuttonUp,		LButtonUp);
-	ADD_MOUSE_METHOD(rbuttonDown,	RButtonDown);
-	ADD_MOUSE_METHOD(rbuttonUp,		RButtonUp);
-	ADD_MOUSE_METHOD(wheelDown,		WheelDown);
-	ADD_MOUSE_METHOD(wheelUp,		WheelUp);
-	ADD_MOUSE_METHOD(postLbuttonDown,	PostLButtonDown);
-	ADD_MOUSE_METHOD(postLbuttonUp,		PostLButtonUp);
+	ADD_MOUSE_METHOD(move);
+	ADD_MOUSE_METHOD(click);
+	ADD_MOUSE_METHOD(lbuttonDown);
+	ADD_MOUSE_METHOD(lbuttonUp);
+	ADD_MOUSE_METHOD(rbuttonDown);
+	ADD_MOUSE_METHOD(rbuttonUp);
+	ADD_MOUSE_METHOD(wheelDown);
+	ADD_MOUSE_METHOD(wheelUp);
+	ADD_MOUSE_METHOD(postLButtonDown);
+	ADD_MOUSE_METHOD(postLButtonUp);
 }
 
 void NaMouseModule::Release()
@@ -69,7 +69,7 @@ Local<Object> NaMouseModule::GetMouseObject(Isolate *isolate)
 }
 
 // description: x getter 
-void NaMouseModule::GetX(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaMouseModule::get_x(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -81,7 +81,7 @@ void NaMouseModule::GetX(Local<String> name, const PropertyCallbackInfo<Value>& 
 }
 
 // description: x setter 
-void NaMouseModule::SetX(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaMouseModule::set_x(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -91,7 +91,7 @@ void NaMouseModule::SetX(Local<String> name, Local<Value> value, const PropertyC
 }
 
 // description: y getter 
-void NaMouseModule::GetY(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaMouseModule::get_y(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -103,7 +103,7 @@ void NaMouseModule::GetY(Local<String> name, const PropertyCallbackInfo<Value>& 
 }
 
 // description: y setter 
-void NaMouseModule::SetY(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaMouseModule::set_y(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -113,7 +113,7 @@ void NaMouseModule::SetY(Local<String> name, Local<Value> value, const PropertyC
 }
 
 // description: move mouse cursor
-void NaMouseModule::Move(V8_FUNCTION_ARGS)
+void NaMouseModule::method_move(V8_FUNCTION_ARGS)
 {
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
@@ -122,10 +122,10 @@ void NaMouseModule::Move(V8_FUNCTION_ARGS)
 }
 
 // description: click mouse lbutton
-void NaMouseModule::Click(V8_FUNCTION_ARGS)
+void NaMouseModule::method_click(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
@@ -139,10 +139,10 @@ void NaMouseModule::Click(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::LButtonDown(V8_FUNCTION_ARGS)
+void NaMouseModule::method_lbuttonDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
@@ -152,10 +152,10 @@ void NaMouseModule::LButtonDown(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::LButtonUp(V8_FUNCTION_ARGS)
+void NaMouseModule::method_lbuttonUp(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
@@ -165,10 +165,10 @@ void NaMouseModule::LButtonUp(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::RButtonDown(V8_FUNCTION_ARGS)
+void NaMouseModule::method_rbuttonDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
@@ -179,10 +179,10 @@ void NaMouseModule::RButtonDown(V8_FUNCTION_ARGS)
 
 
 // description: 
-void NaMouseModule::RButtonUp(V8_FUNCTION_ARGS)
+void NaMouseModule::method_rbuttonUp(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
@@ -193,25 +193,25 @@ void NaMouseModule::RButtonUp(V8_FUNCTION_ARGS)
 
 
 // description: 
-void NaMouseModule::WheelDown(V8_FUNCTION_ARGS)
+void NaMouseModule::method_wheelDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	// TODO implement
 }
 
 // description: 
-void NaMouseModule::WheelUp(V8_FUNCTION_ARGS)
+void NaMouseModule::method_wheelUp(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
-		Move(args);
+		method_move(args);
 
 	// TODO implement
 }
 
 // description: 
-void NaMouseModule::PostLButtonDown(V8_FUNCTION_ARGS)
+void NaMouseModule::method_postLButtonDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
 	{
@@ -230,7 +230,7 @@ void NaMouseModule::PostLButtonDown(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::PostLButtonUp(V8_FUNCTION_ARGS)
+void NaMouseModule::method_postLButtonUp(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
 	{

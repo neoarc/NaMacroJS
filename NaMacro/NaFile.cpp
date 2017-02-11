@@ -26,16 +26,16 @@ Local<ObjectTemplate> NaFile::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind image methods
-#define ADD_IMAGE_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(templ, _prop, _getter, _setter);
-#define ADD_IMAGE_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
+#define ADD_IMAGE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
+#define ADD_IMAGE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_IMAGE_ACCESSOR(name, GetName, SetName);
+	ADD_IMAGE_ACCESSOR(name);
 
 	// methods
-	ADD_IMAGE_METHOD(read, Read);
-	ADD_IMAGE_METHOD(write, Write);
-	ADD_IMAGE_METHOD(close, Close);
+	ADD_IMAGE_METHOD(read);
+	ADD_IMAGE_METHOD(write);
+	ADD_IMAGE_METHOD(close);
 
 	return handle_scope.Escape(templ);
 }
@@ -52,7 +52,7 @@ NaFile * NaFile::Load(const wchar_t * filename, const char * mode)
 }
 
 // description: width property getter/setter
-void NaFile::GetName(V8_GETTER_ARGS)
+void NaFile::get_name(V8_GETTER_ARGS)
 {
 	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -64,7 +64,7 @@ void NaFile::GetName(V8_GETTER_ARGS)
 	}
 }
 
-void NaFile::SetName(V8_SETTER_ARGS)
+void NaFile::set_name(V8_SETTER_ARGS)
 {
 	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
 	if (pFile)
@@ -75,7 +75,7 @@ void NaFile::SetName(V8_SETTER_ARGS)
 
 // description: constructor function
 // syntax:		new Window([x, y[, width, height]]) : windowObj
-void NaFile::Constructor(V8_FUNCTION_ARGS)
+void NaFile::method_constructor(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 1)
 	{
@@ -116,7 +116,7 @@ void NaFile::Constructor(V8_FUNCTION_ARGS)
 
 // description: read file
 // syntax:		fileObj.read() : string
-void NaFile::Read(V8_FUNCTION_ARGS)
+void NaFile::method_read(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> obj = args.This();
@@ -146,7 +146,7 @@ void NaFile::Read(V8_FUNCTION_ARGS)
 
 // description: write file
 // syntax:		fileObj.write(text);
-void NaFile::Write(V8_FUNCTION_ARGS)
+void NaFile::method_write(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> obj = args.This();
@@ -168,7 +168,7 @@ void NaFile::Write(V8_FUNCTION_ARGS)
 
 // description: close file
 // syntax:		fileObj.close()
-void NaFile::Close(V8_FUNCTION_ARGS)
+void NaFile::method_close(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> obj = args.This();

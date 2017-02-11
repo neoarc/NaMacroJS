@@ -40,16 +40,16 @@ public:
 	static Global<ObjectTemplate> s_NaControlTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(GetX, SetX);
-	DEFINE_CLASS_ACCESSOR(GetY, SetY);
-	DEFINE_CLASS_ACCESSOR(GetWidth, SetWidth);
-	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
-	DEFINE_CLASS_ACCESSOR(GetText, SetText);
-	DEFINE_CLASS_ACCESSOR(GetVisible, SetVisible);
-	DEFINE_CLASS_ACCESSOR_RO(GetParent);
-	DEFINE_CLASS_ACCESSOR(GetImage, SetImage);
+	DEFINE_CLASS_ACCESSOR(x);
+	DEFINE_CLASS_ACCESSOR(y);
+	DEFINE_CLASS_ACCESSOR(width);
+	DEFINE_CLASS_ACCESSOR(height);
+	DEFINE_CLASS_ACCESSOR(text);
+	DEFINE_CLASS_ACCESSOR(visible);
+	DEFINE_CLASS_ACCESSOR_RO(parent);
+	DEFINE_CLASS_ACCESSOR(image);
 
 	// methods
-	DEFINE_CLASS_METHOD(Focus);
+	DEFINE_CLASS_METHOD(focus);
 };
 

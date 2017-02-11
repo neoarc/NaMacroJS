@@ -168,27 +168,28 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind control methods
-#define ADD_CONTROL_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(templ, _prop, _getter, _setter);
-#define ADD_CONTROL_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
+#define ADD_CONTROL_ACCESSOR(_prop)		ADD_OBJ_ACCESSOR(templ, _prop);
+#define ADD_CONTROL_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
+#define ADD_CONTROL_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_CONTROL_ACCESSOR(x, GetX, SetX);
-	ADD_CONTROL_ACCESSOR(y, GetY, SetY);
-	ADD_CONTROL_ACCESSOR(width, GetWidth, SetWidth);
-	ADD_CONTROL_ACCESSOR(height, GetHeight, SetHeight);
-	ADD_CONTROL_ACCESSOR(text, GetText, SetText);
-	ADD_CONTROL_ACCESSOR(visible, GetVisible, SetVisible);
-	ADD_CONTROL_ACCESSOR(parent, GetParent, nullptr);
-	ADD_CONTROL_ACCESSOR(image, GetImage, SetImage);
+	ADD_CONTROL_ACCESSOR(x);
+	ADD_CONTROL_ACCESSOR(y);
+	ADD_CONTROL_ACCESSOR(width);
+	ADD_CONTROL_ACCESSOR(height);
+	ADD_CONTROL_ACCESSOR(text);
+	ADD_CONTROL_ACCESSOR(visible);
+	ADD_CONTROL_ACCESSOR_RO(parent);
+	ADD_CONTROL_ACCESSOR(image);
 
 	// methods
-	ADD_CONTROL_METHOD(focus, Focus);
+	ADD_CONTROL_METHOD(focus);
 
 	return handle_scope.Escape(templ);
 }
 
 // description: x property getter/setter
-void NaControl::GetX(V8_GETTER_ARGS)
+void NaControl::get_x(V8_GETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -204,7 +205,7 @@ void NaControl::GetX(V8_GETTER_ARGS)
 	);
 }
 
-void NaControl::SetX(V8_SETTER_ARGS)
+void NaControl::set_x(V8_SETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
@@ -216,7 +217,7 @@ void NaControl::SetX(V8_SETTER_ARGS)
 }
 
 // description: y property getter/setter
-void NaControl::GetY(V8_GETTER_ARGS)
+void NaControl::get_y(V8_GETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -232,7 +233,7 @@ void NaControl::GetY(V8_GETTER_ARGS)
 	);
 }
 
-void NaControl::SetY(V8_SETTER_ARGS)
+void NaControl::set_y(V8_SETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
@@ -244,7 +245,7 @@ void NaControl::SetY(V8_SETTER_ARGS)
 }
 
 // description: width property getter/setter
-void NaControl::GetWidth(V8_GETTER_ARGS)
+void NaControl::get_width(V8_GETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -260,7 +261,7 @@ void NaControl::GetWidth(V8_GETTER_ARGS)
 	);
 }
 
-void NaControl::SetWidth(V8_SETTER_ARGS)
+void NaControl::set_width(V8_SETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
@@ -272,7 +273,7 @@ void NaControl::SetWidth(V8_SETTER_ARGS)
 }
 
 // description: height property getter/setter
-void NaControl::GetHeight(V8_GETTER_ARGS)
+void NaControl::get_height(V8_GETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -288,7 +289,7 @@ void NaControl::GetHeight(V8_GETTER_ARGS)
 	);
 }
 
-void NaControl::SetHeight(V8_SETTER_ARGS)
+void NaControl::set_height(V8_SETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
@@ -300,7 +301,7 @@ void NaControl::SetHeight(V8_SETTER_ARGS)
 }
 
 // description: text property getter/setter
-void NaControl::GetText(V8_GETTER_ARGS)
+void NaControl::get_text(V8_GETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -315,7 +316,7 @@ void NaControl::GetText(V8_GETTER_ARGS)
 	}
 }
 
-void NaControl::SetText(V8_SETTER_ARGS)
+void NaControl::set_text(V8_SETTER_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
@@ -326,7 +327,7 @@ void NaControl::SetText(V8_SETTER_ARGS)
 }
 
 // description: visible property getter/setter
-void NaControl::GetVisible(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -342,7 +343,7 @@ void NaControl::GetVisible(Local<String> name, const PropertyCallbackInfo<Value>
 	);
 }
 
-void NaControl::SetVisible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	// get window object(this)
 	Isolate *isolate = info.GetIsolate();
@@ -356,7 +357,7 @@ void NaControl::SetVisible(Local<String> name, Local<Value> value, const Propert
 }
 
 // description: parent property getter
-void NaControl::GetParent(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -368,7 +369,7 @@ void NaControl::GetParent(Local<String> name, const PropertyCallbackInfo<Value>&
 }
 
 // description: image property getter/setter
-void NaControl::GetImage(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -379,7 +380,7 @@ void NaControl::GetImage(Local<String> name, const PropertyCallbackInfo<Value>& 
 	);
 }
 
-void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaControl::set_image(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	// get window object(this)
 	Isolate *isolate = info.GetIsolate();
@@ -433,7 +434,7 @@ void NaControl::SetImage(Local<String> name, Local<Value> value, const PropertyC
 
 // description: set focus to control
 // syntax:		controlObj.focus();
-void NaControl::Focus(V8_FUNCTION_ARGS)
+void NaControl::method_focus(V8_FUNCTION_ARGS)
 {
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(args.This()));
 

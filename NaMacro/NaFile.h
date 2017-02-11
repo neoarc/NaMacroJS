@@ -27,11 +27,11 @@ public:
 	static Global<ObjectTemplate> s_NaFileTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(GetName, SetName);
+	DEFINE_CLASS_ACCESSOR(name);
 
 	// methods
-	DEFINE_CLASS_METHOD(Constructor);
-	DEFINE_CLASS_METHOD(Read);
-	DEFINE_CLASS_METHOD(Write);
-	DEFINE_CLASS_METHOD(Close);
+	DEFINE_CLASS_METHOD(constructor);
+	DEFINE_CLASS_METHOD(read);
+	DEFINE_CLASS_METHOD(write);
+	DEFINE_CLASS_METHOD(close);
 };

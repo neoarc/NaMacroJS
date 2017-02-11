@@ -32,12 +32,12 @@ public:
 	static Global<ObjectTemplate> s_NaImageTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(GetWidth, SetWidth);
-	DEFINE_CLASS_ACCESSOR(GetHeight, SetHeight);
+	DEFINE_CLASS_ACCESSOR(width);
+	DEFINE_CLASS_ACCESSOR(height);
 
 	// methods
-	DEFINE_CLASS_METHOD(Constructor);
-	DEFINE_CLASS_METHOD(GetPixel);
-	DEFINE_CLASS_METHOD(FindImage);
-	DEFINE_CLASS_METHOD(Reset);
+	DEFINE_CLASS_METHOD(constructor);
+	DEFINE_CLASS_METHOD(getPixel);
+	DEFINE_CLASS_METHOD(findImage);
+	DEFINE_CLASS_METHOD(reset);
 };

@@ -35,17 +35,17 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind image methods
-#define ADD_IMAGE_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(templ, _prop, _getter, _setter);
-#define ADD_IMAGE_METHOD(_js_func, _c_func)			ADD_TEMPLATE_METHOD(templ, _js_func, _c_func);
+#define ADD_IMAGE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
+#define ADD_IMAGE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_IMAGE_ACCESSOR(width, GetWidth, SetWidth);
-	ADD_IMAGE_ACCESSOR(height, GetHeight, SetHeight);
+	ADD_IMAGE_ACCESSOR(width);
+	ADD_IMAGE_ACCESSOR(height);
 
 	// methods
-	ADD_IMAGE_METHOD(getPixel, GetPixel);
-	ADD_IMAGE_METHOD(findImage, FindImage);
-	ADD_IMAGE_METHOD(reset, Reset);
+	ADD_IMAGE_METHOD(getPixel);
+	ADD_IMAGE_METHOD(findImage);
+	ADD_IMAGE_METHOD(reset);
 
 	return handle_scope.Escape(templ);
 }
@@ -329,7 +329,7 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource, int nAcc
 }
 
 // description: width property getter/setter
-void NaImage::GetWidth(V8_GETTER_ARGS)
+void NaImage::get_width(V8_GETTER_ARGS)
 {
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -344,7 +344,7 @@ void NaImage::GetWidth(V8_GETTER_ARGS)
 		);
 }
 
-void NaImage::SetWidth(V8_SETTER_ARGS)
+void NaImage::set_width(V8_SETTER_ARGS)
 {
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	if (pImage)
@@ -354,7 +354,7 @@ void NaImage::SetWidth(V8_SETTER_ARGS)
 }
 
 // description: height property getter/setter
-void NaImage::GetHeight(V8_GETTER_ARGS)
+void NaImage::get_height(V8_GETTER_ARGS)
 {
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
@@ -369,7 +369,7 @@ void NaImage::GetHeight(V8_GETTER_ARGS)
 		);
 }
 
-void NaImage::SetHeight(V8_SETTER_ARGS)
+void NaImage::set_height(V8_SETTER_ARGS)
 {
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	if (pImage)
@@ -380,7 +380,7 @@ void NaImage::SetHeight(V8_SETTER_ARGS)
 
 // description: constructor function
 // syntax:		new Window([x, y[, width, height]]) : windowObj
-void NaImage::Constructor(V8_FUNCTION_ARGS)
+void NaImage::method_constructor(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 1)
 	{
@@ -410,7 +410,7 @@ void NaImage::Constructor(V8_FUNCTION_ARGS)
 
 // description: get pixel from image buffer
 // syntax:		imageObj.getPixel(x, y);
-void NaImage::GetPixel(V8_FUNCTION_ARGS)
+void NaImage::method_getPixel(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> obj = args.This();
@@ -442,7 +442,7 @@ void NaImage::GetPixel(V8_FUNCTION_ARGS)
 
 // description: find image(argument) from image(this)
 // syntax:		imageObj.findImage(image_object, accuracy_factor)
-void NaImage::FindImage(V8_FUNCTION_ARGS)
+void NaImage::method_findImage(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> objThis = args.This();
@@ -505,7 +505,7 @@ void NaImage::FindImage(V8_FUNCTION_ARGS)
 
 // description: reset image buffer
 // syntax:		imageObj.reset()
-void NaImage::Reset(V8_FUNCTION_ARGS)
+void NaImage::method_reset(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> objThis = args.This();

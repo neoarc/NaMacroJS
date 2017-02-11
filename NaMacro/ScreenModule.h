@@ -33,13 +33,13 @@ public:
 	static bool m_bAeroStatus;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR_RO(GetWidth);
-	DEFINE_CLASS_ACCESSOR_RO(GetHeight);
+	DEFINE_CLASS_ACCESSOR_RO(width);
+	DEFINE_CLASS_ACCESSOR_RO(height);
 
 	// methods
-	DEFINE_CLASS_METHOD(CaptureScreen);
-	DEFINE_CLASS_METHOD(FindColor);
-	DEFINE_CLASS_METHOD(GetPixel);
-	DEFINE_CLASS_METHOD(SetAero);
+	DEFINE_CLASS_METHOD(capture);
+	DEFINE_CLASS_METHOD(findColor);
+	DEFINE_CLASS_METHOD(getPixel);
+	DEFINE_CLASS_METHOD(setAero);
 };
 

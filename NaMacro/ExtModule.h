@@ -21,6 +21,6 @@ public:
 	static std::vector<ISpVoice*> s_vecVoices;
 
 	// methods
-	DEFINE_CLASS_METHOD(ConvGMacroToNaMacro);
-	DEFINE_CLASS_METHOD(TTSSpeak);
+	DEFINE_CLASS_METHOD(convGMacroToNaMacro);
+	DEFINE_CLASS_METHOD(ttsSpeak);
 };

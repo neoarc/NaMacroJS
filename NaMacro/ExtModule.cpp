@@ -13,11 +13,9 @@ vector<ISpVoice*> NaExtModule::s_vecVoices;
 
 void NaExtModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
-#define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
-
 	// methods
-	ADD_GLOBAL_METHOD(convGMacroToNaMacro,	ConvGMacroToNaMacro);
-	ADD_GLOBAL_METHOD(ttsSpeak,				TTSSpeak);
+	ADD_GLOBAL_METHOD(convGMacroToNaMacro);
+	ADD_GLOBAL_METHOD(ttsSpeak);
 }
 
 void NaExtModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
@@ -48,7 +46,7 @@ void NaExtModule::Release()
 
 // description: Convert GMacro data to NaMacro script
 // syxtax:		convGMacroToNaMacro(filename)
-void NaExtModule::ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
+void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
 	Isolate *isolate = args.GetIsolate();
@@ -194,7 +192,7 @@ void NaExtModule::ConvGMacroToNaMacro(V8_FUNCTION_ARGS)
 
 // description: text to speech
 // syntax:		ttsSpeak(text, [async=false])
-void NaExtModule::TTSSpeak(V8_FUNCTION_ARGS)
+void NaExtModule::method_ttsSpeak(V8_FUNCTION_ARGS)
 {
 	if (NaExtModule::s_bInitTTS == false)
 	{

@@ -14,18 +14,19 @@ void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templ
 	Local<Object> global = isolate->GetCurrentContext()->Global();
 	Local<Object> screen_obj = GetScreenObject(isolate);
 
-#define ADD_SCREEN_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(screen_obj, _prop, _getter, _setter);
-#define ADD_SCREEN_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(screen_obj, _js_func, _c_func);
+#define ADD_SCREEN_ACCESSOR(_prop)		ADD_OBJ_ACCESSOR(screen_obj, _prop);
+#define ADD_SCREEN_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(screen_obj, _prop);
+#define ADD_SCREEN_METHOD(_js_func)		ADD_OBJ_METHOD(screen_obj, _js_func);
 
 	// accessors
-	ADD_SCREEN_ACCESSOR(width, GetWidth, nullptr);
-	ADD_SCREEN_ACCESSOR(height, GetHeight, nullptr);
+	ADD_SCREEN_ACCESSOR_RO(width);
+	ADD_SCREEN_ACCESSOR_RO(height);
 
 	// methods
-	ADD_SCREEN_METHOD(capture, CaptureScreen); 
-	ADD_SCREEN_METHOD(findColor, FindColor);
-	ADD_SCREEN_METHOD(getPixel, GetPixel);
-	ADD_SCREEN_METHOD(setAero,	SetAero);
+	ADD_SCREEN_METHOD(capture); 
+	ADD_SCREEN_METHOD(findColor);
+	ADD_SCREEN_METHOD(getPixel);
+	ADD_SCREEN_METHOD(setAero);
 }
 
 void NaScreenModule::Release()
@@ -58,7 +59,7 @@ Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 }
 
 // description: width property getter
-void NaScreenModule::GetWidth(V8_GETTER_ARGS)
+void NaScreenModule::get_width(V8_GETTER_ARGS)
 {
 	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CXSCREEN);
@@ -69,7 +70,7 @@ void NaScreenModule::GetWidth(V8_GETTER_ARGS)
 }
 
 // description: height property getter
-void NaScreenModule::GetHeight(V8_GETTER_ARGS)
+void NaScreenModule::get_height(V8_GETTER_ARGS)
 {
 	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CYSCREEN);
@@ -81,7 +82,7 @@ void NaScreenModule::GetHeight(V8_GETTER_ARGS)
 
 // description: capture screen area to image object
 // syntax:		system.screen.capture(x, y, width, height) : image object
-void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
+void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
@@ -108,7 +109,7 @@ void NaScreenModule::CaptureScreen(V8_FUNCTION_ARGS)
 
 // description: find specific color from area
 // syntax:		system.screen.findColor(color[, x, y, width, height])
-void NaScreenModule::FindColor(V8_FUNCTION_ARGS)
+void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
@@ -168,7 +169,7 @@ void NaScreenModule::FindColor(V8_FUNCTION_ARGS)
 
 // description: get piyel color from point x,y
 // syntax:		system.screen.getPixel(x, y) : color
-void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
+void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
@@ -214,7 +215,7 @@ void NaScreenModule::GetPixel(V8_FUNCTION_ARGS)
 
 // description: change aero mode to on/off
 // syntax:		system.screen.setAero({true,false});
-void NaScreenModule::SetAero(V8_FUNCTION_ARGS)
+void NaScreenModule::method_setAero(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 1)
 		return;

@@ -11,16 +11,16 @@ void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_temp
 	Local<Object> global = isolate->GetCurrentContext()->Global();
 	Local<Object> keyboard_obj = GetKeyboardObject(isolate);
 
-#define ADD_KEYBOARD_METHOD(_js_func, _c_func)			ADD_OBJ_METHOD(keyboard_obj, _js_func, _c_func);
+#define ADD_KEYBOARD_METHOD(_js_func)			ADD_OBJ_METHOD(keyboard_obj, _js_func);
 #define ADD_KEYBOARD_ACCESSOR(_prop, _getter, _setter)	ADD_OBJ_ACCESSOR(keyboard_obj, _prop, _getter, _setter);
 	
 	// accessors
 
 	// methods
-	ADD_KEYBOARD_METHOD(down,		Down);
-	ADD_KEYBOARD_METHOD(up,			Up);
-	ADD_KEYBOARD_METHOD(typeString, TypeString);
-	ADD_KEYBOARD_METHOD(on,			BindEvent);
+	ADD_KEYBOARD_METHOD(down);
+	ADD_KEYBOARD_METHOD(up);
+	ADD_KEYBOARD_METHOD(typeString);
+	ADD_KEYBOARD_METHOD(on);
 }
 
 void NaKeyboardModule::Release()
@@ -128,7 +128,7 @@ void NaKeyboardModule::OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
 
 // description: make key to down
 // syntax:		system.keyboard.down(keycode)
-void NaKeyboardModule::Down(V8_FUNCTION_ARGS)
+void NaKeyboardModule::method_down(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
@@ -139,7 +139,7 @@ void NaKeyboardModule::Down(V8_FUNCTION_ARGS)
 
 // description: make key to up
 // syntax:		system.keyboard.up(keycode)
-void NaKeyboardModule::Up(V8_FUNCTION_ARGS)
+void NaKeyboardModule::method_up(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
@@ -150,7 +150,7 @@ void NaKeyboardModule::Up(V8_FUNCTION_ARGS)
 
 // description: type string
 // syntax:		system.keyboard.typeString(string)
-void NaKeyboardModule::TypeString(V8_FUNCTION_ARGS)
+void NaKeyboardModule::method_typeString(V8_FUNCTION_ARGS)
 {
 	if (args.Length() <= 0)
 		return;
@@ -191,7 +191,7 @@ void NaKeyboardModule::TypeString(V8_FUNCTION_ARGS)
 
 // description: bind key event
 // syntax:		system.keyboard.on(keycode, function)
-void NaKeyboardModule::BindEvent(V8_FUNCTION_ARGS)
+void NaKeyboardModule::method_on(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 2)
 		return;

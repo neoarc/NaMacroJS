@@ -14,7 +14,7 @@ public:
 	// statics
 	
 	// methods
-	DEFINE_CLASS_METHOD(Method);
+	DEFINE_CLASS_METHOD(method);
 
 
 };

@@ -21,26 +21,24 @@ int NaBasicModule::s_nTimerID = 1; // begin from 0 causes hard to store variable
 
 void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
-#define ADD_GLOBAL_METHOD(_js_func, _c_func)	ADD_TEMPLATE_METHOD(global_template, _js_func, _c_func);
-
 	// methods
-	ADD_GLOBAL_METHOD(include,		Include);
-	ADD_GLOBAL_METHOD(sleep,		Sleep);
-	ADD_GLOBAL_METHOD(setInterval,	SetInterval);
-	ADD_GLOBAL_METHOD(clearInterval, ClearInterval);
-	ADD_GLOBAL_METHOD(setTimeout,	SetTimeout);
-	ADD_GLOBAL_METHOD(alert,		Alert);
-	ADD_GLOBAL_METHOD(confirm,		Confirm);
-	ADD_GLOBAL_METHOD(prompt,		Prompt);
-	ADD_GLOBAL_METHOD(print,		Print);
-	ADD_GLOBAL_METHOD(trace,		Print);
-	ADD_GLOBAL_METHOD(notify,		Notify);
-	ADD_GLOBAL_METHOD(exit,			Exit);
-	ADD_GLOBAL_METHOD(getWindow,	GetWindow);
-	ADD_GLOBAL_METHOD(getActiveWindow, GetActiveWindow);
-	ADD_GLOBAL_METHOD(findWindows,	FindWindows);
-	ADD_GLOBAL_METHOD(findProcesses, FindProcesses);
-	ADD_GLOBAL_METHOD(findTrays,	FindTrays);
+	ADD_GLOBAL_METHOD(include);
+	ADD_GLOBAL_METHOD(sleep);
+	ADD_GLOBAL_METHOD(setInterval);
+	ADD_GLOBAL_METHOD(clearInterval);
+	ADD_GLOBAL_METHOD(setTimeout);
+	ADD_GLOBAL_METHOD(alert);
+	ADD_GLOBAL_METHOD(confirm);
+	ADD_GLOBAL_METHOD(prompt);
+	ADD_GLOBAL_METHOD(print);
+	ADD_GLOBAL_METHOD2(trace, method_print);
+	ADD_GLOBAL_METHOD(notify);
+	ADD_GLOBAL_METHOD(exit);
+	ADD_GLOBAL_METHOD(getWindow);
+	ADD_GLOBAL_METHOD(getActiveWindow);
+	ADD_GLOBAL_METHOD(findWindows);
+	ADD_GLOBAL_METHOD(findProcesses);
+	ADD_GLOBAL_METHOD(findTrays);
 }
 
 void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
@@ -67,7 +65,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 		Local<Value> window_value = global->Get(window_name);
 		if (!window_value.IsEmpty() && window_value->IsUndefined())
 		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaWindow::Constructor);
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaWindow::method_constructor);
 			/*
 			Local<ObjectTemplate> obj_templ = templ->PrototypeTemplate();
 			obj_templ->Set(
@@ -97,7 +95,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 		Local<Value> image_value = global->Get(image_name);
 		if (!image_value.IsEmpty() && image_value->IsUndefined())
 		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaImage::Constructor);
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaImage::method_constructor);
 			global->Set(image_name, templ->GetFunction());
 		}
 
@@ -106,7 +104,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 		Local<Value> file_value = global->Get(file_name);
 		if (!file_value.IsEmpty() && file_value->IsUndefined())
 		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaFile::Constructor);
+			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaFile::method_constructor);
 			global->Set(file_name, templ->GetFunction());
 		}
 	}
@@ -176,7 +174,7 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 
 // description: Include external source file
 // syntax:		include(filename);
-void NaBasicModule::Include(V8_FUNCTION_ARGS)
+void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Context> context = isolate->GetCurrentContext();
@@ -251,7 +249,7 @@ void NaBasicModule::Include(V8_FUNCTION_ARGS)
 
 // description: Print message to console
 // syxtax:		print(message)
-void NaBasicModule::Print(V8_FUNCTION_ARGS)
+void NaBasicModule::method_print(V8_FUNCTION_ARGS)
 {
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++)
@@ -273,7 +271,7 @@ void NaBasicModule::Print(V8_FUNCTION_ARGS)
 
 // description: Notify message via notify window
 // syntax:		notify(message)
-void NaBasicModule::Notify(V8_FUNCTION_ARGS)
+void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 {
 	String::Value message(args[0]);
 	NaString strMessage((wchar_t*)*message);
@@ -290,7 +288,7 @@ void NaBasicModule::Notify(V8_FUNCTION_ARGS)
 
 // description: show MessageBox with message
 // syntax:		alert(message, title, type)
-void NaBasicModule::Alert(V8_FUNCTION_ARGS)
+void NaBasicModule::method_alert(V8_FUNCTION_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -310,7 +308,7 @@ void NaBasicModule::Alert(V8_FUNCTION_ARGS)
 
 // description: show MessageBox with message
 // syntax:		confirm(message, title)
-void NaBasicModule::Confirm(V8_FUNCTION_ARGS)
+void NaBasicModule::method_confirm(V8_FUNCTION_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -341,7 +339,7 @@ void NaBasicModule::Confirm(V8_FUNCTION_ARGS)
 
 // description: show MessageBox with message
 // syntax:		prompt(message, title[, defaultmessage])
-void NaBasicModule::Prompt(V8_FUNCTION_ARGS)
+void NaBasicModule::method_prompt(V8_FUNCTION_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -364,7 +362,7 @@ void NaBasicModule::Prompt(V8_FUNCTION_ARGS)
 // description: suspends the excution script
 // syntax:		sleep(time)
 // param(time):	time interval in milliseconds
-void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
+void NaBasicModule::method_sleep(V8_FUNCTION_ARGS)
 {
 	int nTime = args[0]->Int32Value();
 
@@ -373,7 +371,7 @@ void NaBasicModule::Sleep(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:		setInterval(interval, callback_function) : timer_id
-void NaBasicModule::SetInterval(V8_FUNCTION_ARGS)
+void NaBasicModule::method_setInterval(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 2)
 		return;
@@ -401,7 +399,7 @@ void NaBasicModule::SetInterval(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:		clearInterval(timer_id)
-void NaBasicModule::ClearInterval(V8_FUNCTION_ARGS)
+void NaBasicModule::method_clearInterval(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 1)
 		return;
@@ -419,7 +417,7 @@ void NaBasicModule::ClearInterval(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:
-void NaBasicModule::SetTimeout(V8_FUNCTION_ARGS)
+void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 {
 	if (args.Length() < 2)
 		return;
@@ -447,14 +445,14 @@ void NaBasicModule::SetTimeout(V8_FUNCTION_ARGS)
 
 // description: exit current event loop
 // syntax:		exit()
-void NaBasicModule::Exit(V8_FUNCTION_ARGS)
+void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
 {
 	g_bExit = true;
 }
 
 // description: pick a window from point
 // syntax:		getWindow(x, y) : window object
-void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
+void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	int x = args[0]->Int32Value();
@@ -468,7 +466,7 @@ void NaBasicModule::GetWindow(V8_FUNCTION_ARGS)
 
 // description: get active window
 // syntax:		getActiveWindow() : window object
-void NaBasicModule::GetActiveWindow(V8_FUNCTION_ARGS)
+void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
@@ -480,7 +478,7 @@ void NaBasicModule::GetActiveWindow(V8_FUNCTION_ARGS)
 
 // description: find windows which contains specific text
 // syntax:		findWindows(text)
-void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
+void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	String::Value str(args[0]);
@@ -492,7 +490,7 @@ void NaBasicModule::FindWindows(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:
-void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
+void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 {
 	// Not Impl
 	Isolate *isolate = args.GetIsolate();
@@ -502,7 +500,7 @@ void NaBasicModule::FindProcesses(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:
-void NaBasicModule::FindTrays(V8_FUNCTION_ARGS)
+void NaBasicModule::method_findTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl
 	Isolate *isolate = args.GetIsolate();

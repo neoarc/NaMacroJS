@@ -60,53 +60,22 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 	}
 
 	{
-		// Init Window class
-		Local<String> window_name = String::NewFromUtf8(isolate, "Window", NewStringType::kNormal).ToLocalChecked();
-		Local<Value> window_value = global->Get(window_name);
-		if (!window_value.IsEmpty() && window_value->IsUndefined())
-		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaWindow::method_constructor);
-			/*
-			Local<ObjectTemplate> obj_templ = templ->PrototypeTemplate();
-			obj_templ->Set(
-				window_name,
-				FunctionTemplate::New(isolate, NaWindow::Constructor)->GetFunction()
-			);
+		// Init class constructors to global
+		// Note: Control class is not allowed to create by constructor
+		ADD_GLOBAL_CONSTRUCTOR(Window, global);
+		ADD_GLOBAL_CONSTRUCTOR(Image, global);
+		ADD_GLOBAL_CONSTRUCTOR(File, global);
 
-			global->Set(window_name, window_value);
-			*/
-
-			global->Set(window_name, templ->GetFunction());
-		}
-
-		// Init Control class
+		// Note: Another way to add class constructor
 		/*
-		Local<String> control_name = String::NewFromUtf8(isolate, "Control", NewStringType::kNormal).ToLocalChecked();
-		Local<Value> control_value = global->Get(control_name);
-		if (!control_value.IsEmpty() && control_value->IsUndefined())
-		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaControl::Constructor);
-			global->Set(control_name, templ->GetFunction());
-		}
+		Local<ObjectTemplate> obj_templ = templ->PrototypeTemplate();
+		obj_templ->Set(
+			window_name,
+			FunctionTemplate::New(isolate, NaWindow::Constructor)->GetFunction()
+		);
+
+		global->Set(window_name, window_value);
 		*/
-
-		// Init Image class
-		Local<String> image_name = String::NewFromUtf8(isolate, "Image", NewStringType::kNormal).ToLocalChecked();
-		Local<Value> image_value = global->Get(image_name);
-		if (!image_value.IsEmpty() && image_value->IsUndefined())
-		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaImage::method_constructor);
-			global->Set(image_name, templ->GetFunction());
-		}
-
-		// Init File class
-		Local<String> file_name = String::NewFromUtf8(isolate, "File", NewStringType::kNormal).ToLocalChecked();
-		Local<Value> file_value = global->Get(file_name);
-		if (!file_value.IsEmpty() && file_value->IsUndefined())
-		{
-			Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, NaFile::method_constructor);
-			global->Set(file_name, templ->GetFunction());
-		}
 	}
 
 	{

@@ -275,8 +275,6 @@ void CNaMacroRecorderDlg::RecordStart()
 	m_ptCurMousePos = m_ptFirstMousePos;
 	m_ptLastMousePos = m_ptCurMousePos;
 
-	m_bRecording = TRUE;
-
 	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
 		m_enRecordMove = RECORD_MOUSEMOVE_ALL;
 	else if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
@@ -286,6 +284,7 @@ void CNaMacroRecorderDlg::RecordStart()
 
 	m_bRecordDelay = ((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->GetCheck();
 
+	m_bRecording = TRUE;
 	ToggleUIEnable(m_bRecording);
 }
 

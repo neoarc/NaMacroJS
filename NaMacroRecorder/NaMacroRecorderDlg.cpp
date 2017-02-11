@@ -358,7 +358,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 	ptLastPos.x = -1;
 	ptLastPos.y = -1;
 
-	DWORD dwLastTick = -1;
+	DWORD dwLastTick = DWORD_MAX;
 	BOOL bUseMouse = FALSE, bUseKey = FALSE;
 	CString strJs;
 

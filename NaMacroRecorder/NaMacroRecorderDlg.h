@@ -88,7 +88,7 @@ public:
 	BOOL IsMouseClicked();
 	void StartRecord();
 	void StopRecord();
-	void RecordToNaMacroScript(CString& strOutput);
+	void RecordToNaMacroScript(OUT CString &recordedJs);
 	CString GetKeyName(unsigned int nKey);
 
 	afx_msg void OnRawInput(UINT nInputcode, HRAWINPUT hRawInput);

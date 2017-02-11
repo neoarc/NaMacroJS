@@ -86,8 +86,8 @@ public:
 	afx_msg void OnLvnItemchangedListFiles(NMHDR *pNMHDR, LRESULT *pResult);
 
 	BOOL IsMouseClicked();
-	void RecordStart();
-	void RecordStop();
+	void StartRecord();
+	void StopRecord();
 	void RecordToNaMacroScript(CString& strOutput);
 	CString GetKeyName(unsigned int nKey);
 

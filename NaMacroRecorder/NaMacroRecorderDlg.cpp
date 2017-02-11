@@ -206,13 +206,13 @@ void CNaMacroRecorderDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 
 void CNaMacroRecorderDlg::OnBnClickedBtnRec()
 {
-	RecordStart();
+	StartRecord();
 }
 
 
 void CNaMacroRecorderDlg::OnBnClickedBtnStop()
 {
-	RecordStop();
+	StopRecord();
 }
 
 // all mousemove
@@ -239,7 +239,7 @@ BOOL CNaMacroRecorderDlg::IsMouseClicked()
 	return FALSE;
 }
 
-void CNaMacroRecorderDlg::RecordStart()
+void CNaMacroRecorderDlg::StartRecord()
 {
 	if (m_bRecording)
 		return;
@@ -288,7 +288,7 @@ void CNaMacroRecorderDlg::RecordStart()
 	ToggleUIEnable(m_bRecording);
 }
 
-void CNaMacroRecorderDlg::RecordStop()
+void CNaMacroRecorderDlg::StopRecord()
 {
 	if (!m_bRecording)
 		return;

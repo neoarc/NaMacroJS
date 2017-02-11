@@ -25,6 +25,6 @@ public:
 	DEFINE_CLASS_METHOD(rbuttonUp);
 	DEFINE_CLASS_METHOD(wheelDown);
 	DEFINE_CLASS_METHOD(wheelUp);
-	DEFINE_CLASS_METHOD(postLButtonDown);
-	DEFINE_CLASS_METHOD(postLButtonUp);
+	DEFINE_CLASS_METHOD(postLbuttonDown);
+	DEFINE_CLASS_METHOD(postLbuttonUp);
 };

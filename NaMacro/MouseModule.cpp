@@ -28,8 +28,8 @@ void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_templat
 	ADD_MOUSE_METHOD(rbuttonUp);
 	ADD_MOUSE_METHOD(wheelDown);
 	ADD_MOUSE_METHOD(wheelUp);
-	ADD_MOUSE_METHOD(postLButtonDown);
-	ADD_MOUSE_METHOD(postLButtonUp);
+	ADD_MOUSE_METHOD(postLbuttonDown);
+	ADD_MOUSE_METHOD(postLbuttonUp);
 }
 
 void NaMouseModule::Release()
@@ -211,7 +211,7 @@ void NaMouseModule::method_wheelUp(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::method_postLButtonDown(V8_FUNCTION_ARGS)
+void NaMouseModule::method_postLbuttonDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
 	{
@@ -230,7 +230,7 @@ void NaMouseModule::method_postLButtonDown(V8_FUNCTION_ARGS)
 }
 
 // description: 
-void NaMouseModule::method_postLButtonUp(V8_FUNCTION_ARGS)
+void NaMouseModule::method_postLbuttonUp(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
 	{

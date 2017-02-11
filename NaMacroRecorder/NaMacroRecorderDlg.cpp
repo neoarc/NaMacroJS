@@ -354,17 +354,11 @@ void CNaMacroRecorderDlg::StopRecord()
 
 void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 {
-	POINT lastPos;
-	lastPos.x = -1;
-	lastPos.y = -1;
-
 	DWORD lastTick = DWORD_MAX;
 	BOOL useMouse = FALSE, useKey = FALSE;
 
-	std::vector<ActionRecord>::iterator it = m_vecActionRecords.begin();
-	for (; it != m_vecActionRecords.end(); ++it)
+	for (const auto& ar : m_vecActionRecords)
 	{
-		ActionRecord ar = *it;
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
 			useMouse = TRUE;
 		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
@@ -398,11 +392,11 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		recordedJs += newJs;
 	}
 
-	it = m_vecActionRecords.begin();
-	for (; it != m_vecActionRecords.end(); ++it)
+	POINT lastPos;
+	lastPos.x = -1;
+	lastPos.y = -1;
+	for (const auto& ar : m_vecActionRecords)
 	{
-		ActionRecord ar = *it;
-
 		// for debug
 		/*
 		CString str;
@@ -419,7 +413,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		TRACE(str);
 		*/
 
-		if (m_bRecordDelay && lastTick != -1 && lastTick != ar.dwTimeStamp)
+		if (m_bRecordDelay && lastTick != DWORD_MAX && lastTick != ar.dwTimeStamp)
 		{
 			newJs.Format(L"%ssleep(%d);\n", STR_TAB, ar.dwTimeStamp - lastTick);
 			recordedJs += newJs;
@@ -428,14 +422,14 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
 		{
-			BOOL bMoved = FALSE;
+			BOOL moved = FALSE;
 			if (ar.enType == ACTION_MOUSEMOVE || (m_enRecordMove != RECORD_MOUSEMOVE_ALL))
 			{
 				if (ar.ptPos.x != lastPos.x || ar.ptPos.y != lastPos.y)
-					bMoved = TRUE;
+					moved = TRUE;
 			}
 
-			if (bMoved)
+			if (moved)
 			{
 				newJs.Format(L"%s%s.move(%d,%d);\n", STR_TAB, VAR_MOUSE, ar.ptPos.x, ar.ptPos.y);
 				recordedJs += newJs;

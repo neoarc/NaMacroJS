@@ -206,13 +206,13 @@ void CNaMacroRecorderDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 
 void CNaMacroRecorderDlg::OnBnClickedBtnRec()
 {
-	RecordStart();
+	StartRecord();
 }
 
 
 void CNaMacroRecorderDlg::OnBnClickedBtnStop()
 {
-	RecordStop();
+	StopRecord();
 }
 
 // all mousemove
@@ -239,7 +239,7 @@ BOOL CNaMacroRecorderDlg::IsMouseClicked()
 	return FALSE;
 }
 
-void CNaMacroRecorderDlg::RecordStart()
+void CNaMacroRecorderDlg::StartRecord()
 {
 	if (m_bRecording)
 		return;
@@ -288,7 +288,7 @@ void CNaMacroRecorderDlg::RecordStart()
 	ToggleUIEnable(m_bRecording);
 }
 
-void CNaMacroRecorderDlg::RecordStop()
+void CNaMacroRecorderDlg::StopRecord()
 {
 	if (!m_bRecording)
 		return;
@@ -352,31 +352,24 @@ void CNaMacroRecorderDlg::RecordStop()
 	}
 }
 
-void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
+void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 {
-	POINT ptLastPos;
-	ptLastPos.x = -1;
-	ptLastPos.y = -1;
+	DWORD lastTick = DWORD_MAX;
+	BOOL useMouse = FALSE, useKey = FALSE;
 
-	DWORD dwLastTick = -1;
-	BOOL bUseMouse = FALSE, bUseKey = FALSE;
-	CString strJs;
-
-	std::vector<ActionRecord>::iterator it = m_vecActionRecords.begin();
-	for (; it != m_vecActionRecords.end(); ++it)
+	for (const auto& ar : m_vecActionRecords)
 	{
-		ActionRecord ar = *it;
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
-			bUseMouse = TRUE;
+			useMouse = TRUE;
 		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
-			bUseKey = TRUE;
+			useKey = TRUE;
 
-		if (bUseKey && bUseMouse)
+		if (useKey && useMouse)
 			break;
 	}
 
 	CTime time = CTime::GetCurrentTime();	
-	strOutput.Format(
+	recordedJs.Format(
 		L"// Auto generated script by NaMacroRecorder\n"
 		L"// %04d.%02d.%02d\n"
 		L"function main() {\n",
@@ -387,22 +380,23 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 #define VAR_KEYBOARD	L"_k"
 #define STR_TAB			L"   "
 
-	if (bUseMouse)
+	CString newJs;
+	if (useMouse)
 	{
-		strJs.Format(L"%svar %s = system.mouse;\n", STR_TAB, VAR_MOUSE);
-		strOutput += strJs;
+		newJs.Format(L"%svar %s = system.mouse;\n", STR_TAB, VAR_MOUSE);
+		recordedJs += newJs;
 	}
-	if (bUseKey)
+	if (useKey)
 	{
-		strJs.Format(L"%svar %s = system.keyboard;\n", STR_TAB, VAR_KEYBOARD);
-		strOutput += strJs;
+		newJs.Format(L"%svar %s = system.keyboard;\n", STR_TAB, VAR_KEYBOARD);
+		recordedJs += newJs;
 	}
 
-	it = m_vecActionRecords.begin();
-	for (; it != m_vecActionRecords.end(); ++it)
+	POINT lastPos;
+	lastPos.x = -1;
+	lastPos.y = -1;
+	for (const auto& ar : m_vecActionRecords)
 	{
-		ActionRecord ar = *it;
-
 		// for debug
 		/*
 		CString str;
@@ -419,28 +413,28 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 		TRACE(str);
 		*/
 
-		if (m_bRecordDelay && dwLastTick != -1 && dwLastTick != ar.dwTimeStamp)
+		if (m_bRecordDelay && lastTick != DWORD_MAX && lastTick != ar.dwTimeStamp)
 		{
-			strJs.Format(L"%ssleep(%d);\n", STR_TAB, ar.dwTimeStamp - dwLastTick);
-			strOutput += strJs;
+			newJs.Format(L"%ssleep(%d);\n", STR_TAB, ar.dwTimeStamp - lastTick);
+			recordedJs += newJs;
 		}
-		dwLastTick = ar.dwTimeStamp;
+		lastTick = ar.dwTimeStamp;
 
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
 		{
-			BOOL bMoved = FALSE;
+			BOOL moved = FALSE;
 			if (ar.enType == ACTION_MOUSEMOVE || (m_enRecordMove != RECORD_MOUSEMOVE_ALL))
 			{
-				if (ar.ptPos.x != ptLastPos.x || ar.ptPos.y != ptLastPos.y)
-					bMoved = TRUE;
+				if (ar.ptPos.x != lastPos.x || ar.ptPos.y != lastPos.y)
+					moved = TRUE;
 			}
 
-			if (bMoved)
+			if (moved)
 			{
-				strJs.Format(L"%s%s.move(%d,%d);\n", STR_TAB, VAR_MOUSE, ar.ptPos.x, ar.ptPos.y);
-				strOutput += strJs;
+				newJs.Format(L"%s%s.move(%d,%d);\n", STR_TAB, VAR_MOUSE, ar.ptPos.x, ar.ptPos.y);
+				recordedJs += newJs;
 
-				ptLastPos = ar.ptPos;
+				lastPos = ar.ptPos;
 			}
 
 			switch (ar.enType)
@@ -448,27 +442,27 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &strOutput)
 			case ACTION_MOUSEMOVE:
 				break;
 			case ACTION_MOUSELBUTTONDOWN:
-				strJs.Format(L"%s%s.lbuttonDown();\n", STR_TAB, VAR_MOUSE);
-				strOutput += strJs;
+				newJs.Format(L"%s%s.lbuttonDown();\n", STR_TAB, VAR_MOUSE);
+				recordedJs += newJs;
 				break;
 			case ACTION_MOUSELBUTTONUP:
-				strJs.Format(L"%s%s.lbuttonUp();\n", STR_TAB, VAR_MOUSE);
-				strOutput += strJs;
+				newJs.Format(L"%s%s.lbuttonUp();\n", STR_TAB, VAR_MOUSE);
+				recordedJs += newJs;
 				break;
 			}
 		}
 		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
 		{
-			strJs.Format(L"%s%s.%s(%d); // '%s'\n",
+			newJs.Format(L"%s%s.%s(%d); // '%s'\n",
 				STR_TAB, VAR_KEYBOARD, 
 				(ar.enType == ACTION_KEYDOWN) ? L"down" : L"up", ar.nKeyCode,
 				GetKeyName(ar.nKeyCode)
 				);
-			strOutput += strJs;
+			recordedJs += newJs;
 		}		
 	}
 
-	strOutput += L"}\n";
+	recordedJs += L"}\n";
 
 	m_vecActionRecords.clear();
 }

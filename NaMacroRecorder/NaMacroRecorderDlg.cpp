@@ -288,13 +288,30 @@ void CNaMacroRecorderDlg::StartRecord()
 	ToggleUIEnable(m_bRecording);
 }
 
-void CNaMacroRecorderDlg::StopRecord()
+void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 {
-	if (!m_bRecording)
+	if (!OpenClipboard())
+	{
+		AfxMessageBox(_T("Failed to open clipboard."));
 		return;
+	}
 
-	TRACE(L"Stop Recording.\n");
+	EmptyClipboard();
+	HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, s.GetLength() + 1);
+	char *pchData = (char *)GlobalLock(hClipboardData);
+	int nLen = WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, NULL, 0, NULL, NULL);
 
+	WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, pchData, nLen, NULL, NULL);
+
+	GlobalUnlock(hClipboardData);
+	SetClipboardData(CF_TEXT, hClipboardData);
+	CloseClipboard();
+
+	AfxMessageBox(L"Script has been copied to clipboard.");
+}
+
+void CNaMacroRecorderDlg::RegisterRawInputDev()
+{
 	RAWINPUTDEVICE rawInputDev[2];
 	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
 
@@ -307,7 +324,7 @@ void CNaMacroRecorderDlg::StopRecord()
 	// mouse
 	rawInputDev[1].usUsagePage = 0x01;
 	rawInputDev[1].usUsage = 0x02;
-	rawInputDev[1].dwFlags = RIDEV_REMOVE; 
+	rawInputDev[1].dwFlags = RIDEV_REMOVE;
 	rawInputDev[1].hwndTarget = NULL;
 
 	if (RegisterRawInputDevices(rawInputDev, 2, sizeof(RAWINPUTDEVICE)) == FALSE)
@@ -318,38 +335,26 @@ void CNaMacroRecorderDlg::StopRecord()
 		MessageBox(str);
 		*/
 	}
+}
+
+void CNaMacroRecorderDlg::StopRecord()
+{
+	if (!m_bRecording)
+		return;
+
+	TRACE(L"Stop Recording.\n");
+
+	RegisterRawInputDev();
 
 	m_bRecording = FALSE;
 	ToggleUIEnable(m_bRecording);
 
-	// For Test
-	CString strOutput;
-	RecordToNaMacroScript(strOutput);
-	MessageBox(strOutput);
+	CString recordedJs;
+	RecordToNaMacroScript(recordedJs);
+	MessageBox(recordedJs);
 
-	// Copy to clipboard
-	{
-		strOutput.Replace(L"\n", L"\r\n");
-
-		if (!OpenClipboard())
-		{
-			AfxMessageBox(_T("Failed to open clipboard."));
-			return;
-		}
-		EmptyClipboard();
-
-		HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, strOutput.GetLength() + 1);
-		char *pchData = (char *)GlobalLock(hClipboardData);
-		int nLen = WideCharToMultiByte(CP_ACP, 0, strOutput.GetBuffer(0), -1, NULL, 0, NULL, NULL);
-
-		WideCharToMultiByte(CP_ACP, 0, strOutput.GetBuffer(0), -1, pchData, nLen, NULL, NULL);
-		
-		GlobalUnlock(hClipboardData);
-		SetClipboardData(CF_TEXT, hClipboardData);
-		CloseClipboard();
-
-		AfxMessageBox(L"Script has been copied to clipboard.");
-	}
+	recordedJs.Replace(L"\n", L"\r\n");
+	CopyToClipboard(recordedJs);
 }
 
 void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)

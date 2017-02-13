@@ -88,6 +88,7 @@ public:
 	BOOL IsMouseClicked();
 	void StartRecord();
 	void StopRecord();
+
 	void RecordToNaMacroScript(OUT CString &recordedJs);
 	CString GetKeyName(unsigned int nKey);
 
@@ -116,4 +117,9 @@ public:
 	void LoadConfig(CString &strId, CString &strVal);
 	void AddFile(CString &strFullPath);
 	void SaveFiles();
+
+private:
+	void CopyToClipboard(CString& s);
+	void RegisterRawInputDev();
+
 };

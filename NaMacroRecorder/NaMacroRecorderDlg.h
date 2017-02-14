@@ -120,6 +120,6 @@ public:
 
 private:
 	void CopyToClipboard(CString& s);
-	void RegisterRawInputDev();
+	void PrepareInputDevice();
 
 };

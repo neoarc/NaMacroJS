@@ -310,7 +310,7 @@ void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 	AfxMessageBox(L"Script has been copied to clipboard.");
 }
 
-void CNaMacroRecorderDlg::RegisterRawInputDev()
+void CNaMacroRecorderDlg::PrepareInputDevice()
 {
 	RAWINPUTDEVICE rawInputDev[2];
 	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
@@ -344,7 +344,7 @@ void CNaMacroRecorderDlg::StopRecord()
 
 	TRACE(L"Stop Recording.\n");
 
-	RegisterRawInputDev();
+	PrepareInputDevice();
 
 	m_bRecording = FALSE;
 	ToggleUIEnable(m_bRecording);

@@ -2,12 +2,18 @@
 // mouse spy
 // 2015.12.02 neoarc (neoarcturus@gmail.com)
 //
-var _static; //, _color;
+include("../Addon/VirtualKey.js");
+
+var g_static;
+var g_static_color; // TODO color box (color picker)
+var g_static_hotkey;
+var g_boost_click_timer = null;
 
 function main()
 {
 	try {
 		createLogWindow();
+		initHotkey();
 		spy();
 	} catch(e) {
 		alert("Error: " + e + " / " + typeof(e));
@@ -17,16 +23,55 @@ function main()
 function createLogWindow()
 {
 	var width = 550;
-	var height = 360;
+	var height = 320;
 	var logger = new Window(0, 0, width, height);
 	logger.create();
 	logger.topmost = true;
-	logger.text = "MouseSpy v2 by neoarc";
+	logger.text = "MouseSpy v3 by neoarc";
 	logger.move("right", "top");
 	logger.visible = true;
 
-	_static = logger.addControl("Static", 0, 0, width, height, "", true);
+	g_static = logger.addControl("Static", 0, 0, width, height, "", true);
 	//_color = logger.addControl("Static", width, 0, 100, 100, "Static", true);
+
+	var inc = 120;
+	logger.height = logger.height + inc;
+	g_static_hotkey = logger.addControl("Static", 0, height, width, inc, "", true);
+	g_static_hotkey.text =
+		"4) Helper hotkeys\n" +
+		"   - F9: click\n" +
+		"   - F10: postClick\n" +
+		"   - F11: boost click (toggle)\n" +
+		"   - F12: tag current info (TODO not impl)";
+}
+
+function initHotkey()
+{
+	var k = system.keyboard;
+	var m = system.mouse;
+	k.on(VK["f9"], function () {
+		m.lbuttonDown(m.x, m.y);
+		sleep(10);
+		m.lbuttonUp(m.x, m.y);
+    });
+
+	k.on(VK["f10"], function () {
+		m.postLButtonDown(m.x, m.y);
+		sleep(10);
+		m.postLButtonUp(m.x, m.y);
+    });
+
+	k.on(VK["f11"], function () {
+		if (g_boost_click_timer === null) {
+			g_boost_click_timer = setInterval(30, function () {
+				system.mouse.click(system.mouse.x, system.mouse.y);
+			});
+		}
+		else {
+			clearInterval(g_boost_click_timer);
+			g_boost_click_timer = null;
+		}
+    });
 }
 
 function spy()
@@ -58,7 +103,7 @@ function spy()
 			str += ("3) Active Window info\n");
 			str += getWindowProperties(wa) + "\n";
 
-			_static.text = str;
+			g_static.text = str;
 			//_color.image = system.screen.capture(m.x, m.y, 100, 100);
 	    }
 

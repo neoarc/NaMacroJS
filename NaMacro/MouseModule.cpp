@@ -220,12 +220,9 @@ void NaMouseModule::method_postLbuttonDown(V8_FUNCTION_ARGS)
 
 		POINT pt = { x, y };
 		HWND hWnd = WindowFromPoint(pt);
-		RECT rc;
-		GetWindowRect(hWnd, &rc);
-		x -= rc.left;
-		y -= rc.top;
+		::ScreenToClient(hWnd, &pt);
 
-		PostMessage(hWnd, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(x, y));
+		PostMessage(hWnd, WM_LBUTTONDOWN, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
 	}
 }
 
@@ -239,11 +236,8 @@ void NaMouseModule::method_postLbuttonUp(V8_FUNCTION_ARGS)
 
 		POINT pt = { x, y };
 		HWND hWnd = WindowFromPoint(pt);
-		RECT rc;
-		GetWindowRect(hWnd, &rc);
-		x -= rc.left;
-		y -= rc.top;
+		::ScreenToClient(hWnd, &pt);
 
-		PostMessage(hWnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(x, y));
+		PostMessage(hWnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
 	}
 }

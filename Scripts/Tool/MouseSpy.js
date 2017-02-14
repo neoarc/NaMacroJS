@@ -56,9 +56,9 @@ function initHotkey()
     });
 
 	k.on(VK["f10"], function () {
-		m.postLButtonDown(m.x, m.y);
+		m.postLbuttonDown(m.x, m.y);
 		sleep(10);
-		m.postLButtonUp(m.x, m.y);
+		m.postLbuttonUp(m.x, m.y);
     });
 
 	k.on(VK["f11"], function () {

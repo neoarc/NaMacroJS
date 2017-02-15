@@ -27,7 +27,7 @@ function runBot()
     for ( ; ; ) {
         var ret = findImageFromList(g_img_list, g_img_obj, 0);
         if (ret) {
-            trace(ret + " 찾음.");
+            log(ret + " 찾음.");
             clickFound(2000, true);
         }
         else {
@@ -38,13 +38,18 @@ function runBot()
     }
 }
 
+function log(str)
+{
+    trace("[" + getTimeStamp() + "] " + str);
+}
+
 function loadImages()
 {
-    trace("Load Images begin.");
+    log("Load Images begin.");
 
     // filelist, obj
     loadImageToBuffer(g_img_list, g_img_obj);
-    trace("Load Images end.");
+    log("Load Images end.");
 }
 
 function loadImageToBuffer(list, buffer)
@@ -128,4 +133,17 @@ function postClick(x, y)
     _m.postLbuttonDown(x, y);
     sleep(10);
     _m.postLbuttonUp(x, y);
+}
+
+function getTimeStamp()
+{
+    var currentdate = new Date();
+    var datetime = currentdate.getFullYear() + "/"
+                + (currentdate.getMonth()+1)  + "/"
+                + currentdate.getDate() + " @ "
+                + currentdate.getHours() + ":"
+                + currentdate.getMinutes() + ":"
+                + currentdate.getSeconds();
+
+    return datetime;
 }

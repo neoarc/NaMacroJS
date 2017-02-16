@@ -28,8 +28,16 @@ void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_templat
 	ADD_MOUSE_METHOD(rbuttonUp);
 	ADD_MOUSE_METHOD(wheelDown);
 	ADD_MOUSE_METHOD(wheelUp);
+
+	// Note: postXXX methods can be replaced
+	//       VirtualMouse.move(0, 0);
+	//       VirtualMouse.click(0, 0);
+	ADD_MOUSE_METHOD(postMove);
+	ADD_MOUSE_METHOD(postClick);
 	ADD_MOUSE_METHOD(postLbuttonDown);
 	ADD_MOUSE_METHOD(postLbuttonUp);
+	ADD_MOUSE_METHOD(postRbuttonDown);
+	ADD_MOUSE_METHOD(postRbuttonUp);
 }
 
 void NaMouseModule::Release()
@@ -211,6 +219,34 @@ void NaMouseModule::method_wheelUp(V8_FUNCTION_ARGS)
 }
 
 // description: 
+void NaMouseModule::method_postMove(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		int x = args[0]->Int32Value();
+		int y = args[1]->Int32Value();
+
+		POINT pt = { x, y };
+		HWND hWnd = WindowFromPoint(pt);
+		::ScreenToClient(hWnd, &pt);
+
+		PostMessage(hWnd, WM_MOUSEMOVE, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
+	}
+}
+
+// description: 
+void NaMouseModule::method_postClick(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		method_postLbuttonDown(args);
+		::Sleep(MOUSECLICK_SLEEP);
+
+		method_postLbuttonUp(args);
+	}
+}
+
+// description: 
 void NaMouseModule::method_postLbuttonDown(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 2)
@@ -239,5 +275,37 @@ void NaMouseModule::method_postLbuttonUp(V8_FUNCTION_ARGS)
 		::ScreenToClient(hWnd, &pt);
 
 		PostMessage(hWnd, WM_LBUTTONUP, MK_LBUTTON, MAKELPARAM(pt.x, pt.y));
+	}
+}
+
+// description: 
+void NaMouseModule::method_postRbuttonDown(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		int x = args[0]->Int32Value();
+		int y = args[1]->Int32Value();
+
+		POINT pt = { x, y };
+		HWND hWnd = WindowFromPoint(pt);
+		::ScreenToClient(hWnd, &pt);
+
+		PostMessage(hWnd, WM_RBUTTONDOWN, MK_RBUTTON, MAKELPARAM(pt.x, pt.y));
+	}
+}
+
+// description: 
+void NaMouseModule::method_postRbuttonUp(V8_FUNCTION_ARGS)
+{
+	if (args.Length() >= 2)
+	{
+		int x = args[0]->Int32Value();
+		int y = args[1]->Int32Value();
+
+		POINT pt = { x, y };
+		HWND hWnd = WindowFromPoint(pt);
+		::ScreenToClient(hWnd, &pt);
+
+		PostMessage(hWnd, WM_RBUTTONUP, MK_RBUTTON, MAKELPARAM(pt.x, pt.y));
 	}
 }

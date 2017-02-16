@@ -6,7 +6,8 @@
 var _GlobalContext = this;
 if (!_GlobalContext.ImageBot) {
     //
-    // var bot = new ImageBot(["img1", "img2", "img3"], "./ImagePath");
+    // usage:
+    // var bot = new ImageBot(["img1", "img2", "img3"], "./ImagePath/");
     // bot.run();
     _GlobalContext.ImageBot = function(image_names, image_path)
     {
@@ -15,7 +16,7 @@ if (!_GlobalContext.ImageBot) {
                 this.image_path = image_path;
 
             if (image_names.length !== undefined) {
-                // it's array
+                // it maybe array
                 this.image_names = image_names;
                 this.loadImages();
             }
@@ -27,6 +28,7 @@ if (!_GlobalContext.ImageBot) {
 
     _GlobalContext.ImageBot.prototype = new Object();
     var _pImageBot = _GlobalContext.ImageBot.prototype;
+
     _pImageBot.typename = "ImageBot";
     _pImageBot.image_names = [];
     _pImageBot.image_objects = [];
@@ -34,6 +36,8 @@ if (!_GlobalContext.ImageBot) {
     _pImageBot.screen_image = null;
     _pImageBot.image_found_pos = null;
 
+    _pImageBot.default_accuracy_factor = 0;
+    _pImageBot.default_focus_window = null;
     _pImageBot.default_click_sleep = 2000;
     _pImageBot.default_loop_sleep = 1000;
 
@@ -41,19 +45,21 @@ if (!_GlobalContext.ImageBot) {
     _pImageBot.run = function()
     {
         for ( ; ; ) {
-            var ret = this.findImageFromList(this.image_objects, 0);
+            var ret = this.findImageFromList(this.image_objects, this.default_accuracy_factor);
             if (ret) {
-                this.log(ret + " Found.");
+                this.log(ret + " Found ==> click");
                 this.clickFound(this.default_click_sleep, true);
             }
             else {
-                consoleWindow.activate();
+                if (this.default_focus_window)
+                    this.default_focus_window.activate();
             }
 
             sleep(this.default_loop_sleep);
         }
     };
 
+    // load image list & make image object list
     _pImageBot.loadImages = function()
     {
         this.log("Load Images begin.");
@@ -61,6 +67,7 @@ if (!_GlobalContext.ImageBot) {
         this.log("Load Images end.");
     };
 
+    // load image list & make image object list helper
     _pImageBot.loadImageToBuffer = function(names, objects)
     {
         for (var i=0; i<names.length; i++)
@@ -76,6 +83,7 @@ if (!_GlobalContext.ImageBot) {
         objects.length = names.length;
     };
 
+    // capture screen
     _pImageBot.captureScreen = function()
     {
         var _s = system.screen;
@@ -91,7 +99,7 @@ if (!_GlobalContext.ImageBot) {
             throw "this.screen_image is null";
 
         if (acc_factor === undefined)
-            acc_factor = 0;
+            acc_factor = this.default_accuracy_factor;
 
         // image_found_pos is null if not found
         this.image_found_pos = this.screen_image.findImage(
@@ -110,7 +118,7 @@ if (!_GlobalContext.ImageBot) {
                 return true;
             }
             if (not_found_msg !== undefined)
-                trace(not_found_msg);
+                this.log(not_found_msg);
 
             sleep(delay_when_rescan);
         }

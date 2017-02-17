@@ -35,6 +35,9 @@ if (!_GlobalContext.ImageBot) {
     _pImageBot.image_path = "./";
     _pImageBot.screen_image = null;
     _pImageBot.image_found_pos = null;
+    _pImageBot.capture_target_window = null;
+    _pImageBot.capture_target_rect = null;
+    _pImageBot.capture_offset = [0, 0];
 
     _pImageBot.default_accuracy_factor = 0;
     _pImageBot.default_focus_window = null;
@@ -44,6 +47,8 @@ if (!_GlobalContext.ImageBot) {
     // base routine.. find, click, wait
     _pImageBot.run = function()
     {
+        var title_text = consoleWindow.text;
+        var think_count = 0;
         for ( ; ; ) {
             var ret = this.findImageFromList(this.image_objects, this.default_accuracy_factor);
             if (ret) {
@@ -53,6 +58,15 @@ if (!_GlobalContext.ImageBot) {
             else {
                 if (this.default_focus_window)
                     this.default_focus_window.activate();
+
+                if (++think_count > 5)
+                    think_count = 0;
+
+                var str = "";
+                for (var i=0; i<think_count; i++) {
+                    str += ". ";
+                }
+                consoleWindow.text = title_text + " " + str;
             }
 
             sleep(this.default_loop_sleep);
@@ -89,7 +103,24 @@ if (!_GlobalContext.ImageBot) {
         var _s = system.screen;
         if (this.screen_image)
             this.screen_image.reset();
-        this.screen_image = _s.capture(0, 0, _s.width, _s.height);
+
+        //_pImageBot.capture_target_window = null;
+        //_pImageBot.capture_target_rect = null;
+        if (this.capture_target_window) {
+            var _w = this.capture_target_window;
+            this.screen_image = _s.capture(_w.x, _w.y, _w.width, _w.height);
+            this.capture_offset = [_w.x, _w.y];
+        }
+        else if (this.capture_target_rect) {
+            var _r = this.capture_target_rect;
+            this.screen_image = _s.capture(r[0], r[1], r[2], r[3]);
+            this.capture_offset = [r[0], r[1]];
+            //this.screen_image = _s.capture(r.left, r.top, r.width, r.height);
+        }
+        else {
+            this.screen_image = _s.capture(0, 0, _s.width, _s.height);
+            this.capture_offset = [0, 0];
+        }
     };
 
     // findImage and return point object
@@ -102,8 +133,16 @@ if (!_GlobalContext.ImageBot) {
             acc_factor = this.default_accuracy_factor;
 
         // image_found_pos is null if not found
-        this.image_found_pos = this.screen_image.findImage(
-            this.image_objects[img_name], acc_factor);
+        var pos_in_image = this.screen_image.findImage(this.image_objects[img_name], acc_factor);
+        if (pos_in_image) {
+            this.image_found_pos = {
+                x: pos_in_image.x + this.capture_offset[0],
+                y: pos_in_image.y + this.capture_offset[1]
+            };
+        }
+        else {
+            this.image_found_pos = null;
+        }
 
         return this.image_found_pos;
     };

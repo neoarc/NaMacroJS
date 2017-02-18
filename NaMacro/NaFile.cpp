@@ -151,7 +151,7 @@ void NaFile::method_write(V8_FUNCTION_ARGS)
 	Isolate *isolate = args.GetIsolate();
 	Local<Object> obj = args.This();
 	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(obj));
-	if (pFile == nullptr)
+	if (pFile == nullptr || args.Length() < 1)
 	{
 		// error
 		args.GetReturnValue().Set(Integer::New(isolate, -1));

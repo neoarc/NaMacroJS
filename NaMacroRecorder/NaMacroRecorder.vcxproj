@@ -201,6 +201,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActionRecord.h" />
     <ClInclude Include="NaMacroRecorder.h" />
     <ClInclude Include="NaMacroRecorderDlg.h" />
     <ClInclude Include="Resource.h" />

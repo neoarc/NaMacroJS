@@ -7,43 +7,17 @@
 #include <vector>
 #include "afxcmn.h"
 
-enum ActionTypes {
-	ACTION_MOUSEBEGIN,
-	ACTION_MOUSEMOVE,
-	ACTION_MOUSELBUTTONDOWN,
-	ACTION_MOUSELBUTTONUP,
-	ACTION_MOUSERBUTTONDOWN,
-	ACTION_MOUSERBUTTONUP,
-	ACTION_MOUSELAST,
+#include "ActionRecord.h"
 
-	ACTION_KEYBEGIN,
-	ACTION_KEYDOWN,
-	ACTION_KEYUP,
-	ACTION_KEYLAST,
-};
-
-enum RecordMouseMoveOptions {
+enum RecordMouseMoveOptions 
+{
 	RECORD_MOUSEMOVE_NONE,
 	RECORD_MOUSEMOVE_CLICKED, 
 	RECORD_MOUSEMOVE_ALL,	
 };
 
-union ActionRecord {
-	// mouse action
-	struct {
-		ActionTypes enType;
-		POINT ptPos;
-		DWORD dwTimeStamp;
-	};
-	// key action
-	struct {
-		ActionTypes enType;
-		int nKeyCode;
-		DWORD dwTimeStamp;
-	};
-};
-
-struct FileInfo {
+struct FileInfo
+{
 	CString strFullPath;
 	CString strPath;
 	CString strFileName;
@@ -89,6 +63,9 @@ public:
 	void StartRecord();
 	void StopRecord();
 
+	bool IsAddWindowInfo();
+	bool IsUseRelativeCoord();
+
 	void RecordToNaMacroScript(OUT CString &recordedJs);
 	CString GetKeyName(unsigned int nKey);
 
@@ -102,10 +79,12 @@ public:
 	BOOL m_bRecordDelay;
 
 	// recording data
+	HWND m_hActiveWnd;
+
 	POINT m_ptFirstMousePos;
 	POINT m_ptCurMousePos;
 	POINT m_ptLastMousePos;
-	std::vector<ActionRecord> m_vecActionRecords;
+	std::vector<ActionRecord*> m_vecActionRecords;
 	
 	void ToggleUIEnable(BOOL bRecording);	
 

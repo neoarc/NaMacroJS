@@ -128,6 +128,12 @@ void NaFile::method_read(V8_FUNCTION_ARGS)
 		return;
 	}
 
+	if (pFile->m_hFile == nullptr)
+	{
+		args.GetReturnValue().Set(Null(isolate));
+		return;
+	}
+
 	fseek(pFile->m_hFile, 0, SEEK_END);
 	int nSize = ftell(pFile->m_hFile);
 	rewind(pFile->m_hFile);
@@ -157,7 +163,13 @@ void NaFile::method_write(V8_FUNCTION_ARGS)
 		args.GetReturnValue().Set(Integer::New(isolate, -1));
 		return;
 	}
-	
+
+	if (pFile->m_hFile == nullptr)
+	{
+		args.GetReturnValue().Set(Null(isolate));
+		return;
+	}
+
 	String::Value strV8(args[0]);
 	NaString str((wchar_t*)*strV8);
 	size_t ret = fwrite(str.cstr(), str.GetLength(), 1, pFile->m_hFile);

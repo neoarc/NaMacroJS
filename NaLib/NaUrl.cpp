@@ -33,7 +33,30 @@ NaString NaUrl::GetFullUrl()
 	int nIdx = m_strUrl.Find(L":");
 	if (nIdx > 0)
 	{
-		// TODO
+		// This is full path, ignore base path
+		NaString strUrl = m_strUrl;
+		NaStrArray arUrl = strUrl.Split(L"/");
+		NaStrArray arFull;
+
+		for (int i = 0; i < arUrl.GetCount(); i++)
+		{
+			if (arUrl[i] == "/" && i == 0)
+			{
+				// TODO check; Is this possible case?
+				continue;
+			}
+			if (arUrl[i] == ".")
+				continue;
+			if (arUrl[i] == "..")
+			{
+				arFull.Pop();
+				continue;
+			}
+
+			arFull.Add(arUrl[i]);
+		}
+
+		return arFull.Join(L"/").wstr();
 	}
 	else
 	{

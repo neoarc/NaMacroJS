@@ -189,7 +189,7 @@ void CNaMacroRecorderDlg::OnClose()
 	// Ref: m_listFiles.SetItemData(nListIdx, (DWORD)pInfo);
 	// TODO
 
-	// Clear action record 
+	// Clear action record
 	std::vector<ActionRecord*>::iterator it;
 	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
 	{
@@ -205,7 +205,7 @@ void CNaMacroRecorderDlg::OnClose()
 void CNaMacroRecorderDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 {
 	TRACE(_T("OnHotKey: %d\n"), nHotKeyId);
-	switch(nHotKeyId) 
+	switch(nHotKeyId)
 	{
 		case 0:
 			OnBnClickedBtnRec();
@@ -301,7 +301,7 @@ void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 	CloseClipboard();
 
 	// TODO check Clipboard is too big?
-	
+
 	AfxMessageBox(L"Script has been copied to clipboard.");
 }
 
@@ -406,7 +406,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 			break;
 	}
 
-	CTime time = CTime::GetCurrentTime();	
+	CTime time = CTime::GetCurrentTime();
 	recordedJs.Format(
 		L"// Auto generated script by NaMacroRecorder\n"
 		L"// %04d.%02d.%02d\n"
@@ -425,7 +425,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		newJs.Format(L"%svar %s = system.mouse;\n", STR_TAB, VAR_MOUSE);
 		recordedJs += newJs;
 	}
-	
+
 	if (useKey)
 	{
 		newJs.Format(L"%svar %s = system.keyboard;\n", STR_TAB, VAR_KEYBOARD);
@@ -439,7 +439,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 
 		newJs.Format(
 			L"%sfunction _findFirstWindow(text) { "
-			L"var w = findWindow(text); "
+			L"var w = findWindows(text); "
 			L"if (w.length == 0) throw 'Cannot find window:' + text; "
 			L"return w[0]; "
 			L"}; \n",
@@ -449,7 +449,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 
 	POINT lastPos = { -1, -1 };
 	RECT rcActiveWindow = { -1, -1, -1, -1 };
-	
+
 	for (const auto& ar : m_vecActionRecords)
 	{
 		// for debug
@@ -494,9 +494,9 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 				{
 					if (IsUseRelativeCoord())
 					{
-						newJs.Format(L"%s%s.move(%s.x + %d, %s.y + %d);\n", 
-							STR_TAB, VAR_MOUSE, 
-							VAR_WINDOW, mar->ptRelativePos.x, 
+						newJs.Format(L"%s%s.move(%s.x + %d, %s.y + %d);\n",
+							STR_TAB, VAR_MOUSE,
+							VAR_WINDOW, mar->ptRelativePos.x,
 							VAR_WINDOW, mar->ptRelativePos.y
 						);
 					}
@@ -525,12 +525,12 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 			KeyActionRecord *kar = (KeyActionRecord*)ar;
 
 			newJs.Format(L"%s%s.%s(%d); // '%s'\n",
-				STR_TAB, VAR_KEYBOARD, 
+				STR_TAB, VAR_KEYBOARD,
 				(ar->enType == ACTION_KEYDOWN) ? L"down" : L"up", kar->nKeyCode,
 				GetKeyName(kar->nKeyCode)
 				);
 			recordedJs += newJs;
-		}		
+		}
 		else if (ar->enType == ACTION_WINDOWINFO)
 		{
 			WindowInfoActionRecord *war = (WindowInfoActionRecord*)ar;
@@ -670,7 +670,7 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 			else
 			{
 				ar->enType = ACTION_MOUSEMOVE;
-				
+
 				if (m_ptLastMousePos.x == m_ptCurMousePos.x &&
 					m_ptLastMousePos.y == m_ptCurMousePos.y)
 					bIgnore = TRUE;
@@ -734,18 +734,18 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 						break; // Strange condition
 					hWnd = hParent;
 				}
-				
+
 				// Using this info for relative coord too.
 				WindowInfoActionRecord *war = new WindowInfoActionRecord;
 				war->enType = ACTION_WINDOWINFO;
 				war->dwTimeStamp = dwTick;
-					
+
 				wchar_t strText[256];
 				::GetWindowText(hWnd, strText, 256);
 				war->strText = strText;
-				war->strText.Replace(L"\r", L""); 
+				war->strText.Replace(L"\r", L"");
 				war->strText.Replace(L"\n", L"");
-					
+
 				RECT rcWnd;
 				::GetWindowRect(hWnd, &rcWnd);
 				war->rcRect.left = rcWnd.left;
@@ -793,7 +793,7 @@ void CNaMacroRecorderDlg::ToggleUIEnable(BOOL bRecording)
 	GetDlgItem(IDC_CHK_REC_COMMENT_WINDOW_INFO)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_IMAGE_BASE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_WINDOW_COORD_RELATIVE)->EnableWindow(!bRecording);
-	
+
 }
 
 void CNaMacroRecorderDlg::LoadFiles()
@@ -845,7 +845,7 @@ void CNaMacroRecorderDlg::LoadConfig(CString & strId, CString & strVal)
 void CNaMacroRecorderDlg::AddFile(CString & strFullPath)
 {
 	int nListIdx = m_listFiles.GetItemCount();
-	
+
 	FileInfo *pInfo = new FileInfo;
 	pInfo->strFullPath = strFullPath;
 	int nIdx = strFullPath.ReverseFind(L'\\');
@@ -890,16 +890,16 @@ void CNaMacroRecorderDlg::OnBnClickedBtnRun()
 #endif
 	sei.lpParameters = strFile;
 	sei.nShow = SW_SHOWDEFAULT;
-	
+
 	ShellExecuteEx(&sei);
 }
 
 void CNaMacroRecorderDlg::OnLvnItemchangedListFiles(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	
+
 	//TRACE(L"LvnItemChanged: %d\n", pNMLV->iItem);
-	
+
 	int nIdx = pNMLV->iItem;
 	GetDlgItem(IDC_BTN_RUN)->EnableWindow(nIdx < 0 ? FALSE : TRUE);
 

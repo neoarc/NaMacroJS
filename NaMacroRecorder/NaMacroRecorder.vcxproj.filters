@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="NaLib">
+      <UniqueIdentifier>{ae1af2c9-f253-4e70-aa00-9f4725e5a9b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <Text Include="ReadMe.txt" />
@@ -36,6 +39,9 @@
     <ClInclude Include="ActionRecord.h">
       <Filter>Header files</Filter>
     </ClInclude>
+    <ClInclude Include="..\NaLib\NaString.h">
+      <Filter>NaLib</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="NaMacroRecorder.cpp">
@@ -46,6 +52,9 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Source files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\NaLib\NaString.cpp">
+      <Filter>NaLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

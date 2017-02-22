@@ -66,7 +66,8 @@ public:
 	bool IsAddWindowInfo();
 	bool IsUseRelativeCoord();
 
-	void RecordToNaMacroScript(OUT CString &recordedJs);
+	void SaveRecordToNaMacroScript(IN CString filename);
+
 	CString GetKeyName(unsigned int nKey);
 
 	afx_msg void OnRawInput(UINT nInputcode, HRAWINPUT hRawInput);

@@ -212,8 +212,13 @@ int NaString::GetLength()
 
 int NaString::Compare(const wchar_t * lpsz)
 {
+	/*
 	int arglen = wcslen(lpsz);
 	int minlen = m_nLen < arglen ? m_nLen : arglen;
+	*/
+
+	if (m_pBuf == nullptr)
+		return wcscmp((wchar_t*)L"", lpsz);
 
 	return wcscmp((wchar_t*)m_pBuf, lpsz);
 }
@@ -264,11 +269,11 @@ NaString NaString::Left(int len)
 	NaString strRet;
 	unsigned char *buf;
 	int nNewLen = len;
-	int nNewBufLen = sizeof(wchar_t) * (len + 1);
+	int nNewBufLen = sizeof(wchar_t) * (nNewLen + 1);
 	buf = new unsigned char[nNewBufLen];
 
 	memcpy(buf, this->m_pBuf, nNewBufLen);
-	*((wchar_t*)buf + len) = 0;
+	*((wchar_t*)buf + nNewLen) = 0;
 
 	strRet.SetBuf((wchar_t*)buf);
 	delete[] buf;
@@ -499,7 +504,7 @@ int NaString::ConvertCharToWChar(const char* str, wchar_t** wstr)
 	return nWChars;
 }
 
-const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
+const NaString & NaString::SetBuf(const wchar_t* lpsz)
 {
 	unsigned char* pCurBuf = m_pBuf;
 
@@ -512,11 +517,8 @@ const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
 	}
 	else
 	{
-		if (len < 0)
-		{
-			m_nLen = wcslen(lpsz);
-			m_nBufLen = (int)(sizeof(wchar_t) * (m_nLen + 1));
-		}
+		m_nLen = wcslen(lpsz);
+		m_nBufLen = (int)(sizeof(wchar_t) * (m_nLen + 1));
 
 		AllocBuf(m_nBufLen);
 		memcpy(m_pBuf, lpsz, m_nBufLen);
@@ -529,7 +531,7 @@ const NaString & NaString::SetBuf(const wchar_t* lpsz, int len)
 	return *this;
 }
 
-const NaString & NaString::SetBuf(const char * sz, int len)
+const NaString & NaString::SetBuf(const char * sz)
 {
 	DeallocBuf();
 

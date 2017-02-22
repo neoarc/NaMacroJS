@@ -28,6 +28,11 @@ public:
 class MouseActionRecord : public ActionRecord
 {
 public:
+	MouseActionRecord()		
+	{
+		ptPos = { -1, -1 };
+		ptRelativePos = { -1, -1 };
+	}
 	POINT ptPos;
 	POINT ptRelativePos;
 };

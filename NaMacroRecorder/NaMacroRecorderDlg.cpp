@@ -7,6 +7,8 @@
 #include "NaMacroRecorderDlg.h"
 #include "afxdialogex.h"
 
+#include "..\NaLib\NaString.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -317,9 +319,6 @@ void CNaMacroRecorderDlg::StopRecord()
 	m_bRecording = FALSE;
 	ToggleUIEnable(m_bRecording);
 
-	CString recordedJs;
-	RecordToNaMacroScript(recordedJs);
-
 	// There is a bug that makes the message box strange if the string is too long.
 	/*
 	CString previewJs = recordedJs;
@@ -328,7 +327,9 @@ void CNaMacroRecorderDlg::StopRecord()
 	MessageBox(recordedJs);
 	*/
 
-	recordedJs.Replace(L"\n", L"\r\n");
+	// recordedJs.Replace(L"\n", L"\r\n");
+
+	/*
 	if (!CopyToClipboard(recordedJs))
 	{
 		AfxMessageBox(_T("Failed to open clipboard."));
@@ -337,7 +338,24 @@ void CNaMacroRecorderDlg::StopRecord()
 	else
 	{
 		AfxMessageBox(L"Script has been copied to clipboard.");
+	}
+	*/
+
+	// Find next filename.
+	CString filename;
+	CFileFind filefind;
+	for (int i=0; ; i++)
+	{
+		filename.Format(L"Recorded%04d.js", i);
+		if (!filefind.FindFile(filename))
+			break;
 	}	
+
+	SaveRecordToNaMacroScript(filename);
+
+	CString msg;
+	msg.Format(L"Script has been saved to file: %s", filename);
+	AfxMessageBox(msg);
 }
 
 void CNaMacroRecorderDlg::StartCaptureInputDevice()
@@ -405,8 +423,22 @@ bool CNaMacroRecorderDlg::IsUseRelativeCoord()
 	return ((CButton*)GetDlgItem(IDC_CHK_REC_WINDOW_COORD_RELATIVE))->GetCheck() == TRUE;
 }
 
-void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
+void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
 {
+	//
+	// TODO Must save to UTF-8 !!!
+	//      BOM + buf
+	CFile file;
+	file.Open(filename, CFile::modeCreate | CFile::modeWrite, nullptr);
+
+	NaString recordedJs = L"";
+
+#define WRITE_BUFFER \
+	{ \
+		file.Write(recordedJs.cstr(), strlen(recordedJs.cstr())); \
+		recordedJs = L""; \
+	}
+
 	DWORD lastTick = DWORD_MAX;
 	BOOL useMouse = FALSE, useKey = FALSE;
 
@@ -462,6 +494,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		recordedJs += newJs;
 	}
 
+	WRITE_BUFFER;
 	POINT lastPos = { -1, -1 };
 	RECT rcActiveWindow = { -1, -1, -1, -1 };
 
@@ -473,11 +506,11 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		str.Format(L"TimeStamp: %ld, Action: %d, ", ar.dwTimeStamp, ar.enType);
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
 		{
-			str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
+		str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
 		}
 		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
 		{
-			str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
+		str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
 		}
 		str.Format(L"%s\n", str);
 		TRACE(str);
@@ -507,7 +540,11 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 					newJs.Format(L"%s%s.move(%d, %d);\n", STR_TAB, VAR_MOUSE, mar->ptPos.x, mar->ptPos.y);
 				else
 				{
-					if (IsUseRelativeCoord())
+					if (mar->ptRelativePos.x == -1 && mar->ptRelativePos.y == -1)
+					{
+						newJs.Format(L"%s%s.move(%d, %d);\n", STR_TAB, VAR_MOUSE, mar->ptPos.x, mar->ptPos.y);
+					}
+					else
 					{
 						newJs.Format(L"%s%s.move(%s.x + %d, %s.y + %d);\n",
 							STR_TAB, VAR_MOUSE,
@@ -543,7 +580,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 				STR_TAB, VAR_KEYBOARD,
 				(ar->enType == ACTION_KEYDOWN) ? L"down" : L"up", kar->nKeyCode,
 				GetKeyName(kar->nKeyCode)
-				);
+			);
 			recordedJs += newJs;
 		}
 		else if (ar->enType == ACTION_WINDOWINFO)
@@ -575,10 +612,16 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 				recordedJs += newJs;
 			}
 		}
+
+		WRITE_BUFFER;
 	}
 
+	recordedJs += STR_TAB;
+	recordedJs += L"exit();\n";
 	recordedJs += L"}\n";
+	WRITE_BUFFER;
 
+	// Clear record
 	std::vector<ActionRecord*>::iterator it;
 	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
 	{
@@ -586,6 +629,8 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		it = m_vecActionRecords.erase(it);
 	}
 	m_vecActionRecords.clear();
+
+	file.Close();
 }
 
 CString CNaMacroRecorderDlg::GetKeyName(unsigned int nKey)

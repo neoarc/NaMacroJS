@@ -261,29 +261,7 @@ void CNaMacroRecorderDlg::StartRecord()
 
 	TRACE(L"Start Recording.\n");
 
-	RAWINPUTDEVICE rawInputDev[2];
-	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
-
-	// key
-	rawInputDev[0].usUsagePage = 0x01;
-	rawInputDev[0].usUsage = 0x06;
-	rawInputDev[0].dwFlags = RIDEV_INPUTSINK;
-	rawInputDev[0].hwndTarget = m_hWnd;
-
-	// mouse
-	rawInputDev[1].usUsagePage = 0x01;
-	rawInputDev[1].usUsage = 0x02;
-	rawInputDev[1].dwFlags = RIDEV_INPUTSINK;
-	rawInputDev[1].hwndTarget = m_hWnd;
-
-	if (RegisterRawInputDevices(rawInputDev, 2, sizeof(RAWINPUTDEVICE)) == FALSE)
-	{
-		/*
-		CString str;
-		str.Format(_T("RegisterRawInputDevices Error %d"), GetLastError());
-		MessageBox(str);
-		*/
-	}
+	StartCaptureInputDevice();
 
 	// for check relative
 	GetCursorPos(&m_ptFirstMousePos);
@@ -327,7 +305,54 @@ void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 	AfxMessageBox(L"Script has been copied to clipboard.");
 }
 
-void CNaMacroRecorderDlg::PrepareInputDevice()
+void CNaMacroRecorderDlg::StopRecord()
+{
+	if (!m_bRecording)
+		return;
+
+	TRACE(L"Stop Recording.\n");
+
+	StopCaptureInputDevice();
+
+	m_bRecording = FALSE;
+	ToggleUIEnable(m_bRecording);
+
+	CString recordedJs;
+	RecordToNaMacroScript(recordedJs);
+	MessageBox(recordedJs);
+
+	recordedJs.Replace(L"\n", L"\r\n");
+	CopyToClipboard(recordedJs);
+}
+
+void CNaMacroRecorderDlg::StartCaptureInputDevice()
+{
+	RAWINPUTDEVICE rawInputDev[2];
+	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
+
+	// key
+	rawInputDev[0].usUsagePage = 0x01;
+	rawInputDev[0].usUsage = 0x06;
+	rawInputDev[0].dwFlags = RIDEV_INPUTSINK;
+	rawInputDev[0].hwndTarget = m_hWnd;
+
+	// mouse
+	rawInputDev[1].usUsagePage = 0x01;
+	rawInputDev[1].usUsage = 0x02;
+	rawInputDev[1].dwFlags = RIDEV_INPUTSINK;
+	rawInputDev[1].hwndTarget = m_hWnd;
+
+	if (RegisterRawInputDevices(rawInputDev, 2, sizeof(RAWINPUTDEVICE)) == FALSE)
+	{
+		/*
+		CString str;
+		str.Format(_T("RegisterRawInputDevices Error %d"), GetLastError());
+		MessageBox(str);
+		*/
+	}
+}
+
+void CNaMacroRecorderDlg::StopCaptureInputDevice()
 {
 	RAWINPUTDEVICE rawInputDev[2];
 	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
@@ -352,26 +377,6 @@ void CNaMacroRecorderDlg::PrepareInputDevice()
 		MessageBox(str);
 		*/
 	}
-}
-
-void CNaMacroRecorderDlg::StopRecord()
-{
-	if (!m_bRecording)
-		return;
-
-	TRACE(L"Stop Recording.\n");
-
-	PrepareInputDevice();
-
-	m_bRecording = FALSE;
-	ToggleUIEnable(m_bRecording);
-
-	CString recordedJs;
-	RecordToNaMacroScript(recordedJs);
-	MessageBox(recordedJs);
-
-	recordedJs.Replace(L"\n", L"\r\n");
-	CopyToClipboard(recordedJs);
 }
 
 bool CNaMacroRecorderDlg::IsAddWindowInfo()

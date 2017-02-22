@@ -99,6 +99,6 @@ public:
 
 private:
 	void CopyToClipboard(CString& s);
-	void PrepareInputDevice();
-
+	void StartCaptureInputDevice();
+	void StopCaptureInputDevice();
 };

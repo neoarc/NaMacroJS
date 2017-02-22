@@ -98,7 +98,7 @@ public:
 	void SaveFiles();
 
 private:
-	void CopyToClipboard(CString& s);
+	bool CopyToClipboard(CString& s);
 	void StartCaptureInputDevice();
 	void StopCaptureInputDevice();
 };

@@ -281,15 +281,15 @@ void CNaMacroRecorderDlg::StartRecord()
 	ToggleUIEnable(m_bRecording);
 }
 
-void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
+bool CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 {
 	if (!OpenClipboard())
 	{
-		AfxMessageBox(_T("Failed to open clipboard."));
-		return;
+		return false;
 	}
 
 	EmptyClipboard();
+
 	HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, s.GetLength() + 1);
 	char *pchData = (char *)GlobalLock(hClipboardData);
 	int nLen = WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, NULL, 0, NULL, NULL);
@@ -302,7 +302,7 @@ void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
 
 	// TODO check Clipboard is too big?
 
-	AfxMessageBox(L"Script has been copied to clipboard.");
+	return true;
 }
 
 void CNaMacroRecorderDlg::StopRecord()
@@ -319,10 +319,25 @@ void CNaMacroRecorderDlg::StopRecord()
 
 	CString recordedJs;
 	RecordToNaMacroScript(recordedJs);
+
+	// There is a bug that makes the message box strange if the string is too long.
+	/*
+	CString previewJs = recordedJs;
+	previewJs = previewJs.Left(100);
+	previewJs += "\n ....";
 	MessageBox(recordedJs);
+	*/
 
 	recordedJs.Replace(L"\n", L"\r\n");
-	CopyToClipboard(recordedJs);
+	if (!CopyToClipboard(recordedJs))
+	{
+		AfxMessageBox(_T("Failed to open clipboard."));
+		return;
+	}
+	else
+	{
+		AfxMessageBox(L"Script has been copied to clipboard.");
+	}	
 }
 
 void CNaMacroRecorderDlg::StartCaptureInputDevice()

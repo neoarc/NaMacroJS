@@ -86,8 +86,8 @@ public:
 
 protected:
 	// internal function
-	const NaString& SetBuf(const wchar_t *wsz, int len = -1);
-	const NaString& SetBuf(const char *sz, int len = -1);
+	const NaString& SetBuf(const wchar_t *wsz);
+	const NaString& SetBuf(const char *sz);
 	const wchar_t *GetBuf();
 	void AllocBuf(int len);
 	void DeallocBuf(unsigned char *pBuf = nullptr);

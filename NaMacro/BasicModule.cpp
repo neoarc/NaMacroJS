@@ -83,6 +83,16 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 		s_pTimerWindow = new NaWindow(NULL, NA_WINDOW_INTERNAL);
 		s_pTimerWindow->Create();
 	}
+
+	// Must in Init() not in Create()
+	// (need HandleScope)
+	HandleScope handle_scope(isolate);
+	Local<Object> system_obj = GetSystemObject(isolate);
+
+#define ADD_SYSTEM_METHOD(_js_func)		ADD_OBJ_METHOD(system_obj, _js_func);
+
+	// system methods
+	ADD_SYSTEM_METHOD(execute);
 }
 
 void NaBasicModule::Release()
@@ -475,4 +485,43 @@ void NaBasicModule::method_findTrays(V8_FUNCTION_ARGS)
 	Isolate *isolate = args.GetIsolate();
 	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
 	args.GetReturnValue().Set(result);
+}
+
+// description: Execute external process
+// syntax:		system.execute(exefile_path[, arguments[, is_show]])
+void NaBasicModule::method_execute(V8_FUNCTION_ARGS)
+{
+	String::Value exepath(args[0]);
+	NaString strExePath((wchar_t*)*exepath);
+	NaString strArguments = L"";
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx
+
+	if (args.Length() > 1)
+	{
+		String::Value arguments(args[1]);
+		strArguments = (wchar_t*)*arguments;
+	}
+
+	int nShowOption = SW_SHOWDEFAULT;
+	if (args.Length() > 2)
+	{
+		bool bShow = args[2]->BooleanValue();
+		if (bShow)
+			nShowOption = SW_SHOW;
+		else
+			nShowOption = SW_HIDE;
+	}
+
+	// TODO change to ShellExecuteEx (to get return value)
+	ShellExecute(
+		nullptr,
+		L"open",
+		strExePath.wstr(),
+		strArguments.wstr(),
+		nullptr,
+		nShowOption
+		);
+
+	// TODO implement return value
 }

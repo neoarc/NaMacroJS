@@ -7,6 +7,8 @@
 #include "NaMacroRecorderDlg.h"
 #include "afxdialogex.h"
 
+#include "..\NaLib\NaString.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #endif
@@ -54,6 +56,7 @@ CNaMacroRecorderDlg::CNaMacroRecorderDlg(CWnd* pParent /*=NULL*/)
 {
 	m_hIcon = AfxGetApp()->LoadIcon(IDR_MAINFRAME);
 	m_bRecording = FALSE;
+	m_hActiveWnd = nullptr;
 }
 
 void CNaMacroRecorderDlg::DoDataExchange(CDataExchange* pDX)
@@ -114,6 +117,7 @@ BOOL CNaMacroRecorderDlg::OnInitDialog()
 	RegisterHotKey(m_hWnd, 1, 0, VK_F8);
 	((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->SetCheck(TRUE);
 	((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->SetCheck(TRUE);
+	((CButton*)GetDlgItem(IDC_CHK_REC_COMMENT_WINDOW_INFO))->SetCheck(TRUE);
 
 	m_listFiles.ModifyStyle(0, LVS_SHOWSELALWAYS);
 	m_listFiles.SetExtendedStyle(LVS_EX_FULLROWSELECT | LVS_EX_HEADERINALLVIEWS);
@@ -183,6 +187,19 @@ void CNaMacroRecorderDlg::OnClose()
 	UnregisterHotKey(m_hWnd, 0);
 	UnregisterHotKey(m_hWnd, 1);
 
+	// Clear FileData
+	// Ref: m_listFiles.SetItemData(nListIdx, (DWORD)pInfo);
+	// TODO
+
+	// Clear action record
+	std::vector<ActionRecord*>::iterator it;
+	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
+	{
+		delete *it;
+		it = m_vecActionRecords.erase(it);
+	}
+	m_vecActionRecords.clear();
+
 	CDialogEx::OnClose();
 }
 
@@ -190,7 +207,7 @@ void CNaMacroRecorderDlg::OnClose()
 void CNaMacroRecorderDlg::OnHotKey(UINT nHotKeyId, UINT nKey1, UINT nKey2)
 {
 	TRACE(_T("OnHotKey: %d\n"), nHotKeyId);
-	switch(nHotKeyId) 
+	switch(nHotKeyId)
 	{
 		case 0:
 			OnBnClickedBtnRec();
@@ -246,6 +263,103 @@ void CNaMacroRecorderDlg::StartRecord()
 
 	TRACE(L"Start Recording.\n");
 
+	StartCaptureInputDevice();
+
+	// for check relative
+	GetCursorPos(&m_ptFirstMousePos);
+	m_ptCurMousePos = m_ptFirstMousePos;
+	m_ptLastMousePos = m_ptCurMousePos;
+
+	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
+		m_enRecordMove = RECORD_MOUSEMOVE_ALL;
+	else if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
+		m_enRecordMove = RECORD_MOUSEMOVE_CLICKED;
+	else
+		m_enRecordMove = RECORD_MOUSEMOVE_NONE;
+
+	m_bRecordDelay = ((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->GetCheck();
+
+	m_bRecording = TRUE;
+	ToggleUIEnable(m_bRecording);
+}
+
+bool CNaMacroRecorderDlg::CopyToClipboard(CString& s)
+{
+	if (!OpenClipboard())
+	{
+		return false;
+	}
+
+	EmptyClipboard();
+
+	HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, s.GetLength() + 1);
+	char *pchData = (char *)GlobalLock(hClipboardData);
+	int nLen = WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, NULL, 0, NULL, NULL);
+
+	WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, pchData, nLen, NULL, NULL);
+
+	GlobalUnlock(hClipboardData);
+	SetClipboardData(CF_TEXT, hClipboardData);
+	CloseClipboard();
+
+	// TODO check Clipboard is too big?
+
+	return true;
+}
+
+void CNaMacroRecorderDlg::StopRecord()
+{
+	if (!m_bRecording)
+		return;
+
+	TRACE(L"Stop Recording.\n");
+
+	StopCaptureInputDevice();
+
+	m_bRecording = FALSE;
+	ToggleUIEnable(m_bRecording);
+
+	// There is a bug that makes the message box strange if the string is too long.
+	/*
+	CString previewJs = recordedJs;
+	previewJs = previewJs.Left(100);
+	previewJs += "\n ....";
+	MessageBox(recordedJs);
+	*/
+
+	// recordedJs.Replace(L"\n", L"\r\n");
+
+	/*
+	if (!CopyToClipboard(recordedJs))
+	{
+		AfxMessageBox(_T("Failed to open clipboard."));
+		return;
+	}
+	else
+	{
+		AfxMessageBox(L"Script has been copied to clipboard.");
+	}
+	*/
+
+	// Find next filename.
+	CString filename;
+	CFileFind filefind;
+	for (int i=0; ; i++)
+	{
+		filename.Format(L"Recorded%04d.js", i);
+		if (!filefind.FindFile(filename))
+			break;
+	}	
+
+	SaveRecordToNaMacroScript(filename);
+
+	CString msg;
+	msg.Format(L"Script has been saved to file: %s", filename);
+	AfxMessageBox(msg);
+}
+
+void CNaMacroRecorderDlg::StartCaptureInputDevice()
+{
 	RAWINPUTDEVICE rawInputDev[2];
 	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
 
@@ -269,48 +383,9 @@ void CNaMacroRecorderDlg::StartRecord()
 		MessageBox(str);
 		*/
 	}
-
-	// for check relative
-	GetCursorPos(&m_ptFirstMousePos);
-	m_ptCurMousePos = m_ptFirstMousePos;
-	m_ptLastMousePos = m_ptCurMousePos;
-
-	if (((CButton*)GetDlgItem(IDC_CHK_REC_MOUSEMOVE))->GetCheck())
-		m_enRecordMove = RECORD_MOUSEMOVE_ALL;
-	else if (((CButton*)GetDlgItem(IDC_CHK_REC_CLICKMOVE))->GetCheck())
-		m_enRecordMove = RECORD_MOUSEMOVE_CLICKED;
-	else
-		m_enRecordMove = RECORD_MOUSEMOVE_NONE;
-
-	m_bRecordDelay = ((CButton*)GetDlgItem(IDC_CHK_REC_DELAY))->GetCheck();
-
-	m_bRecording = TRUE;
-	ToggleUIEnable(m_bRecording);
 }
 
-void CNaMacroRecorderDlg::CopyToClipboard(CString& s)
-{
-	if (!OpenClipboard())
-	{
-		AfxMessageBox(_T("Failed to open clipboard."));
-		return;
-	}
-
-	EmptyClipboard();
-	HGLOBAL hClipboardData = GlobalAlloc(GMEM_DDESHARE, s.GetLength() + 1);
-	char *pchData = (char *)GlobalLock(hClipboardData);
-	int nLen = WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, NULL, 0, NULL, NULL);
-
-	WideCharToMultiByte(CP_ACP, 0, s.GetBuffer(0), -1, pchData, nLen, NULL, NULL);
-
-	GlobalUnlock(hClipboardData);
-	SetClipboardData(CF_TEXT, hClipboardData);
-	CloseClipboard();
-
-	AfxMessageBox(L"Script has been copied to clipboard.");
-}
-
-void CNaMacroRecorderDlg::PrepareInputDevice()
+void CNaMacroRecorderDlg::StopCaptureInputDevice()
 {
 	RAWINPUTDEVICE rawInputDev[2];
 	ZeroMemory(rawInputDev, sizeof(RAWINPUTDEVICE) * 2);
@@ -337,43 +412,48 @@ void CNaMacroRecorderDlg::PrepareInputDevice()
 	}
 }
 
-void CNaMacroRecorderDlg::StopRecord()
+bool CNaMacroRecorderDlg::IsAddWindowInfo()
 {
-	if (!m_bRecording)
-		return;
-
-	TRACE(L"Stop Recording.\n");
-
-	PrepareInputDevice();
-
-	m_bRecording = FALSE;
-	ToggleUIEnable(m_bRecording);
-
-	CString recordedJs;
-	RecordToNaMacroScript(recordedJs);
-	MessageBox(recordedJs);
-
-	recordedJs.Replace(L"\n", L"\r\n");
-	CopyToClipboard(recordedJs);
+	return ((CButton*)GetDlgItem(IDC_CHK_REC_COMMENT_WINDOW_INFO))->GetCheck() == TRUE;
 }
 
-void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
+bool CNaMacroRecorderDlg::IsUseRelativeCoord()
 {
+	// Use Application Coordinates.
+	return ((CButton*)GetDlgItem(IDC_CHK_REC_WINDOW_COORD_RELATIVE))->GetCheck() == TRUE;
+}
+
+void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
+{
+	//
+	// TODO Must save to UTF-8 !!!
+	//      BOM + buf
+	CFile file;
+	file.Open(filename, CFile::modeCreate | CFile::modeWrite, nullptr);
+
+	NaString recordedJs = L"";
+
+#define WRITE_BUFFER \
+	{ \
+		file.Write(recordedJs.cstr(), strlen(recordedJs.cstr())); \
+		recordedJs = L""; \
+	}
+
 	DWORD lastTick = DWORD_MAX;
 	BOOL useMouse = FALSE, useKey = FALSE;
 
 	for (const auto& ar : m_vecActionRecords)
 	{
-		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
+		if (ar->enType >= ACTION_MOUSEBEGIN && ar->enType <= ACTION_MOUSELAST)
 			useMouse = TRUE;
-		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
+		else if (ar->enType >= ACTION_KEYBEGIN && ar->enType <= ACTION_KEYLAST)
 			useKey = TRUE;
 
 		if (useKey && useMouse)
 			break;
 	}
 
-	CTime time = CTime::GetCurrentTime();	
+	CTime time = CTime::GetCurrentTime();
 	recordedJs.Format(
 		L"// Auto generated script by NaMacroRecorder\n"
 		L"// %04d.%02d.%02d\n"
@@ -383,6 +463,7 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 
 #define VAR_MOUSE		L"_m"
 #define VAR_KEYBOARD	L"_k"
+#define VAR_WINDOW		L"_win"
 #define STR_TAB			L"   "
 
 	CString newJs;
@@ -391,15 +472,32 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		newJs.Format(L"%svar %s = system.mouse;\n", STR_TAB, VAR_MOUSE);
 		recordedJs += newJs;
 	}
+
 	if (useKey)
 	{
 		newJs.Format(L"%svar %s = system.keyboard;\n", STR_TAB, VAR_KEYBOARD);
 		recordedJs += newJs;
 	}
 
-	POINT lastPos;
-	lastPos.x = -1;
-	lastPos.y = -1;
+	if (IsUseRelativeCoord())
+	{
+		newJs.Format(L"%svar %s = null;\n", STR_TAB, VAR_WINDOW);
+		recordedJs += newJs;
+
+		newJs.Format(
+			L"%sfunction _findFirstWindow(text) { "
+			L"var w = findWindows(text); "
+			L"if (w.length == 0) throw 'Cannot find window:' + text; "
+			L"return w[0]; "
+			L"}; \n",
+			STR_TAB);
+		recordedJs += newJs;
+	}
+
+	WRITE_BUFFER;
+	POINT lastPos = { -1, -1 };
+	RECT rcActiveWindow = { -1, -1, -1, -1 };
+
 	for (const auto& ar : m_vecActionRecords)
 	{
 		// for debug
@@ -408,41 +506,59 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 		str.Format(L"TimeStamp: %ld, Action: %d, ", ar.dwTimeStamp, ar.enType);
 		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
 		{
-			str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
+		str.Format(L"%sPos: %d, %d", str, ar.ptPos.x, ar.ptPos.y);
 		}
 		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
 		{
-			str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
+		str.Format(L"%sKeyCode: %d (%c)", str, ar.nKeyCode, ar.nKeyCode);
 		}
 		str.Format(L"%s\n", str);
 		TRACE(str);
 		*/
 
-		if (m_bRecordDelay && lastTick != DWORD_MAX && lastTick != ar.dwTimeStamp)
+		if (m_bRecordDelay && lastTick != DWORD_MAX && lastTick != ar->dwTimeStamp)
 		{
-			newJs.Format(L"%ssleep(%d);\n", STR_TAB, ar.dwTimeStamp - lastTick);
+			newJs.Format(L"%ssleep(%d);\n", STR_TAB, ar->dwTimeStamp - lastTick);
 			recordedJs += newJs;
 		}
-		lastTick = ar.dwTimeStamp;
+		lastTick = ar->dwTimeStamp;
 
-		if (ar.enType >= ACTION_MOUSEBEGIN && ar.enType <= ACTION_MOUSELAST)
+		if (ar->enType >= ACTION_MOUSEBEGIN && ar->enType <= ACTION_MOUSELAST)
 		{
+			MouseActionRecord *mar = (MouseActionRecord*)ar;
+
 			BOOL moved = FALSE;
-			if (ar.enType == ACTION_MOUSEMOVE || (m_enRecordMove != RECORD_MOUSEMOVE_ALL))
+			if (ar->enType == ACTION_MOUSEMOVE || (m_enRecordMove != RECORD_MOUSEMOVE_ALL))
 			{
-				if (ar.ptPos.x != lastPos.x || ar.ptPos.y != lastPos.y)
+				if (mar->ptPos.x != lastPos.x || mar->ptPos.y != lastPos.y)
 					moved = TRUE;
 			}
 
 			if (moved)
 			{
-				newJs.Format(L"%s%s.move(%d,%d);\n", STR_TAB, VAR_MOUSE, ar.ptPos.x, ar.ptPos.y);
+				if (!IsUseRelativeCoord())
+					newJs.Format(L"%s%s.move(%d, %d);\n", STR_TAB, VAR_MOUSE, mar->ptPos.x, mar->ptPos.y);
+				else
+				{
+					if (mar->ptRelativePos.x == -1 && mar->ptRelativePos.y == -1)
+					{
+						newJs.Format(L"%s%s.move(%d, %d);\n", STR_TAB, VAR_MOUSE, mar->ptPos.x, mar->ptPos.y);
+					}
+					else
+					{
+						newJs.Format(L"%s%s.move(%s.x + %d, %s.y + %d);\n",
+							STR_TAB, VAR_MOUSE,
+							VAR_WINDOW, mar->ptRelativePos.x,
+							VAR_WINDOW, mar->ptRelativePos.y
+						);
+					}
+				}
 				recordedJs += newJs;
 
-				lastPos = ar.ptPos;
+				lastPos = mar->ptPos;
 			}
 
-			switch (ar.enType)
+			switch (ar->enType)
 			{
 			case ACTION_MOUSEMOVE:
 				break;
@@ -456,20 +572,65 @@ void CNaMacroRecorderDlg::RecordToNaMacroScript(CString &recordedJs)
 				break;
 			}
 		}
-		else if (ar.enType >= ACTION_KEYBEGIN && ar.enType <= ACTION_KEYLAST)
+		else if (ar->enType >= ACTION_KEYBEGIN && ar->enType <= ACTION_KEYLAST)
 		{
+			KeyActionRecord *kar = (KeyActionRecord*)ar;
+
 			newJs.Format(L"%s%s.%s(%d); // '%s'\n",
-				STR_TAB, VAR_KEYBOARD, 
-				(ar.enType == ACTION_KEYDOWN) ? L"down" : L"up", ar.nKeyCode,
-				GetKeyName(ar.nKeyCode)
-				);
+				STR_TAB, VAR_KEYBOARD,
+				(ar->enType == ACTION_KEYDOWN) ? L"down" : L"up", kar->nKeyCode,
+				GetKeyName(kar->nKeyCode)
+			);
 			recordedJs += newJs;
-		}		
+		}
+		else if (ar->enType == ACTION_WINDOWINFO)
+		{
+			WindowInfoActionRecord *war = (WindowInfoActionRecord*)ar;
+			rcActiveWindow = war->rcRect;
+
+			if (IsAddWindowInfo())
+			{
+				recordedJs += L"\n";
+
+				newJs.Format(L"%s// Window: %s (Class: %s)\n",
+					STR_TAB, war->strText, war->strClass);
+				recordedJs += newJs;
+
+				newJs.Format(L"%s// Position: %d, %d (%d x %d)\n",
+					STR_TAB,
+					war->rcRect.left, war->rcRect.top,
+					war->rcRect.right - war->rcRect.left, war->rcRect.bottom - war->rcRect.top
+				);
+				recordedJs += newJs;
+			}
+
+			if (IsUseRelativeCoord())
+			{
+				newJs.Format(L"%s%s = _findFirstWindow('%s');\n",
+					STR_TAB, VAR_WINDOW, war->strText
+				);
+				recordedJs += newJs;
+			}
+		}
+
+		WRITE_BUFFER;
 	}
 
+	recordedJs += STR_TAB;
+	recordedJs += L"exit();\n";
 	recordedJs += L"}\n";
+	WRITE_BUFFER;
 
+	// Clear record
+	std::vector<ActionRecord*>::iterator it;
+	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
+	{
+		delete *it;
+		it = m_vecActionRecords.erase(it);
+	}
 	m_vecActionRecords.clear();
+
+	file.Close();
 }
 
 CString CNaMacroRecorderDlg::GetKeyName(unsigned int nKey)
@@ -510,27 +671,33 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 	GetRawInputData(hRawInput, RID_INPUT, &RawInput, &unSzRawInput, sizeof(RAWINPUTHEADER));
 
 	BOOL bIgnore = FALSE;
-	ActionRecord ar;
+	ActionRecord *ar = nullptr;
 
 	switch (RawInput.header.dwType)
 	{
 	case RIM_TYPEKEYBOARD:
 		{
+			ar = new KeyActionRecord;
+			KeyActionRecord *kar = (KeyActionRecord*)ar;
+
 			RAWKEYBOARD &rk = RawInput.data.keyboard;
 			if (rk.Flags == RI_KEY_MAKE) // 0
 			{
-				ar.enType = ACTION_KEYDOWN;
-				ar.nKeyCode = rk.VKey;
+				kar->enType = ACTION_KEYDOWN;
+				kar->nKeyCode = rk.VKey;
 			}
 			else if (rk.Flags & RI_KEY_BREAK)
 			{
-				ar.enType = ACTION_KEYUP;
-				ar.nKeyCode = rk.VKey;
+				kar->enType = ACTION_KEYUP;
+				kar->nKeyCode = rk.VKey;
 			}
 		}
 		break;
 	case RIM_TYPEMOUSE:
 		{
+			ar = new MouseActionRecord;
+			MouseActionRecord *mar = (MouseActionRecord*)ar;
+
 			RAWMOUSE &rm = RawInput.data.mouse;
 
 			// RAWMOUSE Input does not check screen bound.
@@ -540,19 +707,19 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 
 			if (rm.usButtonFlags & RI_MOUSE_LEFT_BUTTON_DOWN)
 			{
-				ar.enType = ACTION_MOUSELBUTTONDOWN;
+				ar->enType = ACTION_MOUSELBUTTONDOWN;
 			}
 			else if (rm.usButtonFlags & RI_MOUSE_LEFT_BUTTON_UP)
 			{
-				ar.enType = ACTION_MOUSELBUTTONUP;
+				ar->enType = ACTION_MOUSELBUTTONUP;
 			}
 			else if (rm.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_DOWN)
 			{
-				ar.enType = ACTION_MOUSERBUTTONDOWN;
+				ar->enType = ACTION_MOUSERBUTTONDOWN;
 			}
 			else  if (rm.usButtonFlags & RI_MOUSE_RIGHT_BUTTON_UP)
 			{
-				ar.enType = ACTION_MOUSERBUTTONUP;
+				ar->enType = ACTION_MOUSERBUTTONUP;
 			}
 			/*
 			else if (...)
@@ -562,8 +729,8 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 			*/
 			else
 			{
-				ar.enType = ACTION_MOUSEMOVE;
-				
+				ar->enType = ACTION_MOUSEMOVE;
+
 				if (m_ptLastMousePos.x == m_ptCurMousePos.x &&
 					m_ptLastMousePos.y == m_ptCurMousePos.y)
 					bIgnore = TRUE;
@@ -575,16 +742,89 @@ void CNaMacroRecorderDlg::OnRawInput(UINT nInputcode, HRAWINPUT hRawInput)
 				m_ptLastMousePos = m_ptCurMousePos;
 			}
 
-			ar.ptPos = m_ptCurMousePos;
+			if (IsUseRelativeCoord())
+			{
+				if (m_hActiveWnd)
+				{
+					RECT rcWnd;
+					::GetWindowRect(m_hActiveWnd, &rcWnd);
+
+					mar->ptPos = m_ptCurMousePos;
+					mar->ptRelativePos = m_ptCurMousePos;
+					mar->ptRelativePos.x -= rcWnd.left;
+					mar->ptRelativePos.y -= rcWnd.top;
+				}
+				else
+					mar->ptPos = m_ptCurMousePos;
+			}
+			else
+				mar->ptPos = m_ptCurMousePos;
 		}
 		break;
 	}
 
-	if (!bIgnore)
+	if (bIgnore)
+	{
+		delete ar;
+		ar = nullptr;
+	}
+	else
 	{
 		DWORD dwTick = GetTickCount();
+		ar->dwTimeStamp = dwTick;
 
-		ar.dwTimeStamp = dwTick;
+		// Insert window info before lbuttondown
+		switch (ar->enType)
+		{
+		case ACTION_MOUSELBUTTONDOWN:
+		case ACTION_MOUSERBUTTONDOWN:
+			{
+				HWND hDesktop = ::GetDesktopWindow();
+
+				// Find real application window (not control)
+				HWND hWnd = ::WindowFromPoint(m_ptCurMousePos);
+				for ( ; ; )
+				{
+					HWND hParent = ::GetParent(hWnd);
+					if (hParent == nullptr)
+						break;
+					if (hParent == hDesktop)
+						break;
+					if (hParent == hWnd)
+						break; // Strange condition
+					hWnd = hParent;
+				}
+
+				// Using this info for relative coord too.
+				WindowInfoActionRecord *war = new WindowInfoActionRecord;
+				war->enType = ACTION_WINDOWINFO;
+				war->dwTimeStamp = dwTick;
+
+				wchar_t strText[256];
+				::GetWindowText(hWnd, strText, 256);
+				war->strText = strText;
+				war->strText.Replace(L"\r", L"");
+				war->strText.Replace(L"\n", L"");
+
+				RECT rcWnd;
+				::GetWindowRect(hWnd, &rcWnd);
+				war->rcRect.left = rcWnd.left;
+				war->rcRect.top = rcWnd.top;
+				war->rcRect.right = rcWnd.right;
+				war->rcRect.bottom = rcWnd.bottom;
+
+				wchar_t strClass[1024];
+				::RealGetWindowClass(hWnd, strClass, 1024);
+				war->strClass = strClass;
+
+				// ... more info
+
+				m_hActiveWnd = hWnd;
+				m_vecActionRecords.push_back(war);
+			}
+			break;
+		}
+
 		m_vecActionRecords.push_back(ar);
 	}
 
@@ -610,6 +850,10 @@ void CNaMacroRecorderDlg::ToggleUIEnable(BOOL bRecording)
 	GetDlgItem(IDC_CHK_REC_MOUSEMOVE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_CLICKMOVE)->EnableWindow(!bRecording);
 	GetDlgItem(IDC_CHK_REC_DELAY)->EnableWindow(!bRecording);
+	GetDlgItem(IDC_CHK_REC_COMMENT_WINDOW_INFO)->EnableWindow(!bRecording);
+	GetDlgItem(IDC_CHK_REC_IMAGE_BASE)->EnableWindow(!bRecording);
+	GetDlgItem(IDC_CHK_REC_WINDOW_COORD_RELATIVE)->EnableWindow(!bRecording);
+
 }
 
 void CNaMacroRecorderDlg::LoadFiles()
@@ -661,7 +905,7 @@ void CNaMacroRecorderDlg::LoadConfig(CString & strId, CString & strVal)
 void CNaMacroRecorderDlg::AddFile(CString & strFullPath)
 {
 	int nListIdx = m_listFiles.GetItemCount();
-	
+
 	FileInfo *pInfo = new FileInfo;
 	pInfo->strFullPath = strFullPath;
 	int nIdx = strFullPath.ReverseFind(L'\\');
@@ -699,19 +943,23 @@ void CNaMacroRecorderDlg::OnBnClickedBtnRun()
 	sei.fMask = SEE_MASK_NOCLOSEPROCESS | SEE_MASK_FLAG_NO_UI;
 	sei.hwnd = ::GetActiveWindow();
 	sei.lpVerb = _T("runas");
+#if defined(_DEBUG)
 	sei.lpFile = L"NaMacro.exe";
+#else
+	sei.lpFile = L"NaMacroD.exe";
+#endif
 	sei.lpParameters = strFile;
 	sei.nShow = SW_SHOWDEFAULT;
-	
+
 	ShellExecuteEx(&sei);
 }
 
 void CNaMacroRecorderDlg::OnLvnItemchangedListFiles(NMHDR *pNMHDR, LRESULT *pResult)
 {
 	LPNMLISTVIEW pNMLV = reinterpret_cast<LPNMLISTVIEW>(pNMHDR);
-	
+
 	//TRACE(L"LvnItemChanged: %d\n", pNMLV->iItem);
-	
+
 	int nIdx = pNMLV->iItem;
 	GetDlgItem(IDC_BTN_RUN)->EnableWindow(nIdx < 0 ? FALSE : TRUE);
 

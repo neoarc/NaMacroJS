@@ -87,6 +87,9 @@
       <FixedBaseAddress>false</FixedBaseAddress>
       <AdditionalLibraryDirectories>$(IntDir)..\</AdditionalLibraryDirectories>
     </Link>
+    <PreBuildEvent>
+      <Command>$(SolutionDir)OutPut\pre_build.bat</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -197,12 +200,6 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
     <Image Include="..\NaMacro.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets" />
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\v8.redist-v140-x86.5.4.500.36\build\native\v8.redist-v140-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8.redist-v140-x86.5.4.500.36\build\native\v8.redist-v140-x86.props'))" />
-    <Error Condition="!Exists('..\packages\v8-v140-x86.5.4.500.36\build\native\v8-v140-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8-v140-x86.5.4.500.36\build\native\v8-v140-x86.props'))" />
-  </Target>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
 </Project>

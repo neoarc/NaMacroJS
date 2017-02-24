@@ -201,6 +201,8 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\NaLib\NaString.h" />
+    <ClInclude Include="ActionRecord.h" />
     <ClInclude Include="NaMacroRecorder.h" />
     <ClInclude Include="NaMacroRecorderDlg.h" />
     <ClInclude Include="Resource.h" />
@@ -208,6 +210,14 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\NaLib\NaString.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </PrecompiledHeaderFile>
+    </ClCompile>
     <ClCompile Include="NaMacroRecorder.cpp" />
     <ClCompile Include="NaMacroRecorderDlg.cpp" />
     <ClCompile Include="stdafx.cpp">

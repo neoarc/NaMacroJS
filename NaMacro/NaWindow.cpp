@@ -22,12 +22,12 @@ NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 	m_clientWidth = 0;
 	m_clientHeight = 0;
 
-	NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
+	//NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
 
 NaWindow::~NaWindow()
 {
-	NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
+	//NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
 }
 
 // description: native create method

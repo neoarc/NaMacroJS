@@ -46,6 +46,7 @@ Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
 	ADD_IMAGE_METHOD(getPixel);
 	ADD_IMAGE_METHOD(findImage);
 	ADD_IMAGE_METHOD(reset);
+	ADD_IMAGE_METHOD(save);
 
 	return handle_scope.Escape(templ);
 }
@@ -81,6 +82,92 @@ POINT NaImage::FindColor(DWORD dwColor)
 	}
 
 	return pt;
+}
+
+// description: Save NaImage to file using Gdi+
+bool NaImage::Save(const wchar_t *filename)
+{
+	if (filename)
+	{
+		// initialize gdi+
+		Gdiplus::GdiplusStartupInput gdiplusStartupInput;
+		ULONG_PTR gdiplusToken;
+		GdiplusStartup(&gdiplusToken, &gdiplusStartupInput, NULL);
+
+		HPALETTE hPalette = (HPALETTE)GetStockObject(DEFAULT_PALETTE);
+
+		Gdiplus::Bitmap *pBitmap = new Gdiplus::Bitmap((HBITMAP)m_hBitmap, hPalette);
+
+		CLSID clsid;
+		NaString strFileName(filename);
+		if (strFileName.Right(4).CompareNoCase(L".bmp") == 0)
+			GetEncoderClsid(L"image/bmp", &clsid);
+		else if (strFileName.Right(4).CompareNoCase(L".jpg") == 0)
+			GetEncoderClsid(L"image/jpeg", &clsid);
+		else if (strFileName.Right(4).CompareNoCase(L".png") == 0)
+			GetEncoderClsid(L"image/png", &clsid);
+		else
+		{
+			// Not supported format
+			delete pBitmap;
+			return false;
+		}
+
+		// TODO check path exists.
+		pBitmap->Save(strFileName.wstr(), &clsid, NULL);
+		delete pBitmap;
+		pBitmap = nullptr;
+		
+		// TODO validate result
+
+		// shutdown gdi+
+		Gdiplus::GdiplusShutdown(gdiplusToken);
+		return true;
+	}
+
+	return false;
+}
+
+// description: get clsid for Save
+int NaImage::GetEncoderClsid(const wchar_t *format, CLSID *pClsid)
+{
+	UINT nNumEncoders = 0;
+	UINT nSize = 0;
+	Gdiplus::ImageCodecInfo *pImageCodecInfo = NULL;
+	Gdiplus::GetImageEncodersSize(&nNumEncoders, &nSize);
+
+	int nRet = -1;
+	do
+	{
+		if (nSize == 0)
+			break;
+
+		pImageCodecInfo = (Gdiplus::ImageCodecInfo *)(malloc(nSize));
+		if (pImageCodecInfo == nullptr)
+			break;
+
+		GetImageEncoders(nNumEncoders, nSize, pImageCodecInfo);
+		for (UINT i=0; i < nNumEncoders; ++i)
+		{
+			if (wcscmp(pImageCodecInfo[i].MimeType, format) == 0)
+			{
+				*pClsid = pImageCodecInfo[i].Clsid;
+				free(pImageCodecInfo);
+				pImageCodecInfo = nullptr;
+
+				nRet = i;
+				break;
+			}
+		}
+	} while (false);
+	
+	if (pImageCodecInfo != nullptr)
+	{
+		free(pImageCodecInfo);
+		pImageCodecInfo = nullptr;
+	}
+
+	return nRet;
 }
 
 // description: capture screen & create Image object
@@ -531,4 +618,23 @@ void NaImage::method_reset(V8_FUNCTION_ARGS)
 	pImage->m_rc = { 0, 0, 0, 0 };	
 	
 	args.GetReturnValue().Set(Boolean::New(isolate, true));
+}
+
+// description: save image buffer to file
+// syntax:		imageObj.save(filename)
+void NaImage::method_save(V8_FUNCTION_ARGS)
+{
+	Isolate *isolate = args.GetIsolate();
+	Local<Object> objThis = args.This();
+	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
+	if (pImage == nullptr || args.Length() < 1)
+	{
+		args.GetReturnValue().Set(Boolean::New(isolate, false));
+		return;
+	}
+
+	String::Value strV8(args[0]);
+	bool bRet = pImage->Save((wchar_t*)*strV8);
+
+	args.GetReturnValue().Set(Boolean::New(isolate, bRet));
 }

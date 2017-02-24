@@ -38,4 +38,7 @@ public:
 	DEFINE_CLASS_METHOD(findWindows);
 	DEFINE_CLASS_METHOD(findProcesses);
 	DEFINE_CLASS_METHOD(findTrays);
+
+	// system methods
+	DEFINE_CLASS_METHOD(execute);
 };

@@ -1,7 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\v8-v140-x86.5.4.500.36\build\native\v8-v140-x86.props" Condition="Exists('..\packages\v8-v140-x86.5.4.500.36\build\native\v8-v140-x86.props')" />
-  <Import Project="..\packages\v8.redist-v140-x86.5.4.500.36\build\native\v8.redist-v140-x86.props" Condition="Exists('..\packages\v8.redist-v140-x86.5.4.500.36\build\native\v8.redist-v140-x86.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -61,9 +59,9 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);%MS_SPEECH_SDK%Include;..\NaLib;..\packages\v8-v140-x86.5.4.500.36;..\packages\v8-v140-x86.5.4.500.36\include;..\packages\v8-v140-x86.5.4.500.36\include\libplatform</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <MinimalRebuild>true</MinimalRebuild>
+      <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
@@ -76,7 +74,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);%MS_SPEECH_SDK%\Lib\i386\sapi.lib;Wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);Wldap32.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -98,9 +96,10 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);%MS_SPEECH_SDK%Include;..\NaLib;..\packages\v8-v140-x86.5.4.500.36;..\packages\v8-v140-x86.5.4.500.36\include;..\packages\v8-v140-x86.5.4.500.36\include\libplatform</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -108,7 +107,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);%MS_SPEECH_SDK%\Lib\i386\sapi.lib;Wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);Wldap32.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -191,7 +190,6 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js" />
     <None Include="..\Output\Release\NaMacro.js" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NaMacro.rc" />

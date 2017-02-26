@@ -30,6 +30,7 @@ TEST_CASE("const NaString& operator=(const wchar_t *lpsz)")
 TEST_CASE("NaString.Format")
 {
 	NaString ns;
+
 	const wstring s1 = L"test4-1: simple format\n";
 	ns.Format(s1.c_str());
 	CHECK(ns == s1.c_str());
@@ -44,6 +45,7 @@ TEST_CASE("NaString.Format")
 	CHECK(ns == L"test4-4: multi format: 1 2 3\n");
 
 	NaString ns2 = L"abc";
+
 	ns.Format(L"test4-5: multi format: %s %d %d\n", ns2.wstr(), 2, 3);
 	CHECK(ns == L"test4-5: multi format: abc 2 3\n");
 

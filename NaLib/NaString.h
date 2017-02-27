@@ -45,15 +45,15 @@ public:
 	const NaString& operator=(const NaString &str);
 
 	const NaString& operator+=(const wchar_t *lpsz);
-	const NaString& operator+=(NaString &str);
+	const NaString& operator+=(const NaString &str);
 
 	bool operator==(const char *lpsz) const;
 	bool operator==(const wchar_t *lpsz) const;
-	bool operator==(NaString &str) const;
+	bool operator==(const NaString &str) const;
 
 	bool operator<(const NaString &str) const;
 
-	wchar_t operator[](int index) const;
+	wchar_t operator[](const int index) const;
 
 	operator const char* () const;
 	operator const wchar_t* () const;
@@ -67,17 +67,17 @@ public:
 	int Compare(const wchar_t *lpsz) const;
 	int CompareNoCase(const wchar_t *lpsz) const;
 
-	int Find(wchar_t* ch, int begin = 0) const;
-	NaString Left(int len) const;
-	NaString Mid(int index, int len = -1) const;
-	NaString Right(int len) const;
+	int Find(const wchar_t* const ch, const int begin = 0) const;
+	NaString Left(const int len) const;
+	NaString Mid(const int index, const int len = -1) const;
+	NaString Right(const int len) const;
 	NaStrArray Split(wchar_t *ch) const;
 	int ReplaceAll(wchar_t* from, wchar_t* to);
 
 	// utility
 	const NaString& AppendFormat(const wchar_t *fmt, ...);
 	const NaString& AppendFormat(const char *fmt, ...);
-	const wchar_t* wstr();
+	const wchar_t* wstr() const;
 	const char* cstr();
 	wchar_t GetLast() const;
 
@@ -89,7 +89,7 @@ protected:
 	const NaString& SetBuf(const wchar_t *wsz);
 	const NaString& SetBuf(const char *sz);
 	const wchar_t *GetBuf();
-	void AllocBuf(int len);
+	void AllocBuf(const int len);
 	void DeallocBuf(unsigned char *pBuf = nullptr);
 };
 
@@ -99,14 +99,14 @@ public:
 	NaStrArray();
 	~NaStrArray();
 
-	NaString operator [](int nIndex);
+	NaString operator [](const int nIndex);
 
-	int Add(NaString str);
-	int Remove(int nIndex);
+	int Add(const NaString& str);
+	int Remove(const int nIndex);
 	int GetCount() const;
-	int Find(NaString str);
+	int Find(const NaString &str);
 
-	NaString Join(wchar_t* ch);
+	NaString Join(const wchar_t * const ch);
 	NaString Pop(); // remove last element
 
 protected:

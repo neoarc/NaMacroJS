@@ -38,7 +38,7 @@ TEST_CASE("NaString.Format")
 	ns.Format(L"test4-2: format with '%s'\n", L"argument");
 	CHECK(ns == L"test4-2: format with 'argument'\n");
 
-	ns.Format(L"test4-3: copied format: %s\n", ns);
+	ns.Format(L"test4-3: copied format: %s\n", ns.wstr());
 	CHECK(ns == L"test4-3: copied format: test4-2: format with 'argument'\n\n");
 
 	ns.Format(L"test4-4: multi format: %d %d %d\n", 1, 2, 3);

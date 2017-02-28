@@ -90,4 +90,8 @@ TEST_CASE("NaStrArray.Pop")
 	ns = nsa.Pop();
 	CHECK(nsa.GetCount() == 0);
 	CHECK(ns == L"aA");
+
+	ns = nsa.Pop();
+	CHECK(nsa.GetCount() == 0);
+	CHECK(ns == L"");
 }

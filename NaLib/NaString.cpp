@@ -4,59 +4,46 @@
 #include <stdarg.h>
 #include <stdio.h>
 
-NaString::NaString() : m_pBuf(nullptr), m_nBufLen(0), m_nLen(0), m_pCstrBuf(nullptr)
+#define InitializeNaStringMemberVariables	\
+			m_pBuf(nullptr),	            \
+			m_nBufLen(0),                   \
+			m_nLen(0),                      \
+			m_pCstrBuf(nullptr)
+
+NaString::NaString()
+	: InitializeNaStringMemberVariables
 {
 }
 
 NaString::NaString(const char * lpsz)
+	: InitializeNaStringMemberVariables
 {
-	m_pBuf = nullptr;
-	m_pCstrBuf = nullptr;
-	m_nBufLen = 0;
-	m_nLen = 0;
-
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const wchar_t * lpsz)
+	: InitializeNaStringMemberVariables
 {
-	m_pBuf = nullptr;
-	m_pCstrBuf = nullptr;
-	m_nBufLen = 0;
-	m_nLen = 0;
-
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const NaString & nstr)
+	: InitializeNaStringMemberVariables
 {
-	m_pBuf = nullptr;
-	m_pCstrBuf = nullptr;
-	m_nBufLen = 0;
-	m_nLen = 0;
-
 	SetBuf((wchar_t*)nstr.m_pBuf);
 }
 
 #if defined(USE_V8)
 NaString::NaString(Local<String>& str)
+	: InitializeNaStringMemberVariables
 {
-	m_pBuf = nullptr;
-	m_pCstrBuf = nullptr;
-	m_nBufLen = 0;
-	m_nLen = 0;
-
 	String::Utf8Value value(str);
 	SetBuf(*value);
 }
 
 NaString::NaString(String::Value & str)
+	: InitializeNaStringMemberVariables
 {
-	m_pBuf = nullptr;
-	m_pCstrBuf = nullptr;
-	m_nBufLen = 0;
-	m_nLen = 0;
-
 	SetBuf((const wchar_t*)*str);
 }
 #endif
@@ -338,7 +325,6 @@ NaStrArray NaString::Split(wchar_t *ch) const
 	int from = 0;
 	bool bBreak = false;
 
-
 	while (!bBreak)
 	{
 		NaString token;
@@ -535,7 +521,7 @@ const NaString & NaString::SetBuf(const char * sz)
 	DeallocBuf();
 
 	// convert to wstr
-	int nLen = ConvertCharToWChar(sz, (wchar_t**)&m_pBuf);
+	const int nLen = ConvertCharToWChar(sz, (wchar_t**)&m_pBuf);
 	m_nLen = nLen;
 	m_nBufLen = sizeof(wchar_t) * (nLen + 1);
 
@@ -576,14 +562,6 @@ void NaString::DeallocBuf(unsigned char *pBuf)
 // String Array
 // 2016.06.17
 //
-NaStrArray::NaStrArray()
-{
-}
-
-NaStrArray::~NaStrArray()
-{
-	m_Array.clear();
-}
 
 NaString NaStrArray::operator[](const int nIndex)
 {
@@ -627,7 +605,7 @@ int NaStrArray::Find(const NaString &str)
 	std::list<NaString>::iterator it = m_Array.begin();
 	for (int i = 0; it != m_Array.end(); ++it, ++i)
 	{
-		if (str.Compare(*it) == 0)
+		if (str == *it)
 			return i;
 	}
 	return -1;
@@ -650,17 +628,11 @@ NaString NaStrArray::Join(const wchar_t * const ch)
 
 NaString NaStrArray::Pop()
 {
-	NaString strRet(L"");
-	int nCnt = GetCount();
-	std::list<NaString>::iterator it = m_Array.begin();
-	for (int i = 0; it != m_Array.end(); ++it, ++i)
-	{
-		if (i == nCnt - 1)
-		{
-			strRet = *it;
-			m_Array.erase(it);
-			break;
-		}
-	}
-	return strRet;
+	if (m_Array.empty())
+		return L"";
+
+	NaString last = m_Array.back();
+	m_Array.pop_back();
+
+	return last;
 }

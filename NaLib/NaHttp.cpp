@@ -238,6 +238,8 @@ NaString NaHttp::GetResponse()
 
 void NaHttp::AddHeaderParam(const wchar_t * name, const wchar_t * value)
 {
+	UNREFERENCED_PARAMETER(name);
+	UNREFERENCED_PARAMETER(value);
 	/*
 	NaString strName(name);
 	NaString strValue(value);

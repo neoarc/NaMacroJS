@@ -96,8 +96,8 @@ protected:
 class NaStrArray
 {
 public:
-	NaStrArray();
-	~NaStrArray();
+	NaStrArray() {}
+	~NaStrArray() { m_Array.clear(); }
 
 	NaString operator [](const int nIndex);
 

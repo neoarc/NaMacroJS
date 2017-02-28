@@ -5,21 +5,21 @@
 
 using namespace std;
 
-TEST_CASE("NaString(const wchar_t *)")
+TEST_CASE("NaString.NaString(const wchar_t *)")
 {
 	const wstring s = L"test1: simple constructor\n";
 	NaString ns(s.c_str());
 	CHECK(ns == s.c_str());
 }
 
-TEST_CASE("NaString(const NaString & nstr)")
+TEST_CASE("NaString.NaString(const NaString & nstr)")
 {
 	NaString ns1(L"test2: copy constructor\n");
 	NaString ns2(ns1);
 	CHECK(ns1 == ns2);
 }
 
-TEST_CASE("const NaString& operator=(const wchar_t *lpsz)")
+TEST_CASE("NaString.operator=(const wchar_t *lpsz)")
 {
 	const wstring s = L"test3: operator=\n";
 	NaString ns;

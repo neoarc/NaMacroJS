@@ -236,7 +236,7 @@ int NaString::CompareNoCase(const wchar_t * lpsz)
 
 int NaString::Find(wchar_t * ch, int begin /*= 0*/)
 {
-	int itemlen = wcslen(ch);
+	int itemlen = (int)wcslen(ch);
 	if (m_nLen < itemlen)
 		return -1;
 
@@ -378,7 +378,7 @@ int NaString::ReplaceAll(wchar_t * from, wchar_t * to)
 		temp += Mid(begin, index - begin);
 		temp += to;
 
-		begin = index + wcslen(from);
+		begin = index + (int)wcslen(from);
 	}
 
 	SetBuf(temp.wstr());
@@ -517,7 +517,7 @@ const NaString & NaString::SetBuf(const wchar_t* lpsz)
 	}
 	else
 	{
-		m_nLen = wcslen(lpsz);
+		m_nLen = (int)wcslen(lpsz);
 		m_nBufLen = (int)(sizeof(wchar_t) * (m_nLen + 1));
 
 		AllocBuf(m_nBufLen);
@@ -620,7 +620,7 @@ int NaStrArray::Remove(int nIndex)
 
 int NaStrArray::GetCount()
 {
-	return m_Array.size();
+	return (int)m_Array.size();
 }
 
 int NaStrArray::Find(NaString str)

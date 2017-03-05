@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <catch/catch.hpp>
 
-#include "../NaHttp.h"
+#include "../src/NaHttp.h"
 
 TEST_CASE("NaHttp.SendRequest")
 {

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include <catch/catch.hpp>
 
-#include "../NaString.h"
+#include "../../src/NaString.h"
 
 using namespace std;
 

@@ -5,7 +5,7 @@
 
 #include "NaUrl.h"
 
-#include "../NaMacro/Common.h"
+// #include "../NaMacro/Common.h"
 
 #include <list>
 
@@ -95,6 +95,4 @@ NaString NaUrl::GetFullUrl()
 
 		return arBase.Join(L"/").wstr();
 	}
-
-	return NaString(L"");
 }

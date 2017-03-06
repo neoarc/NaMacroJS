@@ -223,3 +223,11 @@ _Pvt_Extensions/
 ModelManifest.xml
 *.tlog
 LineCounter.ini
+
+# NaLib
+third_party/
+
+Debug-Win32/
+Debug-x64/
+Release-Win32/
+Release-x64/

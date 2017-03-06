@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NaString.h"
 
 #include <assert.h>

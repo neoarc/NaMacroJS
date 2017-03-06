@@ -3,7 +3,7 @@
 
 #include "../src/NaHttp.h"
 
-TEST_CASE("NaHttp.SendRequest")
+TEST_CASE("NaHttp.SendRequest", "[.]")
 {
 	NaHttp http;
 	NaString url(L"www.daum.net");

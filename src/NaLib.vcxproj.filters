@@ -24,13 +24,13 @@
     <ClInclude Include="targetver.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaHttp.h">
+    <ClInclude Include="..\include\NaLib\NaHttp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaString.h">
+    <ClInclude Include="..\include\NaLib\NaString.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaUrl.h">
+    <ClInclude Include="..\include\NaLib\NaUrl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

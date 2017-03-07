@@ -4,6 +4,8 @@
 #include <assert.h>
 #include <stdarg.h>
 #include <stdio.h>
+#include <iostream>
+#include <string>
 
 #define InitializeNaStringMemberVariables	\
 			m_pBuf(nullptr),	            \
@@ -434,6 +436,11 @@ wchar_t NaString::GetLast() const
 		return 0;
 
 	return *((wchar_t*)m_pBuf + m_nLen);
+}
+
+int NaString::ToInt() const
+{
+	return std::stoi(wstr());
 }
 
 int NaString::ConvertWCharToChar(const wchar_t* wstr, char** str)

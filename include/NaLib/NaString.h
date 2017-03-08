@@ -81,6 +81,8 @@ public:
 	const char* cstr();
 	wchar_t GetLast() const;
 	int ToInt() const;
+	float ToFloat() const;
+	double ToDouble() const;
 
 	static int ConvertWCharToChar(const wchar_t* wstr, char** str);
 	static int ConvertCharToWChar(const char* str, wchar_t** wstr);

@@ -443,6 +443,16 @@ int NaString::ToInt() const
 	return std::stoi(wstr());
 }
 
+float NaString::ToFloat() const
+{
+	return std::stof(wstr());
+}
+
+double NaString::ToDouble() const
+{
+	return std::stod(wstr());
+}
+
 int NaString::ConvertWCharToChar(const wchar_t* wstr, char** str)
 {
 #ifdef WIN32

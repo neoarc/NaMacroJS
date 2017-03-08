@@ -117,3 +117,14 @@ TEST_CASE("NaString.Right")
 	CHECK(ns.Right(4) ==    L"orld");
 	CHECK(ns.Right(7) == L"o,World");
 }
+
+TEST_CASE("NaString.ToInt")
+{
+	NaString ns(L"1");
+	CHECK(ns.ToInt() == 1);
+
+	ns = L"a";
+	int n = ns.ToInt();
+	CHECK(n == 0);
+
+}

@@ -80,6 +80,7 @@ public:
 	const wchar_t* wstr() const;
 	const char* cstr();
 	wchar_t GetLast() const;
+	int ToInt() const;
 
 	static int ConvertWCharToChar(const wchar_t* wstr, char** str);
 	static int ConvertCharToWChar(const char* str, wchar_t** wstr);

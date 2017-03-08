@@ -3,7 +3,7 @@
 
 #pragma once
 
-#include <string.h>
+#include <string>
 #include <Windows.h>
 
 #define NASTRING_FORMAT_BUFFER_SIZE	65535

@@ -1,11 +1,8 @@
 #include "stdafx.h"
 #include "NaString.h"
 
-#include <assert.h>
-#include <stdarg.h>
-#include <stdio.h>
+#include <cassert>
 #include <iostream>
-#include <string>
 
 #define InitializeNaStringMemberVariables	\
 			m_pBuf(nullptr),	            \

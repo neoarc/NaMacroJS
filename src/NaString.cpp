@@ -4,45 +4,39 @@
 #include <cassert>
 #include <iostream>
 
-#define InitializeNaStringMemberVariables	\
-			m_pBuf(nullptr),	            \
-			m_nBufLen(0),                   \
-			m_nLen(0),                      \
-			m_pCstrBuf(nullptr)
-
 NaString::NaString()
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 }
 
 NaString::NaString(const char * lpsz)
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const wchar_t * lpsz)
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const NaString & nstr)
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 	SetBuf((wchar_t*)nstr.m_pBuf);
 }
 
 #if defined(USE_V8)
 NaString::NaString(Local<String>& str)
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 	String::Utf8Value value(str);
 	SetBuf(*value);
 }
 
 NaString::NaString(String::Value & str)
-	: InitializeNaStringMemberVariables
+	: INIT_NA_STRING_MEMBER_VARS
 {
 	SetBuf((const wchar_t*)*str);
 }

@@ -4,9 +4,8 @@
 #pragma once
 
 #include <string>
-#include <Windows.h>
 
-#define NASTRING_FORMAT_BUFFER_SIZE	65535
+#include "NaLibDefines.h"
 
 #if defined(USE_V8)
 #include "v8.h"
@@ -14,6 +13,12 @@ using namespace v8;
 #endif
 
 #include <list>
+
+#define INIT_NA_STRING_MEMBER_VARS \
+			m_pBuf(nullptr), \
+			m_nBufLen(0), \
+			m_nLen(0), \
+			m_pCstrBuf(nullptr)
 
 class NaStrArray;
 class NaString

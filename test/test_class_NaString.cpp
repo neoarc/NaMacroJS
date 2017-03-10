@@ -55,7 +55,14 @@ TEST_CASE("NaString.Format")
 
 TEST_CASE("NaString.GetLength")
 {
-	NaString ns(L"hello");
+	NaString ns;
+
+	CHECK(ns.GetLength() == 0);
+
+	ns = L"";
+	CHECK(ns.GetLength() == 0);
+
+	ns = L"hello";
 	CHECK(ns.GetLength() == 5);
 }
 
@@ -92,6 +99,8 @@ TEST_CASE("NaString.Find")
 	CHECK(ns.Find(L"l", 3) == 3);	// find 'l' from index 3
 	CHECK(ns.Find(L"l", 4) == 9);	// find 'l' from index 4
 	CHECK(ns.Find(L"z") == -1);
+	
+	CHECK(ns.Find(L"\0") == 11);	// ?!
 }
 
 TEST_CASE("NaString.Left")
@@ -112,30 +121,45 @@ TEST_CASE("NaString.Mid")
 
 TEST_CASE("NaString.Right")
 {
-	NaString ns(L"Hello,World");
+	NaString ns(L"Hello,World"); // len = 11
 	CHECK(ns.Right(1) ==       L"d");
 	CHECK(ns.Right(4) ==    L"orld");
 	CHECK(ns.Right(7) == L"o,World");
+
+	// Over range
+	CHECK(ns.Right(15) == L"Hello,World");
+
+	// Invalid argument
+	CHECK(ns.Right(-5) == L"");
 }
 
 TEST_CASE("NaString.ToInt")
 {
-	NaString ns(L"1");
-	CHECK(ns.ToInt() == 1);
+	// Not initialized (null value)
+	REQUIRE_THROWS(NaString().ToInt() == 0);
 
-// 	ns = L"a";
-// 	int n = ns.ToInt();
-// 	CHECK(n == 0);
+	// Empty string
+	REQUIRE_THROWS(NaString(L"").ToInt() == 0);
+
+	// String
+	REQUIRE_THROWS(NaString(L"a").ToInt() == 0);
+
+	// Normal case
+	CHECK(NaString(L"1").ToInt() == 1);
 }
 
 TEST_CASE("NaString.ToFloat")
 {
-	NaString ns(L"1");
+	NaString ns;
+
+	ns = L"1";
 	CHECK(ns.ToFloat() == 1.0f);
 }
 
 TEST_CASE("NaString.ToDouble")
 {
-	NaString ns(L"1");
+	NaString ns;
+	
+	ns = L"1";
 	CHECK(ns.ToDouble() == 1.0);
 }

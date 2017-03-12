@@ -100,7 +100,7 @@ TEST_CASE("NaString.Find")
 	CHECK(ns.Find(L"l", 4) == 9);	// find 'l' from index 4
 	CHECK(ns.Find(L"z") == -1);
 	
-	CHECK(ns.Find(L"\0") == 11);	// ?!
+	CHECK(ns.Find(L"\0") == 0);		// ?!, act as MFC CString.Find
 }
 
 TEST_CASE("NaString.Left")
@@ -109,6 +109,12 @@ TEST_CASE("NaString.Left")
 	CHECK(ns.Left(1) == L"H");
 	CHECK(ns.Left(4) == L"Hell");
 	CHECK(ns.Left(7) == L"Hello,W");
+
+	// Over range
+	CHECK(ns.Left(15) == L"Hello,World");
+
+	// Invalid argument
+	CHECK(ns.Left(-5) == L"");  // act as CString.Left
 }
 
 TEST_CASE("NaString.Mid")
@@ -117,6 +123,9 @@ TEST_CASE("NaString.Mid")
 	CHECK(ns.Mid(1) == L"ello,World");
 	CHECK(ns.Mid(4) ==    L"o,World");
 	CHECK(ns.Mid(7) ==       L"orld");
+
+	// Invalid argument
+	CHECK(ns.Mid(-5) == ns);  // act as CString.Mid
 }
 
 TEST_CASE("NaString.Right")
@@ -130,7 +139,7 @@ TEST_CASE("NaString.Right")
 	CHECK(ns.Right(15) == L"Hello,World");
 
 	// Invalid argument
-	CHECK(ns.Right(-5) == L"");
+	CHECK(ns.Right(-5) == L"");  // act as CString.Right
 }
 
 TEST_CASE("NaString.ToInt")

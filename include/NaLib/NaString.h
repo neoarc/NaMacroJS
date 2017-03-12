@@ -73,9 +73,9 @@ public:
 	int CompareNoCase(const wchar_t *lpsz) const;
 
 	int Find(const wchar_t* const ch, const int begin = 0) const;
-	NaString Left(const int len) const;
-	NaString Mid(const int index, const int len = -1) const;
-	NaString Right(const int len) const;
+	NaString Left(const int count) const;
+	NaString Mid(const int index, const int count = -1) const;
+	NaString Right(const int count) const;
 	NaStrArray Split(wchar_t *ch) const;
 	int ReplaceAll(wchar_t* from, wchar_t* to);
 

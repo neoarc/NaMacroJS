@@ -239,9 +239,12 @@ int NaString::Find(const wchar_t * const ch, const int begin /*= 0*/) const
 	return -1;
 }
 
-NaString NaString::Left(const int len) const
+NaString NaString::Left(const int count) const
 {
-	if (len >= m_nLen)
+	if (count <= 0)
+		return L"";
+
+	if (count >= m_nLen)
 	{
 		NaString strRet((wchar_t*)this->m_pBuf);
 		return strRet;
@@ -249,7 +252,7 @@ NaString NaString::Left(const int len) const
 
 	NaString strRet;
 	unsigned char *buf;
-	int nNewLen = len;
+	int nNewLen = count;
 	int nNewBufLen = sizeof(wchar_t) * (nNewLen + 1);
 	buf = new unsigned char[nNewBufLen];
 
@@ -262,24 +265,28 @@ NaString NaString::Left(const int len) const
 	return strRet;
 }
 
-NaString NaString::Mid(const int index, const int len /*= -1*/) const
+NaString NaString::Mid(const int index, const int count /*= -1*/) const
 {
-	if (index == 0 && len == -1)
+	int idx = index;
+	if (idx < 0)
+		idx = 0;
+
+	if (idx == 0 && count == -1)
 	{
 		NaString ret((wchar_t*)this->m_pBuf);
 		return ret;
 	}
 
-	int length = len;
+	int length = count;
 	if (length == -1)
-		length = m_nLen - index;
-	if (index + length > m_nLen)
-		length = m_nLen - index;
+		length = m_nLen - idx;
+	if (idx + length > m_nLen)
+		length = m_nLen - idx;
 
 	int nNewBufLen = sizeof(wchar_t) * (length + 1);
 	unsigned char *buf = new unsigned char[nNewBufLen];
 
-	memcpy(buf, (wchar_t*)(this->m_pBuf) + index, nNewBufLen);
+	memcpy(buf, (wchar_t*)(this->m_pBuf) + idx, nNewBufLen);
 	*((wchar_t*)buf + length) = 0;
 
 	NaString ret;
@@ -289,21 +296,24 @@ NaString NaString::Mid(const int index, const int len /*= -1*/) const
 	return ret;
 }
 
-NaString NaString::Right(const int len) const
+NaString NaString::Right(const int count) const
 {
-	if (len >= m_nLen)
+	if (count <= 0)
+		return L"";
+
+	if (count >= m_nLen)
 	{
 		NaString strRet((wchar_t*)this->m_pBuf);
 		return strRet;
 	}
 
-	int index = m_nLen - len;
+	int index = m_nLen - count;
 
-	int nNewBufLen = sizeof(wchar_t) * (len + 1);
+	int nNewBufLen = sizeof(wchar_t) * (count + 1);
 	unsigned char *buf = new unsigned char[nNewBufLen];
 
 	memcpy(buf, (wchar_t*)(this->m_pBuf) + index, nNewBufLen);
-	*((wchar_t*)buf + len) = 0;
+	*((wchar_t*)buf + count) = 0;
 
 	NaString ret;
 	ret.SetBuf((wchar_t*)buf);

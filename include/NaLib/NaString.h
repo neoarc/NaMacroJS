@@ -88,6 +88,7 @@ public:
 
 protected:
 	// internal function
+	void Init();
 	const NaString& SetBuf(const wchar_t *wsz);
 	const NaString& SetBuf(const char *sz);
 	const wchar_t *GetBuf();

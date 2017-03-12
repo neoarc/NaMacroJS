@@ -4,46 +4,40 @@
 #include <cassert>
 #include <iostream>
 
-#define INIT_NA_STRING_MEMBER_VARS \
-			m_pBuf(nullptr),       \
-			m_nBufLen(0),          \
-			m_nLen(0),             \
-			m_pCstrBuf(nullptr)
-
 NaString::NaString()
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 }
 
 NaString::NaString(const char * lpsz)
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const wchar_t * lpsz)
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 	SetBuf(lpsz);
 }
 
 NaString::NaString(const NaString & nstr)
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 	SetBuf((wchar_t*)nstr.m_pBuf);
 }
 
 #if defined(USE_V8)
 NaString::NaString(Local<String>& str)
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 	String::Utf8Value value(str);
 	SetBuf(*value);
 }
 
 NaString::NaString(String::Value & str)
-	: INIT_NA_STRING_MEMBER_VARS
 {
+	Init();
 	SetBuf((const wchar_t*)*str);
 }
 #endif
@@ -512,6 +506,14 @@ int NaString::ConvertCharToWChar(const char* str, wchar_t** wstr)
 #endif
 
 	return nWChars;
+}
+
+void NaString::Init()
+{
+	m_pBuf = nullptr;
+	m_nBufLen = 0;
+	m_nLen = 0;
+	m_pCstrBuf = nullptr;
 }
 
 const NaString & NaString::SetBuf(const wchar_t* lpsz)

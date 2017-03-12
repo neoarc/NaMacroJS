@@ -4,6 +4,12 @@
 #include <cassert>
 #include <iostream>
 
+#define INIT_NA_STRING_MEMBER_VARS \
+			m_pBuf(nullptr),       \
+			m_nBufLen(0),          \
+			m_nLen(0),             \
+			m_pCstrBuf(nullptr)
+
 NaString::NaString()
 	: INIT_NA_STRING_MEMBER_VARS
 {

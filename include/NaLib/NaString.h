@@ -14,12 +14,6 @@ using namespace v8;
 
 #include <list>
 
-#define INIT_NA_STRING_MEMBER_VARS \
-			m_pBuf(nullptr), \
-			m_nBufLen(0), \
-			m_nLen(0), \
-			m_pCstrBuf(nullptr)
-
 class NaStrArray;
 class NaString
 {

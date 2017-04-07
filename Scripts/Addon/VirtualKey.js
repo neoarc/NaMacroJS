@@ -17,7 +17,7 @@ if (!_GlobalContext.VirtualKey) {
             0x0d: ["enter", "return"],
 
             0x10: "shift",
-            0x11: "control",
+            0x11: ["control", "ctrl"],
             0x12: ["menu", "alt"],
             0x13: "pause",
             0x14: ["capital", "capsLock"],

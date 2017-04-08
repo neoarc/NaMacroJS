@@ -33,7 +33,7 @@ bool NaHttp::Init()
 	return m_initialized = true;
 }
 
-void NaHttp::Open(const wchar_t * addr)
+void NaHttp::Open(const wchar_t* addr)
 {
 	if (!m_initialized)
 	{
@@ -237,7 +237,7 @@ NaString NaHttp::GetResponse()
 	return m_response;
 }
 
-void NaHttp::AddHeaderParam(const wchar_t * name, const wchar_t * value)
+void NaHttp::AddHeaderParam(const wchar_t* name, const wchar_t* value)
 {
 	UNREFERENCED_PARAMETER(name);
 	UNREFERENCED_PARAMETER(value);

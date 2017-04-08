@@ -9,19 +9,19 @@ NaString::NaString()
 	Init();
 }
 
-NaString::NaString(const char * lpsz)
+NaString::NaString(const char* lpsz)
 {
 	Init();
 	SetBuf(lpsz);
 }
 
-NaString::NaString(const wchar_t * lpsz)
+NaString::NaString(const wchar_t* lpsz)
 {
 	Init();
 	SetBuf(lpsz);
 }
 
-NaString::NaString(const NaString & nstr)
+NaString::NaString(const NaString& nstr)
 {
 	Init();
 	SetBuf((wchar_t*)nstr.m_buf);
@@ -35,7 +35,7 @@ NaString::NaString(Local<String>& str)
 	SetBuf(*value);
 }
 
-NaString::NaString(String::Value & str)
+NaString::NaString(String::Value& str)
 {
 	Init();
 	SetBuf((const wchar_t*)*str);
@@ -52,19 +52,19 @@ NaString::~NaString()
 	}
 }
 
-const NaString& NaString::operator=(const wchar_t *lpsz)
+const NaString& NaString::operator=(const wchar_t* lpsz)
 {
 	SetBuf((wchar_t*)lpsz);
 	return *this;
 }
 
-const NaString& NaString::operator=(const NaString &str)
+const NaString& NaString::operator=(const NaString& str)
 {
 	SetBuf((wchar_t*)str.m_buf);
 	return *this;
 }
 
-const NaString& NaString::operator+=(const wchar_t *lpsz)
+const NaString& NaString::operator+=(const wchar_t* lpsz)
 {
 	if (m_buf == nullptr || m_len == 0)
 		SetBuf(lpsz);
@@ -73,7 +73,7 @@ const NaString& NaString::operator+=(const wchar_t *lpsz)
 	return *this;
 }
 
-const NaString& NaString::operator+=(const NaString &str)
+const NaString& NaString::operator+=(const NaString& str)
 {
 	if (m_buf == nullptr || m_len == 0)
 		SetBuf(str.wstr());
@@ -82,22 +82,22 @@ const NaString& NaString::operator+=(const NaString &str)
 	return *this;
 }
 
-bool NaString::operator==(const char * lpsz) const
+bool NaString::operator==(const char* lpsz) const
 {
 	return Compare(NaString(lpsz).wstr()) == 0;
 }
 
-bool NaString::operator==(const wchar_t * lpsz) const
+bool NaString::operator==(const wchar_t* lpsz) const
 {
 	return Compare(lpsz) == 0;
 }
 
-bool NaString::operator==(const NaString & str) const
+bool NaString::operator==(const NaString& str) const
 {
 	return Compare(str.wstr()) == 0;
 }
 
-bool NaString::operator<(const NaString & str) const
+bool NaString::operator<(const NaString& str) const
 {
 	return wcscmp((wchar_t*)m_buf, (wchar_t*)str.m_buf) < 0;
 }
@@ -141,7 +141,7 @@ void NaString::ToUpper()
 #endif
 }
 
-const NaString & NaString::Format(const wchar_t * fmt, ...)
+const NaString & NaString::Format(const wchar_t* fmt, ...)
 {
 	const int nBufSize = 5 * NASTRING_FORMAT_BUFFER_SIZE;
 	wchar_t *buf = new wchar_t[nBufSize];
@@ -162,7 +162,7 @@ const NaString & NaString::Format(const wchar_t * fmt, ...)
 	return *this;
 }
 
-const NaString & NaString::Format(const char * fmt, ...)
+const NaString & NaString::Format(const char* fmt, ...)
 {
 	char buf[NASTRING_FORMAT_BUFFER_SIZE];
 	memset(&buf, 0, sizeof(char) * NASTRING_FORMAT_BUFFER_SIZE);
@@ -191,7 +191,7 @@ int NaString::GetLength() const
 	return m_len;
 }
 
-int NaString::Compare(const wchar_t * lpsz) const
+int NaString::Compare(const wchar_t* lpsz) const
 {
 	/*
 	int arglen = wcslen(lpsz);
@@ -204,7 +204,7 @@ int NaString::Compare(const wchar_t * lpsz) const
 	return wcscmp((wchar_t*)m_buf, lpsz);
 }
 
-int NaString::CompareNoCase(const wchar_t * lpsz) const
+int NaString::CompareNoCase(const wchar_t* lpsz) const
 {
 	NaString str(*this);
 	str.ToLower();
@@ -215,7 +215,7 @@ int NaString::CompareNoCase(const wchar_t * lpsz) const
 	return str.Compare(str2);
 }
 
-int NaString::Find(const wchar_t * const ch, const int begin /*= 0*/) const
+int NaString::Find(const wchar_t* const ch, const int begin /*= 0*/) const
 {
 	int itemlen = (int)wcslen(ch);
 	if (m_len < itemlen)
@@ -322,7 +322,7 @@ NaString NaString::Right(const int count) const
 	return ret;
 }
 
-NaStrArray NaString::Split(wchar_t *ch) const
+NaStrArray NaString::Split(wchar_t* ch) const
 {
 	NaStrArray ar;
 
@@ -350,7 +350,7 @@ NaStrArray NaString::Split(wchar_t *ch) const
 	return ar;
 }
 
-int NaString::ReplaceAll(wchar_t * from, wchar_t * to)
+int NaString::ReplaceAll(wchar_t* from, wchar_t* to)
 {
 	NaString temp(L"");
 	int begin = 0;
@@ -375,7 +375,7 @@ int NaString::ReplaceAll(wchar_t * from, wchar_t * to)
 	return 0;
 }
 
-const NaString & NaString::AppendFormat(const wchar_t * fmt, ...)
+const NaString & NaString::AppendFormat(const wchar_t* fmt, ...)
 {
 	wchar_t buf[NASTRING_FORMAT_BUFFER_SIZE];
 	memset(&buf, 0, sizeof(wchar_t) * NASTRING_FORMAT_BUFFER_SIZE);
@@ -393,7 +393,7 @@ const NaString & NaString::AppendFormat(const wchar_t * fmt, ...)
 	return *this;
 }
 
-const NaString & NaString::AppendFormat(const char * fmt, ...)
+const NaString & NaString::AppendFormat(const char* fmt, ...)
 {
 	char buf[NASTRING_FORMAT_BUFFER_SIZE];
 	memset(&buf, 0, sizeof(char) * NASTRING_FORMAT_BUFFER_SIZE);
@@ -411,14 +411,14 @@ const NaString & NaString::AppendFormat(const char * fmt, ...)
 	return *this;
 }
 
-const wchar_t * NaString::wstr() const
+const wchar_t* NaString::wstr() const
 {
 	if (m_buf == nullptr)
 		return L"";
 	return (const wchar_t*)m_buf;
 }
 
-const char * NaString::cstr()
+const char* NaString::cstr()
 {
 	if (m_charBuf != nullptr)
 	{
@@ -516,7 +516,7 @@ void NaString::Init()
 	m_charBuf = nullptr;
 }
 
-const NaString & NaString::SetBuf(const wchar_t* lpsz)
+const NaString& NaString::SetBuf(const wchar_t* lpsz)
 {
 	unsigned char* pCurBuf = m_buf;
 
@@ -543,7 +543,7 @@ const NaString & NaString::SetBuf(const wchar_t* lpsz)
 	return *this;
 }
 
-const NaString & NaString::SetBuf(const char * sz)
+const NaString& NaString::SetBuf(const char* sz)
 {
 	DeallocBuf();
 
@@ -568,20 +568,20 @@ void NaString::AllocBuf(const int len)
 	m_buf = new unsigned char[len];
 }
 
-void NaString::DeallocBuf(unsigned char *pBuf)
+void NaString::DeallocBuf(unsigned char* buf)
 {
-	if (pBuf == nullptr)
-		pBuf = m_buf;
+	if (buf == nullptr)
+		buf = m_buf;
 
-	if (pBuf)
+	if (buf)
 	{
 		// for debug
 		//OutputDebugStringW(L"DeleteBuf: ");
 		//OutputDebugStringW((wchar_t*)m_pBuf);
 		//OutputDebugStringW(L"\n");
 
-		delete[] pBuf;
-		pBuf = nullptr;
+		delete[] buf;
+		buf = nullptr;
 	}
 }
 
@@ -627,7 +627,7 @@ int NaStrArray::GetCount() const
 	return (int)m_strs.size();
 }
 
-int NaStrArray::Find(const NaString &str)
+int NaStrArray::Find(const NaString& str)
 {
 	std::list<NaString>::iterator it = m_strs.begin();
 	for (int i = 0; it != m_strs.end(); ++it, ++i)
@@ -638,15 +638,15 @@ int NaStrArray::Find(const NaString &str)
 	return -1;
 }
 
-NaString NaStrArray::Join(const wchar_t * const ch)
+NaString NaStrArray::Join(const wchar_t* const ch)
 {
-	int nCnt = GetCount();
+	const int cnt = GetCount();
 	NaString str(L"");
 	std::list<NaString>::iterator it = m_strs.begin();
 	for (int i = 0; it != m_strs.end(); ++it, ++i)
 	{
 		str += *it;
-		if (i < nCnt - 1)
+		if (i < cnt - 1)
 			str += ch;
 	}
 

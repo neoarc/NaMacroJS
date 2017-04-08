@@ -17,7 +17,7 @@ public:
 	NaString GetFullUrl();
 
 protected:
-	NaString m_strBase;
-	NaString m_strUrl;
+	NaString m_base;
+	NaString m_url;
 };
 

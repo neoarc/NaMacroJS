@@ -19,12 +19,12 @@ class NaString
 {
 private:
 	union {
-		wchar_t* m_pDebugBuf; // for debug
-		unsigned char *m_pBuf;
+		wchar_t* m_debugBuf; // for debug
+		unsigned char *m_buf;
 	};
-	int m_nBufLen;
-	int m_nLen;
-	char *m_pCstrBuf;
+	int m_bufLen;
+	int m_len;
+	char *m_charBuf;
 
 public:
 	// constructor
@@ -100,12 +100,12 @@ class NaStrArray
 {
 public:
 	NaStrArray() {}
-	~NaStrArray() { m_Array.clear(); }
+	~NaStrArray() { m_strs.clear(); }
 
-	NaString operator [](const int nIndex);
+	NaString operator [](const int index);
 
 	int Add(const NaString& str);
-	int Remove(const int nIndex);
+	int Remove(const int index);
 	int GetCount() const;
 	int Find(const NaString &str);
 
@@ -113,5 +113,5 @@ public:
 	NaString Pop(); // remove last element
 
 protected:
-	std::list<NaString> m_Array;
+	std::list<NaString> m_strs;
 };

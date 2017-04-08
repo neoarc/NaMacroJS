@@ -16,22 +16,22 @@ NaUrl::~NaUrl()
 
 void NaUrl::SetBase(NaString base)
 {
-	m_strBase = NaString(base);
+	m_base = NaString(base);
 }
 
 void NaUrl::SetUrl(NaString url)
 {
-	m_strUrl = NaString(url);
+	m_url = NaString(url);
 }
 
 NaString NaUrl::GetFullUrl()
 {
 	bool bRelative = false;
-	int nIdx = m_strUrl.Find(L":");
+	int nIdx = m_url.Find(L":");
 	if (nIdx > 0)
 	{
 		// This is full path, ignore base path
-		NaString strUrl = m_strUrl;
+		NaString strUrl = m_url;
 		NaStrArray arUrl = strUrl.Split(L"/");
 		NaStrArray arFull;
 
@@ -59,8 +59,8 @@ NaString NaUrl::GetFullUrl()
 	{
 		bRelative = true;
 
-		NaString strUrl = m_strUrl;
-		NaString strBase = m_strBase;
+		NaString strUrl = m_url;
+		NaString strBase = m_base;
 		strUrl.ReplaceAll(L"\\", L"/");
 		strBase.ReplaceAll(L"\\", L"/");
 

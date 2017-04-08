@@ -33,21 +33,21 @@ public:
 
 protected:
 	// Status
-	bool m_bInit;
-	bool m_bConnected;
+	bool m_initialized;
+	bool m_connected;
 
 	// Connection info
-	NaString m_strFullUrl;
-	NaString m_strHost;
-	NaString m_strDirectory;
-	NaString m_strPort;
-	SOCKET m_ConnectSocket;
+	NaString m_fullUrl;
+	NaString m_host;
+	NaString m_directory;
+	NaString m_port;
+	SOCKET m_socket;
 	
 	// Request
 	NaHttpReqTypes m_enReqMethod;
 	std::map<NaString, NaString>m_mapHeader;
 
 	// Response
-	NaString m_strResponse;
+	NaString m_response;
 };
 

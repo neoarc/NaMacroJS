@@ -6,9 +6,9 @@
 
 NaHttp::NaHttp()
 {
-	m_bInit = false;
-	m_bConnected = false;
-	m_ConnectSocket = INVALID_SOCKET;
+	m_initialized = false;
+	m_connected = false;
+	m_socket = INVALID_SOCKET;
 	m_enReqMethod = NA_HTTP_GET;
 }
 
@@ -19,7 +19,7 @@ NaHttp::~NaHttp()
 
 bool NaHttp::Init()
 {
-	if (m_bInit)
+	if (m_initialized)
 		return true;
 
 	WSADATA wsa;
@@ -30,12 +30,12 @@ bool NaHttp::Init()
 		return false;
 	}
 
-	return m_bInit = true;
+	return m_initialized = true;
 }
 
 void NaHttp::Open(const wchar_t * addr)
 {
-	if (!m_bInit)
+	if (!m_initialized)
 	{
 		if (!Init())
 		{
@@ -46,34 +46,34 @@ void NaHttp::Open(const wchar_t * addr)
 	}
 
 	// Parse address
-	m_strFullUrl = addr;
-	if (m_strFullUrl.Left(7).Compare(L"http://") == 0)
-		m_strFullUrl = m_strFullUrl.Mid(7);
+	m_fullUrl = addr;
+	if (m_fullUrl.Left(7).Compare(L"http://") == 0)
+		m_fullUrl = m_fullUrl.Mid(7);
 	else
 	{
 		// TODO 다른 prefix 인지 체크
 	}
 
-	int nIndex = m_strFullUrl.Find(L"/");
+	int nIndex = m_fullUrl.Find(L"/");
 	if (nIndex > 0)
 	{
-		m_strHost = m_strFullUrl.Left(nIndex);
-		m_strDirectory = m_strFullUrl.Mid(nIndex);
+		m_host = m_fullUrl.Left(nIndex);
+		m_directory = m_fullUrl.Mid(nIndex);
 	}
 	else
 	{
-		m_strHost = m_strFullUrl;
-		m_strDirectory = L"/";
+		m_host = m_fullUrl;
+		m_directory = L"/";
 	}
 
-	nIndex = m_strHost.Find(L":");
+	nIndex = m_host.Find(L":");
 	if (nIndex > 0)
 	{
-		m_strPort = m_strHost.Right(m_strHost.GetLength() - nIndex - 1);
-		m_strHost = m_strHost.Left(nIndex);
+		m_port = m_host.Right(m_host.GetLength() - nIndex - 1);
+		m_host = m_host.Left(nIndex);
 	}
 	else
-		m_strPort = L"80";
+		m_port = L"80";
 
 	// Setup struct
 	addrinfo hints;
@@ -84,7 +84,7 @@ void NaHttp::Open(const wchar_t * addr)
 
 	// Resolve the server address and port
 	addrinfo *result;
-	int ret = getaddrinfo(m_strHost.cstr(), m_strPort.cstr(), &hints, &result);
+	int ret = getaddrinfo(m_host.cstr(), m_port.cstr(), &hints, &result);
 	if (ret != 0)
 	{
 		// error
@@ -92,7 +92,7 @@ void NaHttp::Open(const wchar_t * addr)
 		return;
 	}
 
-	m_ConnectSocket = INVALID_SOCKET;
+	m_socket = INVALID_SOCKET;
 	char szHostName[NI_MAXHOST];
 	if (result)
 	{
@@ -110,8 +110,8 @@ void NaHttp::Open(const wchar_t * addr)
 	for (ptr = result; ptr != NULL; ptr = ptr->ai_next)
 	{
 		// Create a SOCKET for connecting to server
-		m_ConnectSocket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
-		if (m_ConnectSocket == INVALID_SOCKET)
+		m_socket = socket(ptr->ai_family, ptr->ai_socktype, ptr->ai_protocol);
+		if (m_socket == INVALID_SOCKET)
 		{
 			printf("socket failed with error: %ld\n", WSAGetLastError());
 			Close();
@@ -119,11 +119,11 @@ void NaHttp::Open(const wchar_t * addr)
 		}
 
 		// Connect to server.
-		ret = connect(m_ConnectSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		ret = connect(m_socket, ptr->ai_addr, (int)ptr->ai_addrlen);
 		if (ret == SOCKET_ERROR)
 		{
-			closesocket(m_ConnectSocket);
-			m_ConnectSocket = INVALID_SOCKET;
+			closesocket(m_socket);
+			m_socket = INVALID_SOCKET;
 			continue;
 		}
 		break;
@@ -131,27 +131,27 @@ void NaHttp::Open(const wchar_t * addr)
 
 	freeaddrinfo(result);
 
-	if (m_ConnectSocket == INVALID_SOCKET) {
+	if (m_socket == INVALID_SOCKET) {
 		printf("Unable to connect to server!\n");
 		Close();
 		return;
 	}
 
-	m_bConnected = true;
+	m_connected = true;
 }
 
 void NaHttp::Close()
 {
-	if (m_bConnected)
+	if (m_connected)
 	{
-		closesocket(m_ConnectSocket);
-		m_bConnected = false;
+		closesocket(m_socket);
+		m_connected = false;
 	}
 
-	if (m_bInit)
+	if (m_initialized)
 	{
 		WSACleanup();
-		m_bInit = false;
+		m_initialized = false;
 	}
 }
 
@@ -166,7 +166,7 @@ void NaHttp::SendRequest()
 			"User-Agent: NaMacroJS\r\n"
 			"Content-Type: application/text\r\n"
 			"Accept-Charset: utf-8\r\n"
-			, m_strDirectory);
+			, m_directory);
 		break;
 	case NA_HTTP_POST:
 		{
@@ -180,14 +180,14 @@ void NaHttp::SendRequest()
 				"Accept-Charset: utf-8\r\n\r\n"
 				//"dat=somedata\r\n",
 				"",
-				m_strDirectory,
-				m_strHost,
+				m_directory,
+				m_host,
 				nContentLength);
 		}
 		break;
 	}
 	
-	int ret = send(m_ConnectSocket, strBuf.cstr(), (int)strBuf.GetLength(), 0);
+	int ret = send(m_socket, strBuf.cstr(), (int)strBuf.GetLength(), 0);
 	if (ret == SOCKET_ERROR)
 	{
 		printf("send failed with error: %d\n", WSAGetLastError());
@@ -198,7 +198,7 @@ void NaHttp::SendRequest()
 	printf("Bytes Sent: %ld\n", ret);
 
 	// shutdown the connection since no more data will be sent
-	ret = shutdown(m_ConnectSocket, SD_SEND);
+	ret = shutdown(m_socket, SD_SEND);
 	if (ret == SOCKET_ERROR) 
 	{
 		printf("shutdown failed with error: %d\n", WSAGetLastError());
@@ -211,15 +211,15 @@ void NaHttp::SendRequest()
 	char *recvbuf = new char[DEFAULT_BUFLEN];
 	int recvbuflen = DEFAULT_BUFLEN;
 
-	m_strResponse = L"";
+	m_response = L"";
 	do {
-		ret = recv(m_ConnectSocket, recvbuf, recvbuflen, 0);
+		ret = recv(m_socket, recvbuf, recvbuflen, 0);
 		if (ret > 0)
 		{
 			printf("Bytes received: %d\n", ret);
 			*(((char*)recvbuf) + ret) = 0;
 
-			m_strResponse += NaString(recvbuf);
+			m_response += NaString(recvbuf);
 		}
 		else if (ret == 0)
 			printf("Connection closed\n");
@@ -234,7 +234,7 @@ void NaHttp::SendRequest()
 
 NaString NaHttp::GetResponse()
 {
-	return m_strResponse;
+	return m_response;
 }
 
 void NaHttp::AddHeaderParam(const wchar_t * name, const wchar_t * value)

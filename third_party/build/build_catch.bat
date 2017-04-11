@@ -5,7 +5,7 @@ set thisScriptDir=%~dp0
 pushd %thisScriptDir%
 
 set libName=catch
-set libVer=1.8.1
+set libVer=1.9.1
 set incDirSrc=..\src\%libName%-%libVer%\include
 set incDir=..\include\%libName%
 

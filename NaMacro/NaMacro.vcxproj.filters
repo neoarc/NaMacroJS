@@ -173,6 +173,7 @@
     <None Include="..\Output\Release\NaMacro.js">
       <Filter>Resource Files\Release</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NaMacro.rc">

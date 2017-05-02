@@ -1,5 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\v8-v140-x86.5.6.326.55\build\native\v8-v140-x86.props" Condition="Exists('..\packages\v8-v140-x86.5.6.326.55\build\native\v8-v140-x86.props')" />
+  <Import Project="..\packages\v8.redist-v140-x86.5.6.326.55\build\native\v8.redist-v140-x86.props" Condition="Exists('..\packages\v8.redist-v140-x86.5.6.326.55\build\native\v8.redist-v140-x86.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -59,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -74,7 +76,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);Wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -83,7 +85,7 @@
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <FixedBaseAddress>false</FixedBaseAddress>
-      <AdditionalLibraryDirectories>$(IntDir)..\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(IntDir)..\;..\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command>$(SolutionDir)OutPut\pre_build.bat</Command>
@@ -96,7 +98,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;%GOOGLE_V8%;%GOOGLE_V8%include;%GOOGLE_V8%include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -107,12 +109,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libplatform.lib;%GOOGLE_V8%build\$(Configuration)\lib\icui18n.lib;%GOOGLE_V8%build\$(Configuration)\lib\icuuc.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_0.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_1.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_2.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_base_3.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_libbase.lib;%GOOGLE_V8%build\$(Configuration)\lib\v8_external_snapshot.lib;%(AdditionalDependencies);Wldap32.lib</AdditionalDependencies>
+      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
-      <AdditionalLibraryDirectories>$(IntDir)..\</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(IntDir)..\;..\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>@echo ### PostBuild Batch - Start ###
@@ -190,6 +192,7 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js" />
     <None Include="..\Output\Release\NaMacro.js" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NaMacro.rc" />
@@ -198,6 +201,12 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
     <Image Include="..\NaMacro.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <ImportGroup Label="ExtensionTargets">
-  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\v8.redist-v140-x86.5.6.326.55\build\native\v8.redist-v140-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8.redist-v140-x86.5.6.326.55\build\native\v8.redist-v140-x86.props'))" />
+    <Error Condition="!Exists('..\packages\v8-v140-x86.5.6.326.55\build\native\v8-v140-x86.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\v8-v140-x86.5.6.326.55\build\native\v8-v140-x86.props'))" />
+  </Target>
 </Project>

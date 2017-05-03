@@ -167,6 +167,7 @@
     <Text Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\NaLib\NaDebug.h" />
     <ClInclude Include="..\include\NaLib\NaHttp.h" />
     <ClInclude Include="..\include\NaLib\NaLibDefines.h" />
     <ClInclude Include="..\include\NaLib\NaString.h" />
@@ -175,6 +176,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="NaDebug.cpp" />
     <ClCompile Include="NaHttp.cpp" />
     <ClCompile Include="NaString.cpp" />
     <ClCompile Include="NaUrl.cpp" />

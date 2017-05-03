@@ -185,6 +185,7 @@
     <ClCompile Include="test_class_NaHttp.cpp" />
     <ClCompile Include="test_class_NaStrArray.cpp" />
     <ClCompile Include="test_class_NaString.cpp" />
+    <ClCompile Include="test_namespace_NaDebug.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\NaLib.vcxproj">

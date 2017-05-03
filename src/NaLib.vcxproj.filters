@@ -39,6 +39,9 @@
     <ClInclude Include="..\include\NaLib\NaLibDefines.h">
       <Filter>Header Files\Common</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\NaLib\NaDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -51,6 +54,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NaUrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

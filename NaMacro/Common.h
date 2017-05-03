@@ -16,8 +16,6 @@ using namespace v8;
 NaString ReportException(Isolate *isolate, TryCatch* handler);
 
 // Utility Functions
-void NaDebugOutA(const char* pszFormat, ...); 
-void NaDebugOut(const wchar_t* pszFormat, ...);
 Local<String> ReadFile(Isolate *isolate, const char* name);
 Local<Object> GetSystemObject(Isolate *isolate);
 

@@ -1,16 +1,18 @@
 #include "NaFile.h"
 
+#include <NaLib/NaDebug.h>
+
 Global<ObjectTemplate> NaFile::s_NaFileTemplate;
 
 NaFile::NaFile()
 {
 	m_hFile = NULL;
-	NaDebugOut(L"NaFile(): 0x%08x\n", this);
+	NaDebug::Out(L"NaFile(): 0x%08x\n", this);
 }
 
 NaFile::~NaFile()
 {
-	NaDebugOut(L"~NaFile(): 0x%08x\n", this);
+	NaDebug::Out(L"~NaFile(): 0x%08x\n", this);
 
 	if (m_hFile)
 	{

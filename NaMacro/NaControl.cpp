@@ -1,5 +1,7 @@
 #include "NaControl.h"
 
+#include <NaLib/NaDebug.h>
+
 #include "NaWindow.h"
 #include "NaImage.h"
 
@@ -16,13 +18,13 @@ NaControl::NaControl()
 	m_width = 0;
 	m_height = 0;
 
-	NaDebugOut(L"NaControl(): 0x%08x\n", this);
+	NaDebug::Out(L"NaControl(): 0x%08x\n", this);
 }
 
 
 NaControl::~NaControl()
 {
-	NaDebugOut(L"~NaControl(): 0x%08x\n", this);
+	NaDebug::Out(L"~NaControl(): 0x%08x\n", this);
 }
 
 HWND NaControl::Create()

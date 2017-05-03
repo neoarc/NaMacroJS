@@ -54,40 +54,6 @@ NaString ReportException(Isolate *isolate, TryCatch* try_catch)
 	return str;
 }
 
-void NaDebugOutA(const char* pszFormat, ...)
-{
-#if !defined(_DEBUG)
-	return;
-#endif
-
-	char str[NA_DEBUGOUT_TEMPBUFFER_SIZE];
-	memset(str, 0, sizeof(char) * NA_DEBUGOUT_TEMPBUFFER_SIZE);
-
-	va_list arglist;
-	va_start(arglist, pszFormat);
-	vsprintf(str, pszFormat, arglist);
-	va_end(arglist);
-
-	OutputDebugStringA(str);
-}
-
-void NaDebugOut(const wchar_t* pszFormat, ...)
-{
-#if !defined(_DEBUG)
-	return;
-#endif
-
-	wchar_t str[NA_DEBUGOUT_TEMPBUFFER_SIZE];
-	memset(str, 0, sizeof(wchar_t) * NA_DEBUGOUT_TEMPBUFFER_SIZE);
-
-	va_list arglist;
-	va_start(arglist, pszFormat);
-	vswprintf(str, pszFormat, arglist);
-	va_end(arglist);
-
-	OutputDebugStringW(str);
-}
-
 // Reads a file into a v8 string.
 Local<String> ReadFile(Isolate *isolate, const char* name)
 {

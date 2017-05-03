@@ -3,6 +3,8 @@
 #include "Common.h"
 #include "BasicModule.h"
 
+#include <NaLib/NaDebug.h>
+
 #include "Windows.h"
 #include "NaWindow.h"
 #include "NaControl.h"
@@ -178,9 +180,9 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		// GetScriptName Unicode Issue:
 		// Wrong Conversion if Special character included.
 		//
-		NaDebugOut(L"================================================\n");
-		NaDebugOut(L"Include src: %s\n", wstr);
-		NaDebugOut(L"Include base: %s\n", strBase.wstr());
+		NaDebug::Out(L"================================================\n");
+		NaDebug::Out(L"Include src: %s\n", wstr);
+		NaDebug::Out(L"Include base: %s\n", strBase.wstr());
 
 		NaString strUrl(wstr);
 		NaUrl url;
@@ -188,13 +190,13 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		url.SetUrl(strUrl);
 
 		NaString strFullUrl(url.GetFullUrl());
-		NaDebugOut(L"Include full: %s\n", strFullUrl.wstr());
+		NaDebug::Out(L"Include full: %s\n", strFullUrl.wstr());
 
 		script_source = ReadFile(isolate, strFullUrl.cstr());
 		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
 		if (script_source.IsEmpty())
 		{
-			NaDebugOut(L"Error reading '%s'\n", strFullUrl.wstr());
+			NaDebug::Out(L"Error reading '%s'\n", strFullUrl.wstr());
 
 			// TODO ThrowException
 			return;
@@ -210,7 +212,7 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 				if (g_bReportExceptions)
 					ReportException(isolate, &try_catch);
 
-				NaDebugOut(L"included script is empty!\n");
+				NaDebug::Out(L"included script is empty!\n");
 				return;
 			}
 		}

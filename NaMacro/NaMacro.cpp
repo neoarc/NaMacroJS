@@ -11,6 +11,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <NaLib/NaDebug.h>
+
 #include "Common.h"
 
 #include "BasicModule.h"
@@ -67,9 +69,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 			NaString str;
 			str.Format("Error reading:\n%s", scriptfile);
 
-			NaDebugOut(L"==========================================\n");
-			NaDebugOut(str);
-			NaDebugOut(L"\n==========================================\n");
+			NaDebug::Out(L"==========================================\n");
+			NaDebug::Out(str);
+			NaDebug::Out(L"\n==========================================\n");
 			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return 1;
 		}
@@ -100,9 +102,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 					strE = ReportException(isolate, &try_catch);
 					str.Format(L"Script Compile Error:\n%s", strE.wstr());
 
-					NaDebugOut(L"==========================================\n");
-					NaDebugOut(str);
-					NaDebugOut(L"==========================================\n");
+					NaDebug::Out(L"==========================================\n");
+					NaDebug::Out(str);
+					NaDebug::Out(L"==========================================\n");
 					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 				}
 				return 1;
@@ -121,9 +123,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 					strE = ReportException(isolate, &try_catch);
 					str.Format(L"Script Runtime Error:\n%s", strE.wstr());
 
-					NaDebugOut(L"==========================================\n");
-					NaDebugOut(str);
-					NaDebugOut(L"==========================================\n");
+					NaDebug::Out(L"==========================================\n");
+					NaDebug::Out(str);
+					NaDebug::Out(L"==========================================\n");
 					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 				}
 				return 1;
@@ -138,9 +140,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		{
 			NaString str = L"Cannot find main function!";
 
-			NaDebugOut(L"==========================================\n");
-			NaDebugOut(str);
-			NaDebugOut(L"==========================================\n");
+			NaDebug::Out(L"==========================================\n");
+			NaDebug::Out(str);
+			NaDebug::Out(L"==========================================\n");
 			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return 0;
 		}
@@ -163,9 +165,9 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 					strE = ReportException(isolate, &try_catch);
 					str.Format(L"Script Exception Occurred:\n%s", strE.wstr());
 
-					NaDebugOut(L"==========================================\n");
-					NaDebugOut(str);
-					NaDebugOut(L"==========================================\n");
+					NaDebug::Out(L"==========================================\n");
+					NaDebug::Out(str);
+					NaDebug::Out(L"==========================================\n");
 					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 				}
 				return 1;

@@ -1,6 +1,7 @@
 #include "NaImage.h"
 
 #include <NaLib/NaString.h>
+#include <NaLib/NaDebug.h>
 
 #include "ScreenModule.h"
 #include <gdiplus.h>
@@ -10,12 +11,12 @@ Global<ObjectTemplate> NaImage::s_NaImageTemplate;
 NaImage::NaImage()
 {
 	m_hMemoryDC = NULL;
-	NaDebugOut(L"NaImage(): 0x%08x\n", this);
+	NaDebug::Out(L"NaImage(): 0x%08x\n", this);
 }
 
 NaImage::~NaImage()
 {
-	NaDebugOut(L"~NaImage(): 0x%08x\n", this);
+	NaDebug::Out(L"~NaImage(): 0x%08x\n", this);
 
 	if (m_hMemoryDC)
 	{

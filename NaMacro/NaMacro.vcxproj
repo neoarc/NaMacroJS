@@ -61,11 +61,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib\include;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
-      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
@@ -74,6 +74,7 @@
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <DisableSpecificWarnings>4091;4127;4351;4355;4503;4589;4611;4100;4121;4244;4302;4309;4311;4312;4481;4505;4510;4512;4610;4800;4838;4995;4996;4456;4457;4458;4459;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
     </ClCompile>
     <Link>
       <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
@@ -94,14 +95,15 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib\include;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -138,11 +140,6 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\NaLib\NaHttp.cpp" />
-    <ClCompile Include="..\NaLib\NaMessageBox.cpp" />
-    <ClCompile Include="..\NaLib\NaNotifyWindow.cpp" />
-    <ClCompile Include="..\NaLib\NaString.cpp" />
-    <ClCompile Include="..\NaLib\NaUrl.cpp" />
     <ClCompile Include="BasicModule.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="ExtModule.cpp" />
@@ -164,10 +161,6 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\NaLib\NaHttp.h" />
-    <ClInclude Include="..\NaLib\NaMessageBox.h" />
-    <ClInclude Include="..\NaLib\NaNotifyWindow.h" />
-    <ClInclude Include="..\NaLib\NaString.h" />
-    <ClInclude Include="..\NaLib\NaUrl.h" />
     <ClInclude Include="BasicModule.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ExtModule.h" />
@@ -195,6 +188,11 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\NaMacro.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NaLib\src\NaLib.vcxproj">
+      <Project>{0d09aa4d-9352-42bf-a5d7-a857b60868f8}</Project>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets" />

@@ -55,6 +55,8 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int n
 		MaybeLocal<String> script_name;
 
 		char *scriptfile = "NaMacro.js";
+
+
 		if (__argc > 1)
 			scriptfile = __argv[1];
 

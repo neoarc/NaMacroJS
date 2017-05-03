@@ -6,7 +6,7 @@
 #include "BasicModule.h"
 
 #include "NaControl.h"
-#include "NaNotifyWindow.h"
+#include <NaLib/NaNotifyWindow.h>
 
 bool NaWindow::s_bRegisterClass = false;
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;
@@ -695,8 +695,8 @@ void NaWindow::method_move(V8_FUNCTION_ARGS)
 	{
 		String::Value halign(args[0]);
 		String::Value valign(args[1]);
-		NaString strHA(halign);
-		NaString strVA(valign);
+		NaString strHA(*String::Utf8Value(args[0]));
+		NaString strVA(*String::Utf8Value(args[1]));
 
 		int nScreenW = GetSystemMetrics(SM_CXSCREEN);
 		int nScreenH = GetSystemMetrics(SM_CYSCREEN);

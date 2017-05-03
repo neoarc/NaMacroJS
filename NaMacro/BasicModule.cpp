@@ -9,8 +9,8 @@
 #include "NaImage.h"
 #include "NaFile.h"
 
-#include "../NaLib/NaMessageBox.h"
-#include "../NaLib/NaNotifyWindow.h"
+#include <NaLib/NaMessageBox.h>
+#include <NaLib/NaNotifyWindow.h>
 
 #include <iostream>
 
@@ -169,7 +169,9 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		// converting relative path
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(cur_frame->GetScriptName());
+
+		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
+// 		NaString strBase((wchar_t*)(*cur_frame->GetScriptName()));
 
 		//
 		// 2016.07.27

@@ -396,12 +396,10 @@ void NaControl::set_image(Local<String> name, Local<Value> value, const Property
 	}
 	else if (value->IsString())
 	{
-		String::Value filepath(value);
-
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(cur_frame->GetScriptName());
-		NaString strFilePath(filepath);
+		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
+		NaString strFilePath(*String::Utf8Value(value));
 
 		NaUrl url;
 		url.SetBase(strBase);

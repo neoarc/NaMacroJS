@@ -1,7 +1,8 @@
 #include "stdafx.h"
 
 #include "Common.h"
-#include "../NaLib/NaString.h"
+#include <NaLib/NaString.h>
+
 
 #include <stdio.h>
 #include <stdarg.h>

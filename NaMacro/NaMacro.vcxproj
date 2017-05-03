@@ -186,10 +186,6 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
     <ClInclude Include="TwitterModule.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Architecture.txt" />
-    <Text Include="ReadMe.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js" />
     <None Include="..\Output\Release\NaMacro.js" />
     <None Include="packages.config" />

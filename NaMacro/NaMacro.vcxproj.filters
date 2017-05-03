@@ -163,10 +163,6 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="ReadMe.txt" />
-    <Text Include="Architecture.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js">
       <Filter>Resource Files\Debug</Filter>
     </None>

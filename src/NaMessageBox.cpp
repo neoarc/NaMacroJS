@@ -1,12 +1,6 @@
-//
-// Custom MessageBox for prompt
-// 2016.06.17 neoarc
-//
-
+#include "stdafx.h"
 #include "NaMessageBox.h"
-
-#include "../NaMacro/resource.h"
-#include "../NaMacro/Common.h"
+#include "NaCommon.h"
 
 bool NaMessageBox::s_bRegisterClass = false;
 
@@ -31,7 +25,8 @@ NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title, w
 		WndClass.cbWndExtra = 0;
 		WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 		WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
+		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(102)); // #FIXME: hard coded res no.
+// 		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 		WndClass.hInstance = hInstance;
 		WndClass.lpfnWndProc = NaMessageBox::WndProc;
 		WndClass.lpszClassName = NA_MESSAGEBOX_CLASS;
@@ -96,6 +91,7 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
 				10, 10, nWidth - 20, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
+			UNUSED_VAR(hStatic);
 
 			pThis->m_hEdit = CreateWindow(L"Edit", pThis->m_strRet.wstr(),
 				WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL,
@@ -107,11 +103,13 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				WS_VISIBLE | WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_DEFPUSHBUTTON,
 				42, nHeight - 40, 88, 26,
 				hWnd, (HMENU)IDOK, GetModuleHandle(NULL), NULL);
+			UNUSED_VAR(hBtnOK);
 
 			HWND hBtnCancel = CreateWindow(L"Button", L"Cancel",
 				WS_VISIBLE | WS_CHILD | WS_TABSTOP,
 				138, nHeight - 40, 88, 26,
 				hWnd, (HMENU)IDCANCEL, GetModuleHandle(NULL), NULL);
+			UNUSED_VAR(hBtnCancel);
 
 			::SetFocus(pThis->m_hEdit);
 		}

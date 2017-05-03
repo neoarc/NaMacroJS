@@ -1,12 +1,9 @@
-//
-// Custom NotifyWindow
-// 2017.01.21 neoarc
-//
-
+#include "stdafx.h"
 #include "NaNotifyWindow.h"
 
-#include "../NaMacro/resource.h"
-#include "../NaMacro/Common.h"
+#include "NaCommon.h"
+#include "NaDebug.h"
+
 
 #include <thread>
 
@@ -79,7 +76,7 @@ void NaNotifyWindow::Create(NaString strMessage, NaString strTitle)
 		NULL // _In_opt_ LPVOID    lpParam
 	);
 
-	NaDebugOut(L"NaNotifyWindow::Create, 0x%08x (parent: 0x%08x)\n", hWnd, s_hMasterWindow);
+	NaDebug::Out(L"NaNotifyWindow::Create, 0x%08x (parent: 0x%08x)\n", hWnd, s_hMasterWindow);
 	SetWindowLong(hWnd, GWL_USERDATA, (LONG)this);
 	ShowWindow(hWnd, SW_SHOW);
 
@@ -118,6 +115,7 @@ LRESULT NaNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
 				0, 0, nWidth, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
+			UNUSED_VAR(hCaption);
 
 			HWND hMessage = CreateWindow(L"Static", pThis->m_strMessage.wstr(),
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
@@ -163,7 +161,8 @@ void NaNotifyWindow::AddNotifyWindow(NaString strMessage, NaString strTitle)
 		WndClass.cbWndExtra = 0;
 		WndClass.hbrBackground = (HBRUSH)GetStockObject(WHITE_BRUSH);
 		WndClass.hCursor = LoadCursor(NULL, IDC_ARROW);
-		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
+		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(102)); // #FIXME: hard coded res no.
+// 		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 		WndClass.hInstance = hInstance;
 		WndClass.lpfnWndProc = NaNotifyWindow::WndProc;
 		WndClass.lpszClassName = NA_NOTIFYWINDOW_CLASS;

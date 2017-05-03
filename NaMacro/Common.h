@@ -1,8 +1,8 @@
 #pragma once
 
 #include <v8.h>
-#include "../NaLib/NaString.h"
-#include "../NaLib/NaUrl.h"
+#include <NaLib/NaString.h>
+#include <NaLib/NaUrl.h>
 
 #define MOUSECLICK_SLEEP	10
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
@@ -16,8 +16,6 @@ using namespace v8;
 NaString ReportException(Isolate *isolate, TryCatch* handler);
 
 // Utility Functions
-void NaDebugOutA(const char* pszFormat, ...); 
-void NaDebugOut(const wchar_t* pszFormat, ...);
 Local<String> ReadFile(Isolate *isolate, const char* name);
 Local<Object> GetSystemObject(Isolate *isolate);
 

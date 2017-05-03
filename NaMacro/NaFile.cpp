@@ -1,16 +1,18 @@
 #include "NaFile.h"
 
+#include <NaLib/NaDebug.h>
+
 Global<ObjectTemplate> NaFile::s_NaFileTemplate;
 
 NaFile::NaFile()
 {
 	m_hFile = NULL;
-	NaDebugOut(L"NaFile(): 0x%08x\n", this);
+	NaDebug::Out(L"NaFile(): 0x%08x\n", this);
 }
 
 NaFile::~NaFile()
 {
-	NaDebugOut(L"~NaFile(): 0x%08x\n", this);
+	NaDebug::Out(L"~NaFile(): 0x%08x\n", this);
 
 	if (m_hFile)
 	{
@@ -75,6 +77,12 @@ void NaFile::set_name(V8_SETTER_ARGS)
 
 // description: constructor function
 // syntax:		new Window([x, y[, width, height]]) : windowObj
+
+using namespace v8;
+const char* ToCString(const String::Utf8Value& value) {
+	return *value ? *value : "<string conversion failed>";
+}
+
 void NaFile::method_constructor(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 1)
@@ -84,8 +92,9 @@ void NaFile::method_constructor(V8_FUNCTION_ARGS)
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(
 			args.GetIsolate(), 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(cur_frame->GetScriptName());
-		NaString strFilePath(filepath);
+		
+		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
+		NaString strFilePath(*String::Utf8Value(args[0]));
 
 		NaUrl url;
 		url.SetBase(strBase);

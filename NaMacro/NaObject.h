@@ -24,10 +24,11 @@ public:
 	static Local<Object> WrapObject(Isolate *isolate, NaObject *pObject);
 	static NaObject* UnwrapObject(Local<Object> obj);
 
-	virtual void MakeWeak();
-	static void WeakCallback(
-		const v8::WeakCallbackData<v8::Object, NaObject>& data
-		//Persistent<Value> obj, void *pData
-		);
+	// #FIXME: open this after complete v8 on nuget
+//	virtual void MakeWeak();
+// 	static void WeakCallback(
+// 		const v8::WeakCallbackData<v8::Object, NaObject>& data
+// 		//Persistent<Value> obj, void *pData
+// 		);
 };
 

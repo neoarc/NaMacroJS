@@ -2,7 +2,6 @@
 
 #include "Common.h"
 #include "NaObject.h"
-#include "NaString.h"
 
 #include <Windows.h>
 #include <map>

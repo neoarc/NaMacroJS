@@ -29,7 +29,7 @@ int NaObject::Release()
 {
 	if (--m_nRef == 0)
 	{
-		MakeWeak();
+//		MakeWeak();
 		delete this;
 		return 0;
 	}
@@ -77,7 +77,9 @@ Local<Object> NaObject::WrapObject(Isolate *isolate, NaObject * pObject)
 	// Make weak
 	Local<Object> handle = v8::Local<v8::Object>::New(isolate, pObject->m_Persistent);
 	pObject->m_Persistent.Reset(isolate, result);
-	pObject->MakeWeak();
+
+	// #FIXME: open this after complete v8 on nuget
+//	pObject->MakeWeak();
 
 	// Return the result through the current handle scope.  Since each
 	// of these handles will go away when the handle scope is deleted
@@ -94,19 +96,21 @@ NaObject * NaObject::UnwrapObject(Local<Object> obj)
 	return static_cast<NaObject*>(ptr);
 }
 
-void NaObject::MakeWeak()
-{
-	m_Persistent.SetWeak(this, WeakCallback);
-	m_Persistent.MarkIndependent();
-}
+// #FIXME: open this after complete v8 on nuget
+// void NaObject::MakeWeak()
+// {
+// 	m_Persistent.SetWeak(this, WeakCallback);
+// 	m_Persistent.MarkIndependent();
+// }
 
-void NaObject::WeakCallback(
-	const v8::WeakCallbackData<v8::Object, NaObject>& data
-	)
-{
-	NaObject *pObject = data.GetParameter();
-	if (pObject)
-	{
-		pObject->Release();
-	}
-}
+// #FIXME: open this after complete v8 on nuget
+// void NaObject::WeakCallback(
+// 	const v8::WeakCallbackData<v8::Object, NaObject>& data
+// 	)
+// {
+// 	NaObject *pObject = data.GetParameter();
+// 	if (pObject)
+// 	{
+// 		pObject->Release();
+// 	}
+// }

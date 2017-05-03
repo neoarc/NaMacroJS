@@ -1,38 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacro", "NaMacro\NaMacro.vcxproj", "{3336ACF4-2208-432F-816F-40B9E4B47A08}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTest", "UnitTest", "{F202E423-B150-45F0-83DB-F3BE60A519E9}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacroRecorder", "NaMacroRecorder\NaMacroRecorder.vcxproj", "{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CodePage", "UnitTest\CodePage\CodePage.vcxproj", "{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaStringTest", "UnitTest\NaStringTest\NaStringTest.vcxproj", "{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaHttpTest", "UnitTest\NaHttpTest\NaHttpTest.vcxproj", "{DB93DB62-61BF-4D63-99F4-90A550B3DF69}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "V8", "V8", "{EC38106F-C27C-429F-B726-6EE233C9FE32}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "include", "include", "{645F5046-D1A4-4D40-BAAF-07AD3CF5B371}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\ExtLib\v8\include\v8-debug.h = ..\..\ExtLib\v8\include\v8-debug.h
-		..\..\ExtLib\v8\include\v8-platform.h = ..\..\ExtLib\v8\include\v8-platform.h
-		..\..\ExtLib\v8\include\v8-profiler.h = ..\..\ExtLib\v8\include\v8-profiler.h
-		..\..\ExtLib\v8\include\v8-testing.h = ..\..\ExtLib\v8\include\v8-testing.h
-		..\..\ExtLib\v8\include\v8-util.h = ..\..\ExtLib\v8\include\v8-util.h
-		..\..\ExtLib\v8\include\v8-version.h = ..\..\ExtLib\v8\include\v8-version.h
-		..\..\ExtLib\v8\include\v8.h = ..\..\ExtLib\v8\include\v8.h
-		..\..\ExtLib\v8\include\v8config.h = ..\..\ExtLib\v8\include\v8config.h
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "libplatform", "libplatform", "{1EFBCEF5-DDAC-4DFB-A3AC-69A3FC2906C1}"
-	ProjectSection(SolutionItems) = preProject
-		..\..\ExtLib\v8\include\libplatform\libplatform.h = ..\..\ExtLib\v8\include\libplatform\libplatform.h
-	EndProjectSection
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaLib", "NaLib\src\NaLib.vcxproj", "{0D09AA4D-9352-42BF-A5D7-A857B60868F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -56,39 +31,16 @@ Global
 		{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}.Release|Win32.Build.0 = Release|Win32
 		{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}.Release|x64.ActiveCfg = Release|x64
 		{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}.Release|x64.Build.0 = Release|x64
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|Win32.Build.0 = Debug|Win32
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|x64.ActiveCfg = Debug|x64
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Debug|x64.Build.0 = Debug|x64
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|Win32.ActiveCfg = Release|Win32
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|Win32.Build.0 = Release|Win32
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|x64.ActiveCfg = Release|x64
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252}.Release|x64.Build.0 = Release|x64
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Debug|Win32.ActiveCfg = Debug|Win32
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Debug|Win32.Build.0 = Debug|Win32
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Debug|x64.ActiveCfg = Debug|x64
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Debug|x64.Build.0 = Debug|x64
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|Win32.ActiveCfg = Release|Win32
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|Win32.Build.0 = Release|Win32
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|x64.ActiveCfg = Release|x64
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF}.Release|x64.Build.0 = Release|x64
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|Win32.ActiveCfg = Debug|Win32
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|Win32.Build.0 = Debug|Win32
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|x64.ActiveCfg = Debug|x64
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Debug|x64.Build.0 = Debug|x64
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|Win32.ActiveCfg = Release|Win32
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|Win32.Build.0 = Release|Win32
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|x64.ActiveCfg = Release|x64
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69}.Release|x64.Build.0 = Release|x64
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Debug|Win32.Build.0 = Debug|Win32
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Debug|x64.ActiveCfg = Debug|x64
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Debug|x64.Build.0 = Debug|x64
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Release|Win32.ActiveCfg = Release|Win32
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Release|Win32.Build.0 = Release|Win32
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Release|x64.ActiveCfg = Release|x64
+		{0D09AA4D-9352-42BF-A5D7-A857B60868F8}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{DFBAD5FB-4E29-4CB7-8A7D-E45BC072E252} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
-		{EDA99A4E-3651-44CC-8641-0AA2C698C6BF} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
-		{DB93DB62-61BF-4D63-99F4-90A550B3DF69} = {F202E423-B150-45F0-83DB-F3BE60A519E9}
-		{645F5046-D1A4-4D40-BAAF-07AD3CF5B371} = {EC38106F-C27C-429F-B726-6EE233C9FE32}
-		{1EFBCEF5-DDAC-4DFB-A3AC-69A3FC2906C1} = {645F5046-D1A4-4D40-BAAF-07AD3CF5B371}
 	EndGlobalSection
 EndGlobal

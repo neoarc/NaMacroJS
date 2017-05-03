@@ -3,14 +3,16 @@
 #include "Common.h"
 #include "BasicModule.h"
 
+#include <NaLib/NaDebug.h>
+
 #include "Windows.h"
 #include "NaWindow.h"
 #include "NaControl.h"
 #include "NaImage.h"
 #include "NaFile.h"
 
-#include "../NaLib/NaMessageBox.h"
-#include "../NaLib/NaNotifyWindow.h"
+#include <NaLib/NaMessageBox.h>
+#include <NaLib/NaNotifyWindow.h>
 
 #include <iostream>
 
@@ -169,16 +171,18 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		// converting relative path
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(cur_frame->GetScriptName());
+
+		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
+// 		NaString strBase((wchar_t*)(*cur_frame->GetScriptName()));
 
 		//
 		// 2016.07.27
 		// GetScriptName Unicode Issue:
 		// Wrong Conversion if Special character included.
 		//
-		NaDebugOut(L"================================================\n");
-		NaDebugOut(L"Include src: %s\n", wstr);
-		NaDebugOut(L"Include base: %s\n", strBase.wstr());
+		NaDebug::Out(L"================================================\n");
+		NaDebug::Out(L"Include src: %s\n", wstr);
+		NaDebug::Out(L"Include base: %s\n", strBase.wstr());
 
 		NaString strUrl(wstr);
 		NaUrl url;
@@ -186,13 +190,13 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		url.SetUrl(strUrl);
 
 		NaString strFullUrl(url.GetFullUrl());
-		NaDebugOut(L"Include full: %s\n", strFullUrl.wstr());
+		NaDebug::Out(L"Include full: %s\n", strFullUrl.wstr());
 
 		script_source = ReadFile(isolate, strFullUrl.cstr());
 		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
 		if (script_source.IsEmpty())
 		{
-			NaDebugOut(L"Error reading '%s'\n", strFullUrl.wstr());
+			NaDebug::Out(L"Error reading '%s'\n", strFullUrl.wstr());
 
 			// TODO ThrowException
 			return;
@@ -208,7 +212,7 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 				if (g_bReportExceptions)
 					ReportException(isolate, &try_catch);
 
-				NaDebugOut(L"included script is empty!\n");
+				NaDebug::Out(L"included script is empty!\n");
 				return;
 			}
 		}

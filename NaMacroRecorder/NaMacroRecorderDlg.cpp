@@ -7,7 +7,7 @@
 #include "NaMacroRecorderDlg.h"
 #include "afxdialogex.h"
 
-#include "..\NaLib\NaString.h"
+#include <NaLib\NaString.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

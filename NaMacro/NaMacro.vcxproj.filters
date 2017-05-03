@@ -31,9 +31,6 @@
     <Filter Include="Source Files\Objects">
       <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
-    <Filter Include="NaLib">
-      <UniqueIdentifier>{1de93d5a-96bc-4462-960f-ba747e69144f}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -72,29 +69,14 @@
     <ClCompile Include="NaObject.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="..\NaLib\NaString.cpp">
-      <Filter>NaLib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\NaLib\NaUrl.cpp">
-      <Filter>NaLib</Filter>
-    </ClCompile>
-    <ClCompile Include="..\NaLib\NaMessageBox.cpp">
-      <Filter>NaLib</Filter>
-    </ClCompile>
     <ClCompile Include="NaControl.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="TwitterModule.cpp">
       <Filter>Source Files\Module</Filter>
     </ClCompile>
-    <ClCompile Include="..\NaLib\NaHttp.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="NaFile.cpp">
       <Filter>Source Files\Objects</Filter>
-    </ClCompile>
-    <ClCompile Include="..\NaLib\NaNotifyWindow.cpp">
-      <Filter>NaLib</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,15 +119,6 @@
     <ClInclude Include="NaObject.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\NaLib\NaString.h">
-      <Filter>NaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\NaLib\NaUrl.h">
-      <Filter>NaLib</Filter>
-    </ClInclude>
-    <ClInclude Include="..\NaLib\NaMessageBox.h">
-      <Filter>NaLib</Filter>
-    </ClInclude>
     <ClInclude Include="NaControl.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -158,13 +131,6 @@
     <ClInclude Include="NaFile.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="..\NaLib\NaNotifyWindow.h">
-      <Filter>NaLib</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="ReadMe.txt" />
-    <Text Include="Architecture.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Output\Debug\NaMacro.js">
@@ -173,6 +139,7 @@
     <None Include="..\Output\Release\NaMacro.js">
       <Filter>Resource Files\Release</Filter>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NaMacro.rc">

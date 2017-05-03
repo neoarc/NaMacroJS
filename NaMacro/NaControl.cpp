@@ -1,5 +1,7 @@
 #include "NaControl.h"
 
+#include <NaLib/NaDebug.h>
+
 #include "NaWindow.h"
 #include "NaImage.h"
 
@@ -16,13 +18,13 @@ NaControl::NaControl()
 	m_width = 0;
 	m_height = 0;
 
-	NaDebugOut(L"NaControl(): 0x%08x\n", this);
+	NaDebug::Out(L"NaControl(): 0x%08x\n", this);
 }
 
 
 NaControl::~NaControl()
 {
-	NaDebugOut(L"~NaControl(): 0x%08x\n", this);
+	NaDebug::Out(L"~NaControl(): 0x%08x\n", this);
 }
 
 HWND NaControl::Create()
@@ -396,12 +398,10 @@ void NaControl::set_image(Local<String> name, Local<Value> value, const Property
 	}
 	else if (value->IsString())
 	{
-		String::Value filepath(value);
-
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(cur_frame->GetScriptName());
-		NaString strFilePath(filepath);
+		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
+		NaString strFilePath(*String::Utf8Value(value));
 
 		NaUrl url;
 		url.SetBase(strBase);

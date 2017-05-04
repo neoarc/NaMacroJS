@@ -1,6 +1,6 @@
 #include "stdafx.h"
-
 #include "ScreenModule.h"
+
 #include "NaImage.h"
 
 HWND NaScreenModule::m_hDesktopWnd = NULL;

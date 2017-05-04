@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "KeyboardModule.h"
 
 std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_mapKeyEventCallback;

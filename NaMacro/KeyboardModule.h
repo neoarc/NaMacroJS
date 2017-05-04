@@ -4,7 +4,7 @@
 #include "V8Wrap.h"
 #include "ModuleBase.h"
 
-#include "Windows.h"
+#include <Windows.h>
 #include <map>
 
 class HotkeyKey {

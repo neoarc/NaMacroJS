@@ -1,9 +1,7 @@
 #include "stdafx.h"
-
 #include "MouseModule.h"
-#include "V8Wrap.h"
 
-#include "Windows.h"
+#include "V8Wrap.h"
 
 #define MOUSECLICK_SLEEP	10
 

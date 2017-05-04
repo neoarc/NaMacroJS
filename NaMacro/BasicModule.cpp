@@ -1,23 +1,21 @@
 #include "stdafx.h"
-
-#include "V8Wrap.h"
 #include "BasicModule.h"
+
+#include <iostream>
 
 #include <Windows.h>
 
 #include <NaLib/NaDebug.h>
+#include <NaLib/NaMessageBox.h>
+#include <NaLib/NaNotifyWindow.h>
 
 #include "NaMacroCommon.h"
+#include "V8Wrap.h"
 
 #include "NaWindow.h"
 #include "NaControl.h"
 #include "NaImage.h"
 #include "NaFile.h"
-
-#include <NaLib/NaMessageBox.h>
-#include <NaLib/NaNotifyWindow.h>
-
-#include <iostream>
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;

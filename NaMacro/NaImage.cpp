@@ -3,8 +3,9 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaDebug.h>
 
-#include "ScreenModule.h"
 #include <gdiplus.h>
+
+#include "ScreenModule.h"
 
 Global<ObjectTemplate> NaImage::s_NaImageTemplate;
 

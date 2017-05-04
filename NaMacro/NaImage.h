@@ -1,6 +1,6 @@
 #pragma once
 
-#include "v8cmn.h"
+#include "V8Wrap.h"
 #include "NaObject.h"
 
 #include <Windows.h>

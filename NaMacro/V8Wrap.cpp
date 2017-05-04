@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "v8cmn.h"
+#include "V8Wrap.h"
 
 #include <stdio.h>
 #include <stdarg.h>
@@ -24,10 +24,9 @@ using namespace std;
 
 vector<ModuleBase*> g_ModuleList;
 
-namespace v8cmn {
+namespace V8Wrap {
 
 	bool g_bReportExceptions = true;
-	bool g_bExit = false;
 
 	Platform* Initialize()
 	{
@@ -136,7 +135,7 @@ namespace v8cmn {
 
 	Local<String> ReadScript(Isolate* isolate, const std::string& scriptFilePath)
 	{
-		Local<String> script = v8cmn::ReadFile(isolate, scriptFilePath.c_str());
+		Local<String> script = V8Wrap::ReadFile(isolate, scriptFilePath.c_str());
 		if (script.IsEmpty())
 		{
 			NaString str;
@@ -165,10 +164,10 @@ namespace v8cmn {
 		if (script.IsEmpty())
 		{
 			// Print errors that happened during compilation.
-			if (v8cmn::g_bReportExceptions)
+			if (V8Wrap::g_bReportExceptions)
 			{
 				NaString str, strE;
-				strE = v8cmn::ReportException(isolate, &try_catch);
+				strE = V8Wrap::ReportException(isolate, &try_catch);
 				str.Format(L"Script Compile Error:\n%s", strE.wstr());
 
 				NaDebug::Out(L"==========================================\n");
@@ -188,10 +187,10 @@ namespace v8cmn {
 		script->Run(context);
 		if (try_catch.HasCaught())
 		{
-			if (v8cmn::g_bReportExceptions)
+			if (V8Wrap::g_bReportExceptions)
 			{
 				NaString str, strE;
-				strE = v8cmn::ReportException(isolate, &try_catch);
+				strE = V8Wrap::ReportException(isolate, &try_catch);
 				str.Format(L"Script Runtime Error:\n%s", strE.wstr());
 
 				NaDebug::Out(L"==========================================\n");
@@ -235,10 +234,10 @@ namespace v8cmn {
 
 			if (try_catch.HasCaught())
 			{
-				if (v8cmn::g_bReportExceptions)
+				if (V8Wrap::g_bReportExceptions)
 				{
 					NaString str, strE;
-					strE = v8cmn::ReportException(isolate, &try_catch);
+					strE = V8Wrap::ReportException(isolate, &try_catch);
 					str.Format(L"Script Exception Occurred:\n%s", strE.wstr());
 
 					NaDebug::Out(L"==========================================\n");
@@ -251,33 +250,6 @@ namespace v8cmn {
 		}
 
 		return true;
-	}
-
-	void MessageLoopTillExit(Isolate* isolate)
-	{
-		// MessageLoop after main()
-		MSG msg = { 0 };
-		while (!v8cmn::g_bExit)
-		{
-			bool bRet;
-			bRet = GetMessage(&msg, NULL, 0, 0);
-			if (msg.message == 0)
-				continue;
-			if (bRet == 0)
-				break;
-			switch (msg.message)
-			{
-			case WM_HOTKEY:
-				NaKeyboardModule::OnHotkey(isolate, msg.wParam, msg.lParam);
-				break;
-			case WM_TIMER:
-				NaBasicModule::OnTimer(isolate, (int)msg.wParam);
-				break;
-			}
-
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
 	}
 
 	Local<Object> GetSystemObject(Isolate* isolate)

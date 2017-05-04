@@ -2,7 +2,7 @@
 
 #include <NaLib/NaDebug.h>
 
-#include "v8cmn.h"
+#include "V8Wrap.h"
 #include "resource.h"
 
 #include "BasicModule.h"

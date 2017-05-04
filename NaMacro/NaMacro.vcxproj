@@ -142,7 +142,8 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
-    <ClCompile Include="v8cmn.cpp" />
+    <ClCompile Include="NaMacroCommon.cpp" />
+    <ClCompile Include="V8Wrap.cpp" />
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
@@ -163,7 +164,8 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   <ItemGroup>
     <ClInclude Include="..\NaLib\NaHttp.h" />
     <ClInclude Include="BasicModule.h" />
-    <ClInclude Include="v8cmn.h" />
+    <ClInclude Include="NaMacroCommon.h" />
+    <ClInclude Include="V8Wrap.h" />
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />

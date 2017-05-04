@@ -74,12 +74,12 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)/</OutDir>
+    <OutDir>$(SolutionDir)Output/$(Configuration)-$(Platform)/</OutDir>
     <IntDir>$(OutDir)$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)$(Configuration)-$(Platform)/</OutDir>
+    <OutDir>$(SolutionDir)Output/$(Configuration)-$(Platform)/</OutDir>
     <IntDir>$(OutDir)$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>

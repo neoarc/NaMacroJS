@@ -1,7 +1,3 @@
-
-// NaMacroRecorder.cpp : 응용 프로그램에 대한 클래스 동작을 정의합니다.
-//
-
 #include "stdafx.h"
 #include "NaMacroRecorder.h"
 #include "NaMacroRecorderDlg.h"
@@ -10,42 +6,33 @@
 #define new DEBUG_NEW
 #endif
 
-
-// CNaMacroRecorderApp
-
 BEGIN_MESSAGE_MAP(CNaMacroRecorderApp, CWinApp)
 	ON_COMMAND(ID_HELP, &CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
-
-// CNaMacroRecorderApp 생성
-
 CNaMacroRecorderApp::CNaMacroRecorderApp()
 {
-	// 다시 시작 관리자 지원
+	// support Restart Manager
 	m_dwRestartManagerSupportFlags = AFX_RESTART_MANAGER_SUPPORT_RESTART;
 
-	// TODO: 여기에 생성 코드를 추가합니다.
-	// InitInstance에 모든 중요한 초기화 작업을 배치합니다.
+	// TODO: add construction code here,
+	// Place all significant initialization in InitInstance
 }
 
 
-// 유일한 CNaMacroRecorderApp 개체입니다.
-
+// The one and only CNaMacroRecorderApp object
 CNaMacroRecorderApp theApp;
 
 
-// CNaMacroRecorderApp 초기화
-
 BOOL CNaMacroRecorderApp::InitInstance()
 {
-	// 응용 프로그램 매니페스트가 ComCtl32.dll 버전 6 이상을 사용하여 비주얼 스타일을
-	// 사용하도록 지정하는 경우, Windows XP 상에서 반드시 InitCommonControlsEx()가 필요합니다.
-	// InitCommonControlsEx()를 사용하지 않으면 창을 만들 수 없습니다.
+	// InitCommonControlsEx() is required on Windows XP if an application
+	// manifest specifies use of ComCtl32.dll version 6 or later to enable
+	// visual styles.  Otherwise, any window creation will fail.
 	INITCOMMONCONTROLSEX InitCtrls;
 	InitCtrls.dwSize = sizeof(InitCtrls);
-	// 응용 프로그램에서 사용할 모든 공용 컨트롤 클래스를 포함하도록
-	// 이 항목을 설정하십시오.
+	// Set this to include all the common control classes you want to use
+	// in your application.
 	InitCtrls.dwICC = ICC_WIN95_CLASSES;
 	InitCommonControlsEx(&InitCtrls);
 
@@ -54,20 +41,20 @@ BOOL CNaMacroRecorderApp::InitInstance()
 
 	AfxEnableControlContainer();
 
-	// 대화 상자에 셸 트리 뷰 또는
-	// 셸 목록 뷰 컨트롤이 포함되어 있는 경우 셸 관리자를 만듭니다.
+	// Create the shell manager, in case the dialog contains
+	// any shell tree view or shell list view controls.
 	CShellManager *pShellManager = new CShellManager;
 
-	// MFC 컨트롤의 테마를 사용하기 위해 "Windows 원형" 비주얼 관리자 활성화
+	// Activate "Windows Native" visual manager for enabling themes in MFC controls
 	CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
 
-	// 표준 초기화
-	// 이들 기능을 사용하지 않고 최종 실행 파일의 크기를 줄이려면
-	// 아래에서 필요 없는 특정 초기화
-	// 루틴을 제거해야 합니다.
-	// 해당 설정이 저장된 레지스트리 키를 변경하십시오.
-	// TODO: 이 문자열을 회사 또는 조직의 이름과 같은
-	// 적절한 내용으로 수정해야 합니다.
+	// Standard initialization
+	// If you are not using these features and wish to reduce the size
+	// of your final executable, you should remove from the following
+	// the specific initialization routines you do not need
+	// Change the registry key under which our settings are stored
+	// TODO: You should modify this string to be something appropriate
+	// such as the name of your company or organization
 	SetRegistryKey(_T("로컬 응용 프로그램 마법사에서 생성된 응용 프로그램"));
 
 	CNaMacroRecorderDlg dlg;
@@ -75,28 +62,28 @@ BOOL CNaMacroRecorderApp::InitInstance()
 	INT_PTR nResponse = dlg.DoModal();
 	if (nResponse == IDOK)
 	{
-		// TODO: 여기에 [확인]을 클릭하여 대화 상자가 없어질 때 처리할
-		//  코드를 배치합니다.
+		// TODO: Place code here to handle when the dialog is
+		//  dismissed with OK
 	}
 	else if (nResponse == IDCANCEL)
 	{
-		// TODO: 여기에 [취소]를 클릭하여 대화 상자가 없어질 때 처리할
-		//  코드를 배치합니다.
+		// TODO: Place code here to handle when the dialog is
+		//  dismissed with Cancel
 	}
 	else if (nResponse == -1)
 	{
-		TRACE(traceAppMsg, 0, "경고: 대화 상자를 만들지 못했으므로 응용 프로그램이 예기치 않게 종료됩니다.\n");
-		TRACE(traceAppMsg, 0, "경고: 대화 상자에서 MFC 컨트롤을 사용하는 경우 #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS를 수행할 수 없습니다.\n");
+		TRACE(traceAppMsg, 0, "Warning: dialog creation failed, so application is terminating unexpectedly.\n");
+		TRACE(traceAppMsg, 0, "Warning: if you are using MFC controls on the dialog, you cannot #define _AFX_NO_MFC_CONTROLS_IN_DIALOGS.\n");
 	}
 
-	// 위에서 만든 셸 관리자를 삭제합니다.
+	// Delete the shell manager created above.
 	if (pShellManager != NULL)
 	{
 		delete pShellManager;
 	}
 
-	// 대화 상자가 닫혔으므로 응용 프로그램의 메시지 펌프를 시작하지 않고  응용 프로그램을 끝낼 수 있도록 FALSE를
-	// 반환합니다.
+	// Since the dialog has been closed, return FALSE so that we exit the
+	//  application, rather than start the application's message pump.
 	return FALSE;
 }
 

@@ -1,0 +1,3 @@
+[submodule "src/NaLib"]
+	path = src/NaLib
+	url = https://github.com/neoarc/NaLib.git

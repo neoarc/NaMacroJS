@@ -1,9 +1,11 @@
 #include "stdafx.h"
 
 #include "MouseModule.h"
-#include "Common.h"
+#include "v8cmn.h"
 
 #include "Windows.h"
+
+#define MOUSECLICK_SLEEP	10
 
 void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
 {
@@ -49,7 +51,7 @@ Local<Object> NaMouseModule::GetMouseObject(Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 
-	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<Object> system_obj = v8cmn::GetSystemObject(isolate);
 	Local<String> mouse_name = String::NewFromUtf8(isolate, "mouse", NewStringType::kNormal).ToLocalChecked();
 	Local<Value> mouse_value = system_obj->Get(mouse_name);
 	if (!mouse_value.IsEmpty() && mouse_value->IsUndefined())

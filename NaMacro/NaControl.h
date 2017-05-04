@@ -1,7 +1,7 @@
 #pragma once
 
 #include "NaObject.h"
-#include "Common.h"
+#include "v8cmn.h"
 
 #include <map>
 

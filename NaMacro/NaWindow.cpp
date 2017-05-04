@@ -2,7 +2,7 @@
 
 #include <NaLib/NaDebug.h>
 
-#include "Common.h"
+#include "v8cmn.h"
 #include "resource.h"
 
 #include "BasicModule.h"

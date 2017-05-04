@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Common.h"
+#include "v8cmn.h"
 #include "BasicModule.h"
 
 #include <NaLib/NaDebug.h>
@@ -89,7 +89,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_templa
 	// Must in Init() not in Create()
 	// (need HandleScope)
 	HandleScope handle_scope(isolate);
-	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<Object> system_obj = v8cmn::GetSystemObject(isolate);
 
 #define ADD_SYSTEM_METHOD(_js_func)		ADD_OBJ_METHOD(system_obj, _js_func);
 
@@ -192,7 +192,7 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		NaString strFullUrl(url.GetFullUrl());
 		NaDebug::Out(L"Include full: %s\n", strFullUrl.wstr());
 
-		script_source = ReadFile(isolate, strFullUrl.cstr());
+		script_source = v8cmn::ReadFile(isolate, strFullUrl.cstr());
 		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
 		if (script_source.IsEmpty())
 		{
@@ -209,8 +209,8 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 			Script::Compile(context, script_source, &origin).ToLocal(&script);
 			if (script.IsEmpty())
 			{
-				if (g_bReportExceptions)
-					ReportException(isolate, &try_catch);
+				if (v8cmn::g_bReportExceptions)
+					v8cmn::ReportException(isolate, &try_catch);
 
 				NaDebug::Out(L"included script is empty!\n");
 				return;
@@ -222,8 +222,8 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 			script->Run(context);
 			if (try_catch.HasCaught())
 			{
-				if (g_bReportExceptions)
-					ReportException(isolate, &try_catch);
+				if (v8cmn::g_bReportExceptions)
+					v8cmn::ReportException(isolate, &try_catch);
 				return;
 			}
 		}
@@ -430,7 +430,7 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 // syntax:		exit()
 void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
 {
-	g_bExit = true;
+	v8cmn::g_bExit = true;
 }
 
 // description: pick a window from point

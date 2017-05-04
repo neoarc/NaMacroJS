@@ -77,7 +77,7 @@ void NaNotifyWindow::Create(NaString strMessage, NaString strTitle)
 	);
 
 	NaDebug::Out(L"NaNotifyWindow::Create, 0x%08x (parent: 0x%08x)\n", hWnd, s_hMasterWindow);
-	SetWindowLong(hWnd, GWL_USERDATA, (LONG)this);
+	SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)this);
 	ShowWindow(hWnd, SW_SHOW);
 
 	::SetWindowPos(
@@ -100,7 +100,7 @@ void NaNotifyWindow::Create(NaString strMessage, NaString strTitle)
 
 LRESULT NaNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	NaNotifyWindow *pThis = (NaNotifyWindow*)GetWindowLong(hWnd, GWL_USERDATA);
+	NaNotifyWindow *pThis = (NaNotifyWindow*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 
 	switch (message)
 	{

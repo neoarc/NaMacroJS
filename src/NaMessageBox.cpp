@@ -61,7 +61,7 @@ NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title, w
 		NULL // _In_opt_ LPVOID    lpParam
 	);
 
-	SetWindowLong(hWnd, GWL_USERDATA, (LONG)this);
+	SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)this);
 	ShowWindow(hWnd, SW_SHOW);
 	UpdateWindow(hWnd);
 
@@ -77,7 +77,7 @@ NaString NaMessageBox::DoModal(HWND hParent, wchar_t* message, wchar_t* title, w
 
 LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	NaMessageBox *pThis = (NaMessageBox*)GetWindowLong(hWnd, GWL_USERDATA);
+	NaMessageBox *pThis = (NaMessageBox*)GetWindowLongPtr(hWnd, GWLP_USERDATA);
 	switch (message)
 	{
 	case WM_SHOWWINDOW:
@@ -97,7 +97,7 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL,
 				10, 40, nWidth - 20, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
-			pThis->m_OldEditProc = (WNDPROC)SetWindowLong(pThis->m_hEdit, GWL_WNDPROC, (LONG)&NaMessageBox::EditProc);
+			pThis->m_OldEditProc = (WNDPROC)SetWindowLongPtr(pThis->m_hEdit, GWLP_WNDPROC, (LONG_PTR)&NaMessageBox::EditProc);
 
 			HWND hBtnOK = CreateWindow(L"Button", L"OK",
 				WS_VISIBLE | WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_DEFPUSHBUTTON,
@@ -145,7 +145,7 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 LRESULT NaMessageBox::EditProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	HWND hParent = GetParent(hWnd);
-	NaMessageBox *pThis = (NaMessageBox*)GetWindowLong(hParent, GWL_USERDATA);
+	NaMessageBox *pThis = (NaMessageBox*)GetWindowLongPtr(hParent, GWLP_USERDATA);
 	switch (message)
 	{
 	case WM_CHAR:

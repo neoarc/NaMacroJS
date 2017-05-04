@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "ExtModule.h"
 
 #include <fstream>

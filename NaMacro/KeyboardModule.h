@@ -1,10 +1,10 @@
 #pragma once
 
 #include <v8.h>
-#include "Common.h"
+#include "V8Wrap.h"
 #include "ModuleBase.h"
 
-#include "Windows.h"
+#include <Windows.h>
 #include <map>
 
 class HotkeyKey {

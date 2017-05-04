@@ -4,27 +4,38 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaUrl.h>
 
-#define MOUSECLICK_SLEEP	10
-#define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
+namespace V8Wrap {
+	using namespace v8;
 
-extern bool g_bReportExceptions;
-extern bool g_bExit;
+	extern bool g_bReportExceptions;
 
-using namespace v8;
+	Platform* Initialize();
+	Isolate* CreateNewIsolate();
+	void TearDown(Platform* platform);
 
-// v8 Utility
-NaString ReportException(Isolate *isolate, TryCatch* handler);
+	void CreateDefaultModules(Isolate* isolate, Local<ObjectTemplate>& global_template);
+	void InitModules(Isolate* isolate, Local<ObjectTemplate>& global_template);
+	void ReleaseModules();
 
-// Utility Functions
-Local<String> ReadFile(Isolate *isolate, const char* name);
-Local<Object> GetSystemObject(Isolate *isolate);
+	Local<String> ReadFile(Isolate* isolate, const char* name);
+	Local<String> ReadScript(Isolate* isolate, const std::string& scriptFilePath);
+	Local<Script> Compile(Isolate* isolate, Local<Context>& context,
+							const std::string& scriptPath,
+							Local<String>& scriptSource);
+	bool RunScript(Isolate* isolate, Local<Context>& context, Local<Script>& script);
+	bool RunMainFunc(Isolate* isolate);
 
-// Macro Defines
-#define V8_FUNCTION_ARGS	const FunctionCallbackInfo<Value>& args
+	Local<Object> GetSystemObject(Isolate* isolate);
+	NaString ReportException(Isolate* isolate, TryCatch* handler);
+}
 
-#define V8_GETTER_ARGS		Local<String> name, const PropertyCallbackInfo<Value>& info
+//------------------------------------------------------------------------------
+// Macro Defines 
+//------------------------------------------------------------------------------
 
-#define V8_SETTER_ARGS		Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info
+#define V8_FUNCTION_ARGS  const FunctionCallbackInfo<Value>& args
+#define V8_GETTER_ARGS	  Local<String> name, const PropertyCallbackInfo<Value>& info
+#define V8_SETTER_ARGS	  Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info
 
 #define ADD_TEMPLATE_METHOD(_obj, _js_func) \
 	_obj->Set( \
@@ -70,15 +81,9 @@ Local<Object> GetSystemObject(Isolate *isolate);
 	static void get_##_property(Local<String> name, const PropertyCallbackInfo<Value>& info); \
 	static void set_##_property(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info);
 
-#define DEFINE_CLASS_METHOD(_method) \
-	static void method_##_method(V8_FUNCTION_ARGS);
+#define DEFINE_CLASS_METHOD(_method)  static void method_##_method(V8_FUNCTION_ARGS);
+#define DEFINE_GLOBAL_METHOD(_method)        void method_##_method(V8_FUNCTION_ARGS);
 
-#define DEFINE_GLOBAL_METHOD(_method) \
-	void method_##_method(V8_FUNCTION_ARGS);
-
-#define ADD_GLOBAL_METHOD(_js_func)	\
-	ADD_TEMPLATE_METHOD(global_template, _js_func);
-
-#define ADD_GLOBAL_METHOD2(_js_func, _c_func) \
-	ADD_TEMPLATE_METHOD2(global_template, _js_func, _c_func);
+#define ADD_GLOBAL_METHOD(_js_func)			   ADD_TEMPLATE_METHOD(global_template, _js_func);
+#define ADD_GLOBAL_METHOD2(_js_func, _c_func)  ADD_TEMPLATE_METHOD2(global_template, _js_func, _c_func);
 

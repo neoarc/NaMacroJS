@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Common.h"
+#include "V8Wrap.h"
 
-#include "v8.h"
+#include <v8.h>
 
 #define Global	Global
 

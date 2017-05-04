@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib\include;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\packages\v8-v140-x86.5.6.326.55\include;..\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -87,6 +87,7 @@
       </IgnoreAllDefaultLibraries>
       <FixedBaseAddress>false</FixedBaseAddress>
       <AdditionalLibraryDirectories>$(IntDir)..\;..\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>$(SolutionDir)OutPut\pre_build.bat</Command>
@@ -99,7 +100,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;..\third_party\icu\i18n;..\third_party\icu\common;%(AdditionalIncludeDirectories);..\NaLib\include;..\packages\v8-v140-x86.5.6.326.55\include\;..\packages\v8-v140-x86.5.6.326.55\include\libplatform\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;..\packages\v8-v140-x86.5.6.326.55\include;..\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -141,7 +142,8 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
-    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="NaMacroCommon.cpp" />
+    <ClCompile Include="V8Wrap.cpp" />
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
@@ -162,7 +164,8 @@ move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Re
   <ItemGroup>
     <ClInclude Include="..\NaLib\NaHttp.h" />
     <ClInclude Include="BasicModule.h" />
-    <ClInclude Include="Common.h" />
+    <ClInclude Include="NaMacroCommon.h" />
+    <ClInclude Include="V8Wrap.h" />
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />

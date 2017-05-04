@@ -1,7 +1,7 @@
 #pragma once
 
 #include <v8.h>
-#include "Common.h"
+#include "V8Wrap.h"
 #include "ModuleBase.h"
 
 #include "NaWindow.h"

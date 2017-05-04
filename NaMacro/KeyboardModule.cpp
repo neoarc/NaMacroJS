@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 #include "KeyboardModule.h"
 
 std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_mapKeyEventCallback;
@@ -43,7 +42,7 @@ Local<Object> NaKeyboardModule::GetKeyboardObject(Isolate *isolate)
 {
 	// HandleScope 안에서 호출
 
-	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<Object> system_obj = V8Wrap::GetSystemObject(isolate);
 	Local<String> keyboard_name = String::NewFromUtf8(isolate, "keyboard", NewStringType::kNormal).ToLocalChecked();
 	Local<Value> keyboard_value = system_obj->Get(keyboard_name);
 	if (!keyboard_value.IsEmpty() && keyboard_value->IsUndefined())

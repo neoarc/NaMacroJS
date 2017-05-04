@@ -1,6 +1,6 @@
 #include "stdafx.h"
-
 #include "ScreenModule.h"
+
 #include "NaImage.h"
 
 HWND NaScreenModule::m_hDesktopWnd = NULL;
@@ -44,7 +44,7 @@ Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 {
 	// HandleScope 안에서 호출
 
-	Local<Object> system_obj = GetSystemObject(isolate);
+	Local<Object> system_obj = V8Wrap::GetSystemObject(isolate);
 	Local<String> screen_name = String::NewFromUtf8(isolate, "screen", NewStringType::kNormal).ToLocalChecked();
 	Local<Value> screen_value = system_obj->Get(screen_name);
 	if (!screen_value.IsEmpty() && screen_value->IsUndefined())

@@ -1,14 +1,13 @@
 #include "NaWindow.h"
 
 #include <NaLib/NaDebug.h>
+#include <NaLib/NaNotifyWindow.h>
 
-#include "Common.h"
+#include "V8Wrap.h"
 #include "resource.h"
 
 #include "BasicModule.h"
-
 #include "NaControl.h"
-#include <NaLib/NaNotifyWindow.h>
 
 bool NaWindow::s_bRegisterClass = false;
 Global<ObjectTemplate> NaWindow::s_NaWindowTemplate;

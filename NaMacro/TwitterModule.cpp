@@ -1,7 +1,7 @@
 #include "stdafx.h"
-
-#include "Common.h"
 #include "TwitterModule.h"
+
+#include "V8Wrap.h"
 
 
 void NaTwitterModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)

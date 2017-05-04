@@ -75,7 +75,10 @@
     <ClCompile Include="NaFile.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="v8cmn.cpp">
+    <ClCompile Include="V8Wrap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaMacroCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -128,7 +131,10 @@
     <ClInclude Include="NaFile.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="v8cmn.h">
+    <ClInclude Include="V8Wrap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaMacroCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "v8cmn.h"
+#include "V8Wrap.h"
 #include "TwitterModule.h"
 
 

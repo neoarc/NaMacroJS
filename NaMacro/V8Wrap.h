@@ -4,11 +4,10 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaUrl.h>
 
-namespace v8cmn {
+namespace V8Wrap {
 	using namespace v8;
 
 	extern bool g_bReportExceptions;
-	extern bool g_bExit;
 
 	Platform* Initialize();
 	Isolate* CreateNewIsolate();
@@ -25,7 +24,6 @@ namespace v8cmn {
 							Local<String>& scriptSource);
 	bool RunScript(Isolate* isolate, Local<Context>& context, Local<Script>& script);
 	bool RunMainFunc(Isolate* isolate);
-	void MessageLoopTillExit(Isolate* isolate);
 
 	Local<Object> GetSystemObject(Isolate* isolate);
 	NaString ReportException(Isolate* isolate, TryCatch* handler);

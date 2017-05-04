@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacro", "NaMacro\NaMacro.vcxproj", "{3336ACF4-2208-432F-816F-40B9E4B47A08}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacro", "src\NaMacro\NaMacro.vcxproj", "{3336ACF4-2208-432F-816F-40B9E4B47A08}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacroRecorder", "NaMacroRecorder\NaMacroRecorder.vcxproj", "{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaMacroRecorder", "src\NaMacroRecorder\NaMacroRecorder.vcxproj", "{5C67E4BB-0D8E-4810-8EAD-FBE3A76816DC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaLib", "NaLib\src\NaLib.vcxproj", "{0D09AA4D-9352-42BF-A5D7-A857B60868F8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaLib", "src\NaLib\src\NaLib.vcxproj", "{0D09AA4D-9352-42BF-A5D7-A857B60868F8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

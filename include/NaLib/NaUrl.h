@@ -1,7 +1,3 @@
-//
-// Url(or Directory Path) parser
-// 2016.06.15
-//
 #pragma once
 
 #include "NaString.h"

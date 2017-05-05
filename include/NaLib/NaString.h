@@ -1,6 +1,3 @@
-// 2012.11.24 neoarc first draft
-// 2016.06.02 neoarc remake 
-
 #pragma once
 
 #include <string>

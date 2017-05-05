@@ -1,7 +1,3 @@
-//
-// Http protocol transfer 
-// 2016.06.24 neoarc
-//
 #pragma once
 
 #include <WinSock2.h>

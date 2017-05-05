@@ -3,8 +3,6 @@
 
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
 
-
-
 void NaDebug::OutA(const char* pszFormat, ...)
 {
 #if !defined(_DEBUG)

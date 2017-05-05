@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "NaNotifyWindow.h"
 
+#include <thread>
+
 #include "NaCommon.h"
 #include "NaDebug.h"
-
-
-#include <thread>
 
 bool NaNotifyWindow::s_bRegisterClass = false;
 HWND NaNotifyWindow::s_hMasterWindow = nullptr;

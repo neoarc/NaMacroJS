@@ -1,9 +1,6 @@
-//
-// Url(or Directory Path) parser
-// 2016.06.15
-//
 #include "stdafx.h"
 #include "NaUrl.h"
+
 #include <list>
 
 NaUrl::NaUrl()

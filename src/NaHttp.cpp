@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "NaHttp.h"
 
-
 #include <Ws2tcpip.h>
 
 NaHttp::NaHttp()

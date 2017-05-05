@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "NaMessageBox.h"
+
 #include "NaCommon.h"
 
 bool NaMessageBox::s_bRegisterClass = false;

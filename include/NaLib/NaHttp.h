@@ -46,4 +46,3 @@ protected:
 	// Response
 	NaString m_response;
 };
-

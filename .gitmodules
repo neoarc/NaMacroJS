@@ -1,3 +1,0 @@
-[submodule "third_party/src/catch-1.9.1"]
-	path = third_party/src/catch-1.9.1
-	url = https://github.com/philsquared/Catch.git

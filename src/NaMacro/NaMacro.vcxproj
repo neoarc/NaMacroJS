@@ -77,7 +77,7 @@
       <OmitDefaultLibName>false</OmitDefaultLibName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
+      <AdditionalDependencies>v8.lib;v8_libplatform.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -112,7 +112,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
+      <AdditionalDependencies>v8.lib;v8_libplatform.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>

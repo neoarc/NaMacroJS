@@ -74,23 +74,23 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)output/$(Configuration)-$(Platform)/</OutDir>
-    <IntDir>$(OutDir)$(ProjectName)/</IntDir>
+    <OutDir>$(SolutionDir)/output/$(Configuration)/</OutDir>
+    <IntDir>$(OutDir)/$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)output/$(Configuration)-$(Platform)/</OutDir>
-    <IntDir>$(OutDir)$(ProjectName)/</IntDir>
+    <OutDir>$(SolutionDir)/output/$(Configuration)/</OutDir>
+    <IntDir>$(OutDir)/$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)output/$(Configuration)-$(Platform)/</OutDir>
-    <IntDir>$(OutDir)$(ProjectName)/</IntDir>
+    <OutDir>$(SolutionDir)/output/$(Configuration)/</OutDir>
+    <IntDir>$(OutDir)/$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)output/$(Configuration)-$(Platform)/</OutDir>
-    <IntDir>$(OutDir)$(ProjectName)/</IntDir>
+    <OutDir>$(SolutionDir)/output/$(Configuration)/</OutDir>
+    <IntDir>$(OutDir)/$(ProjectName)/</IntDir>
     <TargetName>NaLib-vc$(PlatformToolsetVersion)-$(Configuration)-$(PlatformShortName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

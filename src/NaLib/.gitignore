@@ -225,7 +225,7 @@ ModelManifest.xml
 LineCounter.ini
 
 # NaLib
-third_party/
+#third_party/
 
 Debug-Win32/
 Debug-x64/

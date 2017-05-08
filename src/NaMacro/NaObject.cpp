@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NaObject.h"
 
 Global<ObjectTemplate> NaObject::s_NaObjectTemplate;

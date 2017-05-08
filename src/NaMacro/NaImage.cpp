@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NaImage.h"
 
 #include <NaLib/NaString.h>

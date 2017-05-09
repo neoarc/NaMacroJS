@@ -6,17 +6,19 @@ set thisScriptDir=%~dp0
 pushd %thisScriptDir%
 set thisScriptFileName=%~nx0
 
-:main
 
+:main
 set binSrcDir=bin_src
 
 call :prepare_bin_src_dir
 call :gather_output_files
+call :gather_scripts
 call :gather_v8_dlls
 call :gather_vc_redist_dlls
 :: call :gather_addon_scripts
 
 goto :end
+
 
 :prepare_bin_src_dir
 echo . & echo %0:
@@ -27,6 +29,7 @@ mkdir %binSrcDir%
 if %ERRORLEVEL% neq 0 ( pause )
 @exit /b %ERRORLEVEL%
 
+
 :gather_output_files
 echo . & echo %0: to %binSrcDir%
 
@@ -34,6 +37,15 @@ set outputDir=..\output\Release
 call :copy_file %outputDir%\NaMacro.exe         %binSrcDir%
 call :copy_file %outputDir%\NaMacroRecorder.exe %binSrcDir%
 @exit /b %ERRORLEVEL%
+
+
+:gather_scripts
+echo . & echo %0: to %binSrcDir%
+
+xcopy ..\scripts\Addon %binSrcDir%\Addon /ieyf
+if %ERRORLEVEL% neq 0 ( pause )
+@exit /b %ERRORLEVEL%
+
 
 :gather_v8_dlls
 echo . & echo %0:
@@ -46,6 +58,7 @@ call :copy_file %v8BinDir%\v8_libbase.dll       %binSrcDir%
 call :copy_file %v8BinDir%\v8_libplatform.dll   %binSrcDir%
 @exit /b %ERRORLEVEL%
 
+
 :gather_vc_redist_dlls
 echo . & echo %0:
 
@@ -57,6 +70,7 @@ call :copy_file "%vcRedistCRT%\vcruntime140.dll"    %binSrcDir%
 set vcRedistMFC=%vc140root%\VC\redist\x86\Microsoft.VC140.MFC
 call :copy_file "%vcRedistMFC%\mfc140u.dll"         %binSrcDir%
 @exit /b %ERRORLEVEL%
+
 
 :copy_file
 set srcPath=%1

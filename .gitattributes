@@ -3,6 +3,9 @@
 ###############################################################################
 * text=auto
 
+*.rc	diff
+*.rc2	diff
+
 ###############################################################################
 # Set default behavior for command prompt diff.
 #
@@ -61,5 +64,3 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
-*rc	diff=astextplain
-*rc2	diff=astextplain

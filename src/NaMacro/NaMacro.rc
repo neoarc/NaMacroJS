@@ -77,7 +77,7 @@ BEGIN
         BLOCK "041204b0"
         BEGIN
             VALUE "CompanyName", "neoarc (neoarcturus@gmail.com)"
-            VALUE "FileDescription", "neoarc's Macro JS Player"
+            VALUE "FileDescription", "Neoarc's Macro JS Player"
             VALUE "FileVersion", "0.1.0.0"
             VALUE "InternalName", "NaMacro.exe"
             VALUE "LegalCopyright", "Copyright (C) 2017"

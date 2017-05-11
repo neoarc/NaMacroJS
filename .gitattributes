@@ -62,5 +62,5 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-*.rc   diff=astextplain
-*.rc2   diff=astextplain
+*.rc	set diff
+*.rc2	set diff

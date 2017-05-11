@@ -1,10 +1,7 @@
 ###############################################################################
 # Set default behavior to automatically normalize line endings.
 ###############################################################################
-# * text=auto
-
-*.rc	set diff
-*.rc2	set diff
+* text=auto
 
 ###############################################################################
 # Set default behavior for command prompt diff.
@@ -64,3 +61,7 @@
 #*.PDF   diff=astextplain
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
+
+# by neoarc
+*.rc	set diff
+*.rc2	set diff

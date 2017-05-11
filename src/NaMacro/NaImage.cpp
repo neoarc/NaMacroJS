@@ -1,9 +1,11 @@
+#include "stdafx.h"
 #include "NaImage.h"
 
 #include <NaLib/NaString.h>
 #include <NaLib/NaDebug.h>
 
 #include <gdiplus.h>
+#pragma comment(lib, "gdiplus.lib")
 
 #include "ScreenModule.h"
 

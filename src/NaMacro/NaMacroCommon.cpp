@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NaMacroCommon.h"
 
 #include <Windows.h>

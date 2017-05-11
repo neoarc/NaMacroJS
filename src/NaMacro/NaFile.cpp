@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "NaFile.h"
 
 #include <NaLib/NaDebug.h>

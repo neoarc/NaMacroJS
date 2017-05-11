@@ -48,25 +48,25 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\output\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\output\Build\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)\output\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental>true</LinkIncremental>
     <EmbedManifest>false</EmbedManifest>
-    <TargetName>$(ProjectName)D</TargetName>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\output\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)\output\Build\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir>$(SolutionDir)\output\$(Configuration)\$(ProjectName)\</IntDir>
     <LinkIncremental>false</LinkIncremental>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ExceptionHandling>false</ExceptionHandling>
@@ -77,7 +77,7 @@
       <OmitDefaultLibName>false</OmitDefaultLibName>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
+      <AdditionalDependencies>v8.lib;v8_libplatform.lib</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <ImportLibrary>
@@ -97,10 +97,10 @@
     <ClCompile>
       <PreprocessorDefinitions>USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\third_party\icu\i18n;..\third_party\icu\common;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\NaLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -112,7 +112,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>gdiplus.lib;ws2_32.lib;winmm.lib;%(AdditionalDependencies);Wldap32.lib;v8.lib;v8_libbase.lib;v8_libplatform.lib;v8_libsampler.lib</AdditionalDependencies>
+      <AdditionalDependencies>v8.lib;v8_libplatform.lib</AdditionalDependencies>
       <IgnoreAllDefaultLibraries>
       </IgnoreAllDefaultLibraries>
       <IgnoreSpecificDefaultLibraries>
@@ -120,24 +120,8 @@
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>@echo ### PostBuild Batch - Start ###
-mkdir $(SolutionDir)..\NaMacroJS_Release
-mkdir $(SolutionDir)..\NaMacroJS_Release\Temp
-cd $(SolutionDir)..\NaMacroJS_Release\Temp
-del /q /s *.*
-copy $(OutDir)NaMacro.exe $(SolutionDir)..\NaMacroJS_Release\Temp
-copy $(OutDir)NaMacroRecorder.exe $(SolutionDir)..\NaMacroJS_Release\Temp
-copy $(OutDir)*.dll $(SolutionDir)..\NaMacroJS_Release\Temp
-copy $(OutDir)*.bin $(SolutionDir)..\NaMacroJS_Release\Temp
-: mkdir $(SolutionDir)..\NaMacroJS_Release\Temp\Resources
-: xcopy /e /f /y $(SolutionDir)Resources $(SolutionDir)..\NaMacroJS_Release\Temp\Resources
-: del $(SolutionDir)..\NaMacroJS_Release\Temp\Resources\Map\*.lnk
-: mkdir $(SolutionDir)..\NaMacroJS_Release\Temp\UserData
-: mkdir $(SolutionDir)..\NaMacroJS_Release\Temp\UserData\Profile
-: copy $(SolutionDir)References\FirstUserData\Profile1.json $(SolutionDir)..\NaMacroJS_Release\Temp\UserData\Profile\Profile1.json
-7z a NaMacroJS_Release_$(TimeStamp).zip
-move $(SolutionDir)..\NaMacroJS_Release\Temp\*.zip $(SolutionDir)..\NaMacroJS_Release
-@echo ### PostBuild Batch - End ###</Command>
+      <Command>
+      </Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

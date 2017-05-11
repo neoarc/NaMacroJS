@@ -1,7 +1,0 @@
-#define FILEVER        0,5,0,[COMMIT_COUNT]
-#define FILEVER_S     "0.5.0.[COMMIT_COUNT]"
-#define PRODUCTVER     FILEVER
-#define PRODUCTVER_S   FILEVER_S
-
-#define COMPANY_NAME   "NeoArc Solution"
-#define PRODUCT_NAME   "NaMacroJS"

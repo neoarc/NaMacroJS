@@ -51,6 +51,7 @@ echo * Build Datetime = %BUILD_DATETIME%
     echo.
     echo #define COMPANY_NAME           "%COMPANY_NAME%"
     echo #define PRODUCT_NAME           "%PRODUCT_NAME%"
+    echo #define PRODUCT_URL            "https://github.com/neoarc/NaMacroJS"
     echo.
     echo #define BUILD_DATETIME_STR     "%BUILD_DATETIME%"
 ) > version.h

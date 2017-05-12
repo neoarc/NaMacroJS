@@ -37,10 +37,10 @@ BEGIN
 			VALUE "FileDescription" , "NaMacro"
 			VALUE "FileVersion"     , FILE_VERSION_STR
 			VALUE "InternalName"    , "NaMacro.exe"
-			VALUE "LegalCopyright"	, "(c) " COMPANY_NAME ".  All rights reserved."
+			VALUE "LegalCopyright"	, PRODUCT_URL
 			VALUE "OriginalFilename", "NaMacro.exe"
 			VALUE "ProductName"     , PRODUCT_NAME
-			VALUE "ProductVersion"  , PRODUCT_VERSION
+			VALUE "ProductVersion"  , PRODUCT_VERSION_STR
 		END
 	END
 	BLOCK "VarFileInfo"

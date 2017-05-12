@@ -10,6 +10,7 @@
 /////////////////////////////////////////////////////////////////////////////
 // Add manually edited resources here...
 
+/////////////////////////////////////////////////////////////////////////////
 //
 // Version
 //
@@ -36,7 +37,7 @@ BEGIN
 			VALUE "FileDescription" , "NaMacroRecorder"
 			VALUE "FileVersion"     , FILE_VERSION_STR
 			VALUE "InternalName"    , "NaMacroRecorder.exe"
-			VALUE "LegalCopyright"	, "(c) " COMPANY_NAME ".  All rights reserved."
+			VALUE "LegalCopyright"	, PRODUCT_URL
 			VALUE "OriginalFilename", "NaMacroRecorder.exe"
 			VALUE "ProductName"     , PRODUCT_NAME
 			VALUE "ProductVersion"  , PRODUCT_VERSION_STR

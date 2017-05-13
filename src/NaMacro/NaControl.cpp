@@ -194,6 +194,8 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 // description: x property getter/setter
 void NaControl::get_x(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
@@ -210,6 +212,8 @@ void NaControl::get_x(V8_GETTER_ARGS)
 
 void NaControl::set_x(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
 	{
@@ -222,6 +226,8 @@ void NaControl::set_x(V8_SETTER_ARGS)
 // description: y property getter/setter
 void NaControl::get_y(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
@@ -238,6 +244,8 @@ void NaControl::get_y(V8_GETTER_ARGS)
 
 void NaControl::set_y(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
 	{
@@ -250,6 +258,8 @@ void NaControl::set_y(V8_SETTER_ARGS)
 // description: width property getter/setter
 void NaControl::get_width(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
@@ -266,6 +276,8 @@ void NaControl::get_width(V8_GETTER_ARGS)
 
 void NaControl::set_width(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
 	{
@@ -278,6 +290,8 @@ void NaControl::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void NaControl::get_height(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
@@ -294,6 +308,8 @@ void NaControl::get_height(V8_GETTER_ARGS)
 
 void NaControl::set_height(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
 	{
@@ -306,6 +322,8 @@ void NaControl::set_height(V8_SETTER_ARGS)
 // description: text property getter/setter
 void NaControl::get_text(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pControl)
@@ -321,6 +339,8 @@ void NaControl::get_text(V8_GETTER_ARGS)
 
 void NaControl::set_text(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	if (pControl)
 	{
@@ -332,6 +352,8 @@ void NaControl::set_text(V8_SETTER_ARGS)
 // description: visible property getter/setter
 void NaControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 
@@ -346,8 +368,9 @@ void NaControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 
 void NaControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	// get window object(this)
-	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(obj));
 
@@ -360,7 +383,8 @@ void NaControl::set_visible(Local<String> name, Local<Value> value, const Proper
 // description: parent property getter
 void NaControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
+	UNUSED_PARAMETER(name);
+
 	Isolate *isolate = info.GetIsolate();
 
 	// TODO Impl
@@ -372,7 +396,8 @@ void NaControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>
 // description: image property getter/setter
 void NaControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
+	UNUSED_PARAMETER(name);
+
 	Isolate *isolate = info.GetIsolate();
 
 	// TODO Impl
@@ -383,6 +408,8 @@ void NaControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>&
 
 void NaControl::set_image(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	// get window object(this)
 	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();

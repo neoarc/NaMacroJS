@@ -44,7 +44,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(findTrays);
 }
 
-void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_template*/)
 {
 	// add global object
 	Local<Object> global = isolate->GetCurrentContext()->Global();
@@ -431,6 +431,7 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 // syntax:		exit()
 void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
 {
+	UNUSED_PARAMETER(args);
 	NaMacroCommon::g_bExit = true;
 }
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <v8.h>
 #include "V8Wrap.h"
 #include "ModuleBase.h"
 

@@ -2,8 +2,6 @@
 
 #include "V8Wrap.h"
 
-#include <v8.h>
-
 #define Global	Global
 
 class NaObject

@@ -3,7 +3,7 @@
 
 std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> NaKeyboardModule::s_mapKeyEventCallback;
 
-void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
+void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& /*global_template*/)
 {
 	HandleScope handle_scope(isolate);
 
@@ -68,7 +68,7 @@ void NaKeyboardModule::KeyDown(int code)
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
 	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = code;
+	input.ki.wVk = static_cast<WORD>(code);
 	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY;
 	::SendInput(1, &input, sizeof(INPUT));
 }
@@ -78,16 +78,15 @@ void NaKeyboardModule::KeyUp(int code)
 	INPUT input;
 	ZeroMemory(&input, sizeof(INPUT));
 	input.type = INPUT_KEYBOARD;
-	input.ki.wVk = code;
+	input.ki.wVk = static_cast<WORD>(code);
 	input.ki.dwFlags = KEYEVENTF_EXTENDEDKEY | KEYEVENTF_KEYUP;
 	::SendInput(1, &input, sizeof(INPUT));
 }
 
 // description: key event handler
-void NaKeyboardModule::OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam)
+void NaKeyboardModule::OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM /*lParam*/)
 {
 	int nIdx = (int)wParam;
-	int nMod = (int)lParam; // MOD_ALT=1 MOD_CONTROL=2 MOD_SHIFT=4 MOD_WIN=8
 
 	std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
 	it = s_mapKeyEventCallback.begin();

@@ -1,7 +1,5 @@
 #pragma once
 
-#include <v8.h>
-
 namespace NaMacroCommon {
 	using namespace v8;
 

@@ -5,7 +5,7 @@
 
 #define MOUSECLICK_SLEEP	10
 
-void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& global_template)
+void NaMouseModule::Init(Isolate *isolate, Local<ObjectTemplate>& /*global_template*/)
 {
 	HandleScope handle_scope(isolate);
 
@@ -77,7 +77,7 @@ Local<Object> NaMouseModule::GetMouseObject(Isolate *isolate)
 }
 
 // description: x getter 
-void NaMouseModule::get_x(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaMouseModule::get_x(Local<String> /*name*/, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -89,7 +89,7 @@ void NaMouseModule::get_x(Local<String> name, const PropertyCallbackInfo<Value>&
 }
 
 // description: x setter 
-void NaMouseModule::set_x(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaMouseModule::set_x(Local<String> /*name*/, Local<Value> value, const PropertyCallbackInfo<void>& /*info*/)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -99,7 +99,7 @@ void NaMouseModule::set_x(Local<String> name, Local<Value> value, const Property
 }
 
 // description: y getter 
-void NaMouseModule::get_y(Local<String> name, const PropertyCallbackInfo<Value>& info)
+void NaMouseModule::get_y(Local<String> /*name*/, const PropertyCallbackInfo<Value>& info)
 {
 	POINT pt;
 	::GetCursorPos(&pt);
@@ -111,7 +111,7 @@ void NaMouseModule::get_y(Local<String> name, const PropertyCallbackInfo<Value>&
 }
 
 // description: y setter 
-void NaMouseModule::set_y(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+void NaMouseModule::set_y(Local<String> /*name*/, Local<Value> value, const PropertyCallbackInfo<void>& /*info*/)
 {
 	POINT pt;
 	::GetCursorPos(&pt);

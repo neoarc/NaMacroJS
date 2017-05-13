@@ -57,6 +57,7 @@ NaFile * NaFile::Load(const wchar_t * filename, const char * mode)
 // description: width property getter/setter
 void NaFile::get_name(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
 	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pFile)
@@ -69,6 +70,9 @@ void NaFile::get_name(V8_GETTER_ARGS)
 
 void NaFile::set_name(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+	UNUSED_PARAMETER(value);
+
 	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
 	if (pFile)
 	{

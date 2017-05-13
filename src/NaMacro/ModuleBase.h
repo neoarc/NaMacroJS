@@ -1,7 +1,6 @@
 #pragma once
 
 #include "V8Wrap.h"
-#include <v8.h>
 
 class ModuleBase
 {

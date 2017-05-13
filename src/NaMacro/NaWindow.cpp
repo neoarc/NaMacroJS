@@ -245,6 +245,8 @@ NaWindow* NaWindow::GetWindow(HWND hWnd)
 // description: x property getter/setter
 void NaWindow::get_x(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -261,6 +263,8 @@ void NaWindow::get_x(V8_GETTER_ARGS)
 
 void NaWindow::set_x(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -273,6 +277,8 @@ void NaWindow::set_x(V8_SETTER_ARGS)
 // description: y property getter/setter
 void NaWindow::get_y(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -289,6 +295,8 @@ void NaWindow::get_y(V8_GETTER_ARGS)
 
 void NaWindow::set_y(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -301,6 +309,8 @@ void NaWindow::set_y(V8_SETTER_ARGS)
 // description: width property getter/setter
 void NaWindow::get_width(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -317,6 +327,8 @@ void NaWindow::get_width(V8_GETTER_ARGS)
 
 void NaWindow::set_width(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -329,6 +341,8 @@ void NaWindow::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void NaWindow::get_height(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -345,6 +359,8 @@ void NaWindow::get_height(V8_GETTER_ARGS)
 
 void NaWindow::set_height(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -357,6 +373,8 @@ void NaWindow::set_height(V8_SETTER_ARGS)
 // description: client width property getter
 void NaWindow::get_clientWidth(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -374,6 +392,8 @@ void NaWindow::get_clientWidth(V8_GETTER_ARGS)
 // description: client height property getter
 void NaWindow::get_clientHeight(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow && pWindow->m_hWnd)
@@ -391,6 +411,8 @@ void NaWindow::get_clientHeight(V8_GETTER_ARGS)
 // description: class property getter/setter
 void NaWindow::get_class(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
@@ -407,6 +429,8 @@ void NaWindow::get_class(V8_GETTER_ARGS)
 // description: text property getter/setter
 void NaWindow::get_text(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
@@ -422,6 +446,8 @@ void NaWindow::get_text(V8_GETTER_ARGS)
 
 void NaWindow::set_text(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -433,13 +459,15 @@ void NaWindow::set_text(V8_SETTER_ARGS)
 // description: visible property getter/setter
 void NaWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 
 	bool bVisible = false;
 	if (pWindow)
 	{
-		bVisible = ::IsWindowVisible(pWindow->m_hWnd);
+		bVisible = (::IsWindowVisible(pWindow->m_hWnd) == TRUE);
 	}
 
 	info.GetReturnValue().Set(
@@ -449,8 +477,9 @@ void NaWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 
 void NaWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	// get window object(this)
-	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
 
@@ -504,6 +533,8 @@ void NaWindow::set_visible(Local<String> name, Local<Value> value, const Propert
 // description: topmost property getter/setter
 void NaWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 
@@ -522,7 +553,8 @@ void NaWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>
 
 void NaWindow::set_topmost(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	Isolate *isolate = info.GetIsolate();
+	UNUSED_PARAMETER(name);
+
 	Local<Object> obj = info.This();
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(obj));
 
@@ -539,6 +571,8 @@ void NaWindow::set_topmost(Local<String> name, Local<Value> value, const Propert
 // description: handle property getter/setter
 void NaWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -555,6 +589,8 @@ void NaWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>&
 
 void NaWindow::set_handle(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -565,6 +601,8 @@ void NaWindow::set_handle(Local<String> name, Local<Value> value, const Property
 // description: state property getter/setter
 void NaWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -599,6 +637,8 @@ void NaWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& 
 
 void NaWindow::set_state(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
+	UNUSED_PARAMETER(name);
+
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
 	if (pWindow)
 	{
@@ -687,7 +727,9 @@ void NaWindow::method_move(V8_FUNCTION_ARGS)
 		return;
 
 	// move window
-	int x, y, w, h;
+	int x = 0;
+	int y = 0;
+	int w, h;
 	RECT rc;
 	::GetWindowRect(pWindow->m_hWnd, &rc);
 	w = rc.right - rc.left;
@@ -733,14 +775,14 @@ void NaWindow::method_move(V8_FUNCTION_ARGS)
 	}
 	else
 	{
-		x = args[0]->IntegerValue();
-		y = args[1]->IntegerValue();
+		x = static_cast<int>(args[0]->IntegerValue());
+		y = static_cast<int>(args[1]->IntegerValue());
 	}
 
 	if (args.Length() >= 3)
 	{
-		w = args[2]->IntegerValue();
-		h = args[3]->IntegerValue();
+		w = static_cast<int>(args[2]->IntegerValue());
+		h = static_cast<int>(args[3]->IntegerValue());
 	}
 	::MoveWindow(pWindow->m_hWnd, x, y, w, h, TRUE);
 }

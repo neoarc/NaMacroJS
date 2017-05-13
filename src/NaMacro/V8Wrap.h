@@ -1,6 +1,5 @@
 #pragma once
 
-#include <v8.h>
 #include <NaLib/NaString.h>
 #include <NaLib/NaUrl.h>
 

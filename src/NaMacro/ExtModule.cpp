@@ -17,7 +17,7 @@ void NaExtModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_templa
 	ADD_GLOBAL_METHOD(ttsSpeak);
 }
 
-void NaExtModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void NaExtModule::Init(Isolate * /*isolate*/, Local<ObjectTemplate>& /*global_template*/)
 {
 	// TODO make extapi object
 	// TODO bind apis to extapi object

@@ -10,7 +10,7 @@ void NaTwitterModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_te
 	ADD_GLOBAL_METHOD(method);
 }
 
-void NaTwitterModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void NaTwitterModule::Init(Isolate * /*isolate*/, Local<ObjectTemplate>& /*global_template*/)
 {
 	
 }
@@ -24,7 +24,8 @@ void NaTwitterModule::Release()
 // syntax:		
 void NaTwitterModule::method_method(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
+	UNUSED_PARAMETER(args);
+// 	Isolate *isolate = args.GetIsolate();
 	
 	//twitCurl tc;
 

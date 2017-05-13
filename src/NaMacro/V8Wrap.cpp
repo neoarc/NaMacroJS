@@ -7,8 +7,6 @@
 
 #include <Windows.h>
 
-#include <libplatform.h>
-
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaString.h>
 

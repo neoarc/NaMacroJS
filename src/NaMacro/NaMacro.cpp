@@ -7,15 +7,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <v8.h>
-#include <libplatform.h>
-
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
 
 using namespace v8;
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, char*, int nShowCmd)
+int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char*, int /*nShowCmd*/)
 {
 	Platform* platform = V8Wrap::Initialize();
 	//SetFlagsFromCommandLine(&argc, argv, true);

@@ -4,7 +4,10 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaDebug.h>
 
-#include <gdiplus.h>
+#pragma warning(push)
+	#pragma warning(disable:4458)
+	#include <gdiplus.h>
+#pragma warning(pop)
 #pragma comment(lib, "gdiplus.lib")
 
 #include "ScreenModule.h"
@@ -257,10 +260,8 @@ LPCOLORREF NaImage::ImageToBuffer(NaImage * pImage)
 		if (!GetDIBits(hCompatibleDC, pImage->m_hBitmap, 0, 0, nullptr, (LPBITMAPINFO)&bmi, DIB_RGB_COLORS))
 			break;
 
-		int nWidth = bmi.bmiHeader.biWidth;
 		int nHeight = bmi.bmiHeader.biHeight;
 
-		LONG nPixelCount = nWidth * nHeight;
 		buf = new DWORD[bmi.bmiHeader.biSizeImage];
 
 		bmi.bmiHeader.biBitCount = 32;
@@ -423,6 +424,8 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource, int nAcc
 // description: width property getter/setter
 void NaImage::get_width(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	int nWidth = 0;
@@ -438,6 +441,9 @@ void NaImage::get_width(V8_GETTER_ARGS)
 
 void NaImage::set_width(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+	UNUSED_PARAMETER(value);
+
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	if (pImage)
 	{
@@ -448,6 +454,8 @@ void NaImage::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void NaImage::get_height(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	Isolate *isolate = info.GetIsolate();
 	int nHeight = 0;
@@ -463,6 +471,9 @@ void NaImage::get_height(V8_GETTER_ARGS)
 
 void NaImage::set_height(V8_SETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+	UNUSED_PARAMETER(value);
+
 	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
 	if (pImage)
 	{

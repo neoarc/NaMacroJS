@@ -7,7 +7,7 @@ HWND NaScreenModule::m_hDesktopWnd = NULL;
 HDC NaScreenModule::m_hDesktopDC = NULL;
 bool NaScreenModule::m_bAeroStatus = false;
 
-void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_template*/)
 {
 	HandleScope handle_scope(isolate);
 
@@ -61,6 +61,8 @@ Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 // description: width property getter
 void NaScreenModule::get_width(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CXSCREEN);
 
@@ -72,6 +74,8 @@ void NaScreenModule::get_width(V8_GETTER_ARGS)
 // description: height property getter
 void NaScreenModule::get_height(V8_GETTER_ARGS)
 {
+	UNUSED_PARAMETER(name);
+
 	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CYSCREEN);
 
@@ -191,8 +195,7 @@ void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 	HDC hMemoryDC = ::CreateCompatibleDC(hDC);
 	if (hMemoryDC == nullptr)
 	{
-		DWORD dwError = ::GetLastError();
-		
+// 		DWORD dwError = ::GetLastError();
 		// TODO error handling
 		return;
 	}

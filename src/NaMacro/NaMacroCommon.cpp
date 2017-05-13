@@ -16,8 +16,7 @@ namespace NaMacroCommon {
 		MSG msg = { 0 };
 		while (!g_bExit)
 		{
-			bool bRet;
-			bRet = GetMessage(&msg, NULL, 0, 0);
+			bool bRet = (GetMessage(&msg, NULL, 0, 0) == TRUE);
 			if (msg.message == 0)
 				continue;
 			if (bRet == 0)

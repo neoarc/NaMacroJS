@@ -12,6 +12,12 @@
 #include <stdio.h>
 #include <tchar.h>
 
-
-
 // TODO: reference additional headers your program requires here
+#pragma warning(push)
+	#pragma warning(disable:4100)
+	#include <v8.h>
+	#include <libplatform.h>
+#pragma warning(pop)
+
+#include <NaLib/NaCommon.h>
+

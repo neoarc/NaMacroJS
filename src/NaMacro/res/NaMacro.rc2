@@ -1,5 +1,5 @@
 //
-// NaMacroRecorder.RC2 - resources Microsoft Visual C++ does not edit directly
+// NaMacro.RC2 - resources Microsoft Visual C++ does not edit directly
 //
 
 #ifdef APSTUDIO_INVOKED
@@ -34,11 +34,11 @@ BEGIN
 		BLOCK "041204B0"
 		BEGIN
 			VALUE "CompanyName"     , COMPANY_NAME
-			VALUE "FileDescription" , "NaMacroRecorder"
+			VALUE "FileDescription" , "NaMacro"
 			VALUE "FileVersion"     , FILE_VERSION_STR
-			VALUE "InternalName"    , "NaMacroRecorder.exe"
+			VALUE "InternalName"    , "NaMacro.exe"
 			VALUE "LegalCopyright"	, PRODUCT_URL
-			VALUE "OriginalFilename", "NaMacroRecorder.exe"
+			VALUE "OriginalFilename", "NaMacro.exe"
 			VALUE "ProductName"     , PRODUCT_NAME
 			VALUE "ProductVersion"  , PRODUCT_VERSION_STR
 		END

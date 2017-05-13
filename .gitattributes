@@ -62,6 +62,5 @@
 #*.rtf   diff=astextplain
 #*.RTF   diff=astextplain
 
-# by neoarc
 *.rc	set diff
 *.rc2	set diff

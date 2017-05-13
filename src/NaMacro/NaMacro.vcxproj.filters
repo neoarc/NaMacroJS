@@ -146,6 +146,9 @@
       <Filter>Resource Files\Release</Filter>
     </None>
     <None Include="packages.config" />
+    <None Include="res\NaMacro.rc2">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="NaMacro.rc">

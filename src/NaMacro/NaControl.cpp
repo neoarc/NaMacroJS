@@ -337,9 +337,7 @@ void NaControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 
 	bool bVisible = false;
 	if (pControl)
-	{
-		bVisible = ::IsWindowVisible(pControl->m_hWnd);
-	}
+		bVisible = (::IsWindowVisible(pControl->m_hWnd) == TRUE);
 
 	info.GetReturnValue().Set(
 		Boolean::New(isolate, bVisible)

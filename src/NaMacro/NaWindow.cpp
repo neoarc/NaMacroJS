@@ -439,7 +439,7 @@ void NaWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 	bool bVisible = false;
 	if (pWindow)
 	{
-		bVisible = ::IsWindowVisible(pWindow->m_hWnd);
+		bVisible = (::IsWindowVisible(pWindow->m_hWnd) == TRUE);
 	}
 
 	info.GetReturnValue().Set(
@@ -733,14 +733,14 @@ void NaWindow::method_move(V8_FUNCTION_ARGS)
 	}
 	else
 	{
-		x = args[0]->IntegerValue();
-		y = args[1]->IntegerValue();
+		x = static_cast<int>(args[0]->IntegerValue());
+		y = static_cast<int>(args[1]->IntegerValue());
 	}
 
 	if (args.Length() >= 3)
 	{
-		w = args[2]->IntegerValue();
-		h = args[3]->IntegerValue();
+		w = static_cast<int>(args[2]->IntegerValue());
+		h = static_cast<int>(args[3]->IntegerValue());
 	}
 	::MoveWindow(pWindow->m_hWnd, x, y, w, h, TRUE);
 }

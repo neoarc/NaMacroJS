@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "NaLib", "src\NaLib\src\NaLi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test", "test\test.vcxproj", "{D8124801-B72E-4FAC-B308-5BF85A6F28BF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "_PreBuildEvent", "src\_PreBuildEvent\_PreBuildEvent.vcxproj", "{3211B636-5C07-4893-8401-251F25D324D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -33,6 +35,10 @@ Global
 		{D8124801-B72E-4FAC-B308-5BF85A6F28BF}.Debug|Win32.Build.0 = Debug|Win32
 		{D8124801-B72E-4FAC-B308-5BF85A6F28BF}.Release|Win32.ActiveCfg = Release|Win32
 		{D8124801-B72E-4FAC-B308-5BF85A6F28BF}.Release|Win32.Build.0 = Release|Win32
+		{3211B636-5C07-4893-8401-251F25D324D7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3211B636-5C07-4893-8401-251F25D324D7}.Debug|Win32.Build.0 = Debug|Win32
+		{3211B636-5C07-4893-8401-251F25D324D7}.Release|Win32.ActiveCfg = Release|Win32
+		{3211B636-5C07-4893-8401-251F25D324D7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

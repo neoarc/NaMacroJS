@@ -330,7 +330,7 @@ void CNaMacroRecorderDlg::StopRecord()
 	CFileFind filefind;
 	for (int i=0; ; i++)
 	{
-		filename.Format(L"Recorded%04d.js", i);
+		filename.Format(L"Recorded%04d.njs", i);
 		if (!filefind.FindFile(filename))
 			break;
 	}	

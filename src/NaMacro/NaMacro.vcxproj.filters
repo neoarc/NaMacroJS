@@ -159,5 +159,11 @@
     <Image Include="..\NaMacro.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\..\NaMacro.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\njs.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

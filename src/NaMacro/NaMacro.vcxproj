@@ -185,7 +185,6 @@
   <ItemGroup>
     <Image Include="..\..\NaMacro.ico" />
     <Image Include="..\..\njs.ico" />
-    <Image Include="..\NaMacro.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NaLib\src\NaLib.vcxproj">

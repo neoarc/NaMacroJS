@@ -183,7 +183,8 @@
     <ResourceCompile Include="NaMacro.rc" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\NaMacro.ico" />
+    <Image Include="..\..\NaMacro.ico" />
+    <Image Include="..\..\njs.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NaLib\src\NaLib.vcxproj">

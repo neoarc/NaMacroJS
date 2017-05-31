@@ -156,7 +156,10 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\NaMacro.ico">
+    <Image Include="..\..\NaMacro.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\..\njs.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

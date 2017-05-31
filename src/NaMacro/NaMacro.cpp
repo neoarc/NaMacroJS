@@ -21,7 +21,8 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 		Isolate::Scope _is(isolate);
 		HandleScope _hs(isolate);
 	
-		std::string scriptPath = (__argc > 1) ? __argv[1] : "NaMacro.js";
+		const std::string defaultScriptPath = "NaMacro.njs";
+		std::string scriptPath = (__argc > 1) ? __argv[1] : defaultScriptPath;
 		Local<String> scriptSource = V8Wrap::ReadScript(isolate, scriptPath);
 		if (scriptSource.IsEmpty()) return 1;
 

@@ -13,10 +13,11 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// 한국어(대한민국) resources
+// Korean (Korea) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_KOR)
 LANGUAGE LANG_KOREAN, SUBLANG_DEFAULT
+#pragma code_page(949)
 
 #ifdef APSTUDIO_INVOKED
 /////////////////////////////////////////////////////////////////////////////
@@ -53,8 +54,9 @@ END
 // remains consistent on all systems.
 IDI_MAIN_ICON           ICON                    "..\\..\\NaMacro.ico"
 
+IDI_SCRIPT_ICON         ICON                    "..\\..\\njs.ico"
 
-#endif    // 한국어(대한민국) resources
+#endif    // Korean (Korea) resources
 /////////////////////////////////////////////////////////////////////////////
 
 
@@ -65,7 +67,7 @@ IDI_MAIN_ICON           ICON                    "..\\..\\NaMacro.ico"
 // Generated from the TEXTINCLUDE 3 resource.
 //
 
-#include "res\NaMacro.rc2"  // Microsoft Visual C++ 이외의 다른 도구에서 편집한 리소스입니다.
+#include "res\NaMacro.rc2"
 /////////////////////////////////////////////////////////////////////////////
 #endif    // not APSTUDIO_INVOKED
 

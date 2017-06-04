@@ -48,6 +48,9 @@
     <ClInclude Include="..\include\NaLib\NaCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\NaLib\NaKnownFolder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NaNotifyWindow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaKnownFolder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -105,6 +105,7 @@
     <ClCompile Include="test_class_NaStrArray.cpp" />
     <ClCompile Include="test_class_NaString.cpp" />
     <ClCompile Include="test_namespace_NaDebug.cpp" />
+    <ClCompile Include="test_namespace_NaKnownFolder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\src\NaLib.vcxproj">

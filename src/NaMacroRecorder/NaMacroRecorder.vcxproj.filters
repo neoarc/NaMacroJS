@@ -54,7 +54,6 @@
     <None Include="res\NaMacroRecorder.rc2">
       <Filter>Resource files</Filter>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\NaMacro.ico">

@@ -4,10 +4,7 @@
 #include "NaMacroRecorderDlg.h"
 #include "afxdialogex.h"
 
-#include <boost/filesystem.hpp>
-
 #include <NaLib\NaString.h>
-#include <NaLib\NaKnownFolder.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -328,24 +325,20 @@ void CNaMacroRecorderDlg::StopRecord()
 	}
 	*/
 
-	namespace fs = boost::filesystem;
-	NaString defaultSaveDir = NaKnownFolder::MyDocument().wstr();
-	defaultSaveDir += L"\\NaMacroJS";
-	if (!fs::exists(defaultSaveDir.wstr()))
-		fs::create_directories(defaultSaveDir.wstr());
-
-	NaString njsFilePath;
-	for (int i = 0; ; i++)
+	// Find next filename.
+	CString filename;
+	CFileFind filefind;
+	for (int i=0; ; i++)
 	{
-		njsFilePath.Format(L"%s\\Recorded_%04d.njs", defaultSaveDir.wstr(), i);
-		if (!fs::exists(njsFilePath.wstr()))
+		filename.Format(L"Recorded%04d.njs", i);
+		if (!filefind.FindFile(filename))
 			break;
 	}	
 
-	SaveRecordToNaMacroScript(njsFilePath.wstr());
+	SaveRecordToNaMacroScript(filename);
 
-	NaString msg;
-	msg.Format(L"Script has been saved to file: %s", njsFilePath.wstr());
+	CString msg;
+	msg.Format(L"Script has been saved to file: %s", filename);
 	AfxMessageBox(msg);
 }
 

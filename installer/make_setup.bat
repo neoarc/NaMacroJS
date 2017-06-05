@@ -12,8 +12,8 @@ cd ..\build
 call build.bat
 
 cd ..\installer
-call gather_files.bat
-call build_NaMacroJS-setup.bat
+call _gather_files.bat
+call _compile_setup.bat
 
 :end
 popd

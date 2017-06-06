@@ -310,4 +310,14 @@ namespace V8Wrap {
 		return str;
 	}
 
+	void SetTxtPropertyCallbackInfo(const PropertyCallbackInfo<Value>& info, const std::wstring& txt)
+	{
+		info.GetReturnValue().Set(
+			String::NewFromTwoByte(info.GetIsolate(),
+				(const uint16_t*)(&txt[0]),
+				NewStringType::kNormal
+			).ToLocalChecked()
+		);
+	}
+
 }

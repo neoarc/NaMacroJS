@@ -414,15 +414,11 @@ void NaWindow::get_class(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		wchar_t str[1024];
 		::RealGetWindowClass(pWindow->m_hWnd, str, 1024);
-
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
-			);
+		V8Wrap::SetTxtPropertyCallbackInfo(info, str);
 	}
 }
 
@@ -432,15 +428,11 @@ void NaWindow::get_text(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pWindow)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pWindow->m_hWnd, str, 1024);
-
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
-			);
+		V8Wrap::SetTxtPropertyCallbackInfo(info, str);
 	}
 }
 

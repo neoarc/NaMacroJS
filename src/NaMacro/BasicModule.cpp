@@ -110,24 +110,12 @@ static std::wstring
 getSystemTxtInfoBy(std::function<BOOL (LPWSTR, LPDWORD)> f)
 {
 	const DWORD buffLen = 512;
-	std::vector<wchar_t> txt(buffLen);
+	wchar_t txt[buffLen];
 	DWORD size = buffLen;
 	
-	f(&txt[0], &size);
+	f(txt, &size);
 
-	return &txt[0];
-}
-
-static void
-setTxtPropertyCallbackInfo(const PropertyCallbackInfo<Value>& info,
-						   const std::wstring& txt)
-{
-	info.GetReturnValue().Set(
-		String::NewFromTwoByte( info.GetIsolate(),
-							       (const uint16_t*)(&txt[0]),
-							       NewStringType::kNormal
-							  ).ToLocalChecked()
-	);
+	return txt;
 }
 
 void NaBasicModule::get_pcname(V8_GETTER_ARGS)
@@ -136,7 +124,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 	const std::wstring pcname = getSystemTxtInfoBy(GetComputerName);
 	if (!pcname.empty())
-		setTxtPropertyCallbackInfo(info, pcname);
+		V8Wrap::SetTxtPropertyCallbackInfo(info, pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
@@ -145,7 +133,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 
 	const std::wstring username = getSystemTxtInfoBy(GetUserName);
 	if (!username.empty())
-		setTxtPropertyCallbackInfo(info, username);
+		V8Wrap::SetTxtPropertyCallbackInfo(info, username);
 }
 
 void NaBasicModule::Release()

@@ -2,6 +2,8 @@
 #include "BasicModule.h"
 
 #include <iostream>
+#include <string>
+#include <functional> 
 
 #include <Windows.h>
 
@@ -16,6 +18,7 @@
 #include "NaControl.h"
 #include "NaImage.h"
 #include "NaFile.h"
+#include <lmcons.h>
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -92,10 +95,57 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	HandleScope handle_scope(isolate);
 	Local<Object> system_obj = V8Wrap::GetSystemObject(isolate);
 
+#define ADD_SYSTEM_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(system_obj, _prop);
 #define ADD_SYSTEM_METHOD(_js_func)		ADD_OBJ_METHOD(system_obj, _js_func);
+
+	// system accessors
+	ADD_SYSTEM_ACCESSOR_RO(pcname);
+	ADD_SYSTEM_ACCESSOR_RO(username);
 
 	// system methods
 	ADD_SYSTEM_METHOD(execute);
+}
+
+static std::wstring
+getSystemTxtInfoBy(std::function<BOOL (LPWSTR, LPDWORD)> f)
+{
+	const DWORD buffLen = 512;
+	std::vector<wchar_t> txt(buffLen);
+	DWORD size = buffLen;
+	
+	f(&txt[0], &size);
+
+	return &txt[0];
+}
+
+static void
+setTxtPropertyCallbackInfo(const PropertyCallbackInfo<Value>& info,
+						   const std::wstring& txt)
+{
+	info.GetReturnValue().Set(
+		String::NewFromTwoByte( info.GetIsolate(),
+							       (const uint16_t*)(&txt[0]),
+							       NewStringType::kNormal
+							  ).ToLocalChecked()
+	);
+}
+
+void NaBasicModule::get_pcname(V8_GETTER_ARGS)
+{
+	UNUSED_PARAMETER(name);
+
+	const std::wstring pcname = getSystemTxtInfoBy(GetComputerName);
+	if (!pcname.empty())
+		setTxtPropertyCallbackInfo(info, pcname);
+}
+
+void NaBasicModule::get_username(V8_GETTER_ARGS)
+{
+	UNUSED_PARAMETER(name);
+
+	const std::wstring username = getSystemTxtInfoBy(GetUserName);
+	if (!username.empty())
+		setTxtPropertyCallbackInfo(info, username);
 }
 
 void NaBasicModule::Release()

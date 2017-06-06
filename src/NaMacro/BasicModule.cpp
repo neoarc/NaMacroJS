@@ -92,10 +92,29 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	HandleScope handle_scope(isolate);
 	Local<Object> system_obj = V8Wrap::GetSystemObject(isolate);
 
+#define ADD_SYSTEM_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(system_obj, _prop);
 #define ADD_SYSTEM_METHOD(_js_func)		ADD_OBJ_METHOD(system_obj, _js_func);
+
+	// system accessors
+	ADD_SYSTEM_ACCESSOR_RO(pcname);
 
 	// system methods
 	ADD_SYSTEM_METHOD(execute);
+}
+
+void NaBasicModule::get_pcname(V8_GETTER_ARGS)
+{
+	UNUSED_PARAMETER(name);
+
+	wchar_t computerName[MAX_COMPUTERNAME_LENGTH + 1];
+	DWORD size = sizeof(computerName) / sizeof(computerName[0]);
+	if (GetComputerName(computerName, &size))
+	{
+		info.GetReturnValue().Set(
+			String::NewFromTwoByte(info.GetIsolate(),
+				(const uint16_t*)computerName, NewStringType::kNormal).ToLocalChecked()
+		);
+	}
 }
 
 void NaBasicModule::Release()

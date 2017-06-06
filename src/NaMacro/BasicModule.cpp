@@ -2,6 +2,8 @@
 #include "BasicModule.h"
 
 #include <iostream>
+#include <string>
+#include <functional> 
 
 #include <Windows.h>
 
@@ -104,34 +106,46 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	ADD_SYSTEM_METHOD(execute);
 }
 
+static std::wstring
+getSystemTxtInfoBy(std::function<BOOL (LPWSTR, LPDWORD)> f)
+{
+	const DWORD buffLen = 512;
+	std::vector<wchar_t> txt(buffLen);
+	DWORD size = buffLen;
+	
+	f(&txt[0], &size);
+
+	return &txt[0];
+}
+
+static void
+setTxtPropertyCallbackInfo(const PropertyCallbackInfo<Value>& info,
+						   const std::wstring& txt)
+{
+	info.GetReturnValue().Set(
+		String::NewFromTwoByte( info.GetIsolate(),
+							       (const uint16_t*)(&txt[0]),
+							       NewStringType::kNormal
+							  ).ToLocalChecked()
+	);
+}
+
 void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	wchar_t computerName[MAX_COMPUTERNAME_LENGTH + 1];
-	DWORD size = sizeof(computerName) / sizeof(computerName[0]);
-	if (GetComputerName(computerName, &size))
-	{
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(info.GetIsolate(),
-			(const uint16_t*)computerName, NewStringType::kNormal).ToLocalChecked()
-		);
-	}
+	const std::wstring pcname = getSystemTxtInfoBy(GetComputerName);
+	if (!pcname.empty())
+		setTxtPropertyCallbackInfo(info, pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	wchar_t userName[UNLEN + 1];
-	DWORD size = sizeof(userName) / sizeof(userName[0]);
-	if (GetUserName(userName, &size))
-	{
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(info.GetIsolate(),
-			(const uint16_t*)userName, NewStringType::kNormal).ToLocalChecked()
-		);
-	}
+	const std::wstring username = getSystemTxtInfoBy(GetUserName);
+	if (!username.empty())
+		setTxtPropertyCallbackInfo(info, username);
 }
 
 void NaBasicModule::Release()

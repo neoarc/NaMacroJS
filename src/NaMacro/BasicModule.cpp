@@ -16,6 +16,7 @@
 #include "NaControl.h"
 #include "NaImage.h"
 #include "NaFile.h"
+#include <lmcons.h>
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -97,6 +98,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 
 	// system accessors
 	ADD_SYSTEM_ACCESSOR_RO(pcname);
+	ADD_SYSTEM_ACCESSOR_RO(username);
 
 	// system methods
 	ADD_SYSTEM_METHOD(execute);
@@ -112,7 +114,22 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 	{
 		info.GetReturnValue().Set(
 			String::NewFromTwoByte(info.GetIsolate(),
-				(const uint16_t*)computerName, NewStringType::kNormal).ToLocalChecked()
+			(const uint16_t*)computerName, NewStringType::kNormal).ToLocalChecked()
+		);
+	}
+}
+
+void NaBasicModule::get_username(V8_GETTER_ARGS)
+{
+	UNUSED_PARAMETER(name);
+
+	wchar_t userName[UNLEN + 1];
+	DWORD size = sizeof(userName) / sizeof(userName[0]);
+	if (GetUserName(userName, &size))
+	{
+		info.GetReturnValue().Set(
+			String::NewFromTwoByte(info.GetIsolate(),
+			(const uint16_t*)userName, NewStringType::kNormal).ToLocalChecked()
 		);
 	}
 }

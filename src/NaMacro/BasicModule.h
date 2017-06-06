@@ -22,6 +22,7 @@ public:
 
 	// accessors
 	DEFINE_CLASS_ACCESSOR_RO(pcname);
+	DEFINE_CLASS_ACCESSOR_RO(username);
 
 	// methods
 	DEFINE_CLASS_METHOD(include);

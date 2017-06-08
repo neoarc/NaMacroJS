@@ -94,6 +94,9 @@
       <Command>
       </Command>
     </PreBuildEvent>
+    <PostBuildEvent>
+      <Command>copy_dlls_to_output_dir.bat $(Configuration)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -124,8 +127,7 @@
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
-      <Command>
-      </Command>
+      <Command>copy_dlls_to_output_dir.bat $(Configuration)</Command>
     </PostBuildEvent>
     <PreBuildEvent>
       <Command>

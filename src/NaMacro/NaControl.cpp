@@ -325,15 +325,11 @@ void NaControl::get_text(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pControl)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pControl->m_hWnd, str, 1024);
-
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(isolate, (const uint16_t*)str, NewStringType::kNormal).ToLocalChecked()
-		);
+		V8Wrap::SetTxtPropertyCallbackInfo(info, str);
 	}
 }
 

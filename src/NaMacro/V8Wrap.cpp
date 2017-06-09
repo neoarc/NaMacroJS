@@ -22,8 +22,8 @@ using namespace std;
 
 vector<ModuleBase*> g_ModuleList;
 
-namespace V8Wrap {
-
+namespace V8Wrap 
+{
 	bool g_bReportExceptions = true;
 
 	Platform* Initialize()
@@ -319,5 +319,4 @@ namespace V8Wrap {
 			).ToLocalChecked()
 		);
 	}
-
 }

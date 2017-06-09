@@ -3,7 +3,8 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaUrl.h>
 
-namespace V8Wrap {
+namespace V8Wrap 
+{
 	using namespace v8;
 
 	extern bool g_bReportExceptions;

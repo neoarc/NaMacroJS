@@ -6,8 +6,8 @@
 #include "BasicModule.h"
 #include "KeyboardModule.h"
 
-namespace NaMacroCommon {
-
+namespace NaMacroCommon 
+{
 	bool g_bExit = false;
 
 	void MessageLoopTillExit(Isolate* isolate)
@@ -35,5 +35,4 @@ namespace NaMacroCommon {
 			DispatchMessage(&msg);
 		}
 	}
-
 }

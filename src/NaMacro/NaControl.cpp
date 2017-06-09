@@ -329,7 +329,7 @@ void NaControl::get_text(V8_GETTER_ARGS)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pControl->m_hWnd, str, 1024);
-		V8Wrap::SetTxtPropertyCallbackInfo(info, str);
+		V8Wrap::SetReturnValueAsString(info, str);
 	}
 }
 

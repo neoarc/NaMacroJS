@@ -28,7 +28,7 @@ namespace V8Wrap
 	Local<Object> GetSystemObject(Isolate* isolate);
 	NaString ReportException(Isolate* isolate, TryCatch* handler);
 
-	void SetTxtPropertyCallbackInfo(const PropertyCallbackInfo<Value>& info,
+	void SetReturnValueAsString(const PropertyCallbackInfo<Value>& info,
 									const std::wstring& txt);
 }
 

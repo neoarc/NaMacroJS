@@ -124,7 +124,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 	const std::wstring pcname = getSystemTxtInfoBy(GetComputerName);
 	if (!pcname.empty())
-		V8Wrap::SetTxtPropertyCallbackInfo(info, pcname);
+		V8Wrap::SetReturnValueAsString(info, pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
@@ -133,7 +133,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 
 	const std::wstring username = getSystemTxtInfoBy(GetUserName);
 	if (!username.empty())
-		V8Wrap::SetTxtPropertyCallbackInfo(info, username);
+		V8Wrap::SetReturnValueAsString(info, username);
 }
 
 void NaBasicModule::Release()

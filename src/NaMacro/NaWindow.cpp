@@ -418,7 +418,7 @@ void NaWindow::get_class(V8_GETTER_ARGS)
 	{
 		wchar_t str[1024];
 		::RealGetWindowClass(pWindow->m_hWnd, str, 1024);
-		V8Wrap::SetReturnValueAsString(info, str);
+		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), str);
 	}
 }
 
@@ -432,7 +432,7 @@ void NaWindow::get_text(V8_GETTER_ARGS)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pWindow->m_hWnd, str, 1024);
-		V8Wrap::SetReturnValueAsString(info, str);
+		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), str);
 	}
 }
 

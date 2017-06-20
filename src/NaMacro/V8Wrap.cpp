@@ -310,23 +310,18 @@ namespace V8Wrap
 		return str;
 	}
 
-	void SetReturnValueAsString(const PropertyCallbackInfo<Value>& info, const std::wstring& txt)
+	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt)
 	{
-		info.GetReturnValue().Set(
-			String::NewFromTwoByte(info.GetIsolate(),
+		returnValue.Set(
+			String::NewFromTwoByte(returnValue.GetIsolate(),
 				(const uint16_t*)(&txt[0]),
 				NewStringType::kNormal
 			).ToLocalChecked()
 		);
 	}
 
-	void SetReturnValueAsNull(const FunctionCallbackInfo<Value>& args)
+	void SetReturnValueAsNull(ReturnValue<Value> returnValue)
 	{
-		args.GetReturnValue().Set(Null(args.GetIsolate()));
-	}
-
-	void SetReturnValueAsNull(const PropertyCallbackInfo<Value>& info)
-	{
-		info.GetReturnValue().Set(Null(info.GetIsolate()));
+		returnValue.Set(Null(returnValue.GetIsolate()));
 	}
 }

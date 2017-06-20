@@ -111,7 +111,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
-		V8Wrap::SetReturnValueAsString(info, pcname);
+		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
@@ -120,7 +120,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 
 	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
-		V8Wrap::SetReturnValueAsString(info, username);
+		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), username);
 }
 
 void NaBasicModule::Release()

@@ -119,7 +119,7 @@ void NaFile::method_constructor(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	V8Wrap::SetReturnValueAsNull(args);
+	V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
 }
 
 // description: read file

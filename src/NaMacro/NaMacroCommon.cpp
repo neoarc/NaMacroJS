@@ -2,6 +2,7 @@
 #include "NaMacroCommon.h"
 
 #include <Windows.h>
+#include <lmcons.h>
 
 #include "BasicModule.h"
 #include "KeyboardModule.h"
@@ -34,5 +35,16 @@ namespace NaMacroCommon
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
+	}
+
+	std::wstring GetSystemInfoStringByAPI(std::function<int(wchar_t*, unsigned long*)> f)
+	{
+		const DWORD buffLen = 512;
+		wchar_t str[buffLen];
+		DWORD size = buffLen;
+
+		f(str, &size);
+
+		return str;
 	}
 }

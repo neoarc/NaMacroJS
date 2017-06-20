@@ -18,7 +18,6 @@
 #include "NaControl.h"
 #include "NaImage.h"
 #include "NaFile.h"
-#include <lmcons.h>
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -106,23 +105,11 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	ADD_SYSTEM_METHOD(execute);
 }
 
-static std::wstring
-getSystemTxtInfoBy(std::function<BOOL (LPWSTR, LPDWORD)> f)
-{
-	const DWORD buffLen = 512;
-	wchar_t txt[buffLen];
-	DWORD size = buffLen;
-	
-	f(txt, &size);
-
-	return txt;
-}
-
 void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	const std::wstring pcname = getSystemTxtInfoBy(GetComputerName);
+	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
 		V8Wrap::SetReturnValueAsString(info, pcname);
 }
@@ -131,7 +118,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	const std::wstring username = getSystemTxtInfoBy(GetUserName);
+	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
 		V8Wrap::SetReturnValueAsString(info, username);
 }

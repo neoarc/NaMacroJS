@@ -5,4 +5,6 @@ function main()
 {
     alert("system.pcname = " + system.pcname);
     alert("system.username = " + system.username);
+	
+	exit();
 }

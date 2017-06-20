@@ -54,7 +54,7 @@ NaFile * NaFile::Load(const wchar_t * filename, const char * mode)
 	return pFile;
 }
 
-// description: width property getter/setter
+// description: name property getter/setter
 void NaFile::get_name(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
@@ -82,12 +82,6 @@ void NaFile::set_name(V8_SETTER_ARGS)
 
 // description: constructor function
 // syntax:		new Window([x, y[, width, height]]) : windowObj
-
-using namespace v8;
-const char* ToCString(const String::Utf8Value& value) {
-	return *value ? *value : "<string conversion failed>";
-}
-
 void NaFile::method_constructor(V8_FUNCTION_ARGS)
 {
 	if (args.Length() >= 1)
@@ -125,7 +119,7 @@ void NaFile::method_constructor(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	args.GetReturnValue().Set(Null(args.GetIsolate()));
+	V8Wrap::SetReturnValueAsNull(args);
 }
 
 // description: read file

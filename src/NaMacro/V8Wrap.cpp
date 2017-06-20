@@ -319,4 +319,14 @@ namespace V8Wrap
 			).ToLocalChecked()
 		);
 	}
+
+	void SetReturnValueAsNull(const FunctionCallbackInfo<Value>& args)
+	{
+		args.GetReturnValue().Set(Null(args.GetIsolate()));
+	}
+
+	void SetReturnValueAsNull(const PropertyCallbackInfo<Value>& info)
+	{
+		info.GetReturnValue().Set(Null(info.GetIsolate()));
+	}
 }

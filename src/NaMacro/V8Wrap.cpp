@@ -320,6 +320,15 @@ namespace V8Wrap
 		);
 	}
 
+	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value)
+	{
+		returnValue.Set(
+			Integer::New(
+				returnValue.GetIsolate(),
+				value)
+		);
+	}
+
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue)
 	{
 		returnValue.Set(Null(returnValue.GetIsolate()));

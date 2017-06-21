@@ -29,6 +29,7 @@ namespace V8Wrap
 	NaString ReportException(Isolate* isolate, TryCatch* handler);
 
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt);
+	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue);
 }
 

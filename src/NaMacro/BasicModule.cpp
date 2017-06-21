@@ -26,7 +26,7 @@ int NaBasicModule::s_nTimerID = 1; // begin from 0 causes hard to store variable
 
 void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
-	// methods
+	// Global methods
 	ADD_GLOBAL_METHOD(include);
 	ADD_GLOBAL_METHOD(sleep);
 	ADD_GLOBAL_METHOD(setInterval);
@@ -103,6 +103,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 
 	// system methods
 	ADD_SYSTEM_METHOD(execute);
+	ADD_SYSTEM_METHOD(executeSync);
 }
 
 void NaBasicModule::get_pcname(V8_GETTER_ARGS)
@@ -555,4 +556,51 @@ void NaBasicModule::method_execute(V8_FUNCTION_ARGS)
 		);
 
 	// TODO implement return value
+}
+
+// description: Execute external process and return exit code
+// syntax:		system.executeSync(exefile_path[, arguments[, is_show]])
+void NaBasicModule::method_executeSync(V8_FUNCTION_ARGS)
+{
+	String::Value exepath(args[0]);
+	NaString strExePath((wchar_t*)*exepath);
+	NaString strArguments = L"";
+
+	// https://msdn.microsoft.com/en-us/library/windows/desktop/bb762153(v=vs.85).aspx
+
+	if (args.Length() > 1)
+	{
+		String::Value arguments(args[1]);
+		strArguments = (wchar_t*)*arguments;
+	}
+
+	int nShowOption = SW_SHOWDEFAULT;
+	if (args.Length() > 2)
+	{
+		bool bShow = args[2]->BooleanValue();
+		if (bShow)
+			nShowOption = SW_SHOW;
+		else
+			nShowOption = SW_HIDE;
+	}
+
+	SHELLEXECUTEINFOW info;
+	ZeroMemory(&info, sizeof(SHELLEXECUTEINFOW));
+	info.cbSize = sizeof(SHELLEXECUTEINFO);
+	info.lpFile = strExePath.wstr();
+	info.lpParameters = strArguments.wstr();
+	info.nShow = nShowOption;
+	info.fMask = SEE_MASK_NOCLOSEPROCESS;
+	info.lpVerb = nullptr;
+	ShellExecuteEx(&info);
+
+	// Waiting
+	WaitForSingleObject(info.hProcess, INFINITE);
+	
+	// Get exit code
+	DWORD dwExitCode = 0;
+	GetExitCodeProcess(info.hProcess, &dwExitCode);
+
+	// implement return value
+	V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), dwExitCode);
 }

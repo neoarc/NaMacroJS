@@ -44,4 +44,5 @@ public:
 
 	// system methods
 	DEFINE_CLASS_METHOD(execute);
+	DEFINE_CLASS_METHOD(executeSync);
 };

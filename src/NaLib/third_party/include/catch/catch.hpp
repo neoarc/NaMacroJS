@@ -1,6 +1,6 @@
 /*
- *  Catch v1.9.3
- *  Generated: 2017-04-25 14:16:29.434734
+ *  Catch v1.9.5
+ *  Generated: 2017-06-15 12:03:23.301505
  *  ----------------------------------------------------------
  *  This file has been merged from multiple headers. Please don't edit it directly
  *  Copyright (c) 2012 Two Blue Cubes Ltd. All rights reserved.
@@ -220,7 +220,7 @@
 
 // Use __COUNTER__ if the compiler supports it
 #if ( defined _MSC_VER && _MSC_VER >= 1300 ) || \
-    ( defined __GNUC__  && __GNUC__ >= 4 && __GNUC_MINOR__ >= 3 ) || \
+    ( defined __GNUC__  && ( __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 3 )) ) || \
     ( defined __clang__ && __clang_major__ >= 3 )
 
 #define CATCH_INTERNAL_CONFIG_COUNTER
@@ -927,8 +927,8 @@ namespace Catch {
         template<typename T> STATIC_ASSERT_Expression_Too_Complex_Please_Rewrite_As_Binary_Comparison& operator && ( T const& );
         template<typename T> STATIC_ASSERT_Expression_Too_Complex_Please_Rewrite_As_Binary_Comparison& operator || ( T const& );
 
-	private:
-		DecomposedExpression& operator = (DecomposedExpression const&);
+    private:
+        DecomposedExpression& operator = (DecomposedExpression const&);
     };
 
     struct AssertionInfo
@@ -1571,7 +1571,7 @@ std::string toString( std::nullptr_t );
 
 #ifdef __OBJC__
     std::string toString( NSString const * const& nsstring );
-    std::string toString( NSString * CATCH_ARC_STRONG const& nsstring );
+    std::string toString( NSString * CATCH_ARC_STRONG & nsstring );
     std::string toString( NSObject* const& nsObject );
 #endif
 
@@ -1855,7 +1855,7 @@ public:
     }
 
     virtual void reconstructExpression( std::string& dest ) const CATCH_OVERRIDE {
-        dest = Catch::toString( m_truthy );
+        dest = Catch::toString( m_lhs );
     }
 
 private:
@@ -2272,7 +2272,7 @@ namespace Catch {
             INTERNAL_CATCH_REACT( __catchResult ) \
         } while( Catch::alwaysFalse() )
 #else
-    #define INTERNAL_CATCH_MSG( messageType, resultDisposition, macroName, log ) \
+    #define INTERNAL_CATCH_MSG( macroName, messageType, resultDisposition, log ) \
         do { \
             Catch::ResultBuilder __catchResult( macroName, CATCH_INTERNAL_LINEINFO, "", resultDisposition ); \
             __catchResult << log + ::Catch::StreamEndStop(); \
@@ -3490,16 +3490,16 @@ return @ desc; \
 #include <crtdbg.h>
 class LeakDetector {
 public:
-	LeakDetector() {
-		int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
-		flag |= _CRTDBG_LEAK_CHECK_DF;
-		flag |= _CRTDBG_ALLOC_MEM_DF;
-		_CrtSetDbgFlag(flag);
-		_CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
-		_CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
-		// Change this to leaking allocation's number to break there
-		_CrtSetBreakAlloc(-1);
-	}
+    LeakDetector() {
+        int flag = _CrtSetDbgFlag(_CRTDBG_REPORT_FLAG);
+        flag |= _CRTDBG_LEAK_CHECK_DF;
+        flag |= _CRTDBG_ALLOC_MEM_DF;
+        _CrtSetDbgFlag(flag);
+        _CrtSetReportMode(_CRT_WARN, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+        _CrtSetReportFile(_CRT_WARN, _CRTDBG_FILE_STDERR);
+        // Change this to leaking allocation's number to break there
+        _CrtSetBreakAlloc(-1);
+    }
 };
 #else
 class LeakDetector {};
@@ -6642,8 +6642,9 @@ namespace Catch {
                 m_totals.assertions.failed++;
             }
 
-            if( m_reporter->assertionEnded( AssertionStats( result, m_messages, m_totals ) ) )
-                m_messages.clear();
+            // We have no use for the return value (whether messages should be cleared), because messages were made scoped
+            // and should be let to clear themselves out.
+            static_cast<void>(m_reporter->assertionEnded(AssertionStats(result, m_messages, m_totals)));
 
             // Reset working state
             m_lastAssertionInfo = AssertionInfo( std::string(), m_lastAssertionInfo.lineInfo, "{Unknown expression after the reported line}" , m_lastAssertionInfo.resultDisposition );
@@ -7051,6 +7052,32 @@ namespace Catch {
                 returnCode = run();
             return returnCode;
         }
+
+    #if defined(WIN32) && defined(UNICODE)
+        int run( int argc, wchar_t const* const* const argv ) {
+
+            char **utf8Argv = new char *[ argc ];
+
+            for ( int i = 0; i < argc; ++i ) {
+                int bufSize = WideCharToMultiByte( CP_UTF8, 0, argv[i], -1, NULL, 0, NULL, NULL );
+
+                utf8Argv[ i ] = new char[ bufSize ];
+
+                WideCharToMultiByte( CP_UTF8, 0, argv[i], -1, utf8Argv[i], bufSize, NULL, NULL );
+            }
+
+            int returnCode = applyCommandLine( argc, utf8Argv );
+            if( returnCode == 0 )
+                returnCode = run();
+
+            for ( int i = 0; i < argc; ++i )
+                delete [] utf8Argv[ i ];
+
+            delete [] utf8Argv;
+
+            return returnCode;
+        }
+    #endif
 
         int run() {
             if( m_configData.showHelp )
@@ -8282,7 +8309,7 @@ namespace Catch {
     }
 
     inline Version libraryVersion() {
-        static Version version( 1, 9, 3, "", 0 );
+        static Version version( 1, 9, 5, "", 0 );
         return version;
     }
 
@@ -8634,6 +8661,10 @@ namespace Catch {
         m_timer.start();
     }
 
+#if defined(_MSC_VER)
+#pragma warning(push)
+#pragma warning(disable:4996) // std::uncaught_exception is deprecated in C++17
+#endif
     Section::~Section() {
         if( m_sectionIncluded ) {
             SectionEndInfo endInfo( m_info, m_assertions, m_timer.getElapsedSeconds() );
@@ -8643,6 +8674,9 @@ namespace Catch {
                 getResultCapture().sectionEnded( endInfo );
         }
     }
+#if defined(_MSC_VER)
+#pragma warning(pop)
+#endif
 
     // This indicates whether the section should be executed or not
     Section::operator bool() const {
@@ -8958,7 +8992,7 @@ std::string toString( std::nullptr_t ) {
             return "nil";
         return "@" + toString([nsstring UTF8String]);
     }
-    std::string toString( NSString * CATCH_ARC_STRONG const& nsstring ) {
+    std::string toString( NSString * CATCH_ARC_STRONG & nsstring ) {
         if( !nsstring )
             return "nil";
         return "@" + toString([nsstring UTF8String]);
@@ -10001,20 +10035,6 @@ namespace Catch {
     };
 
 }
-// #included from: catch_reenable_warnings.h
-
-#define TWOBLUECUBES_CATCH_REENABLE_WARNINGS_H_INCLUDED
-
-#ifdef __clang__
-#    ifdef __ICC // icpc defines the __clang__ macro
-#        pragma warning(pop)
-#    else
-#        pragma clang diagnostic pop
-#    endif
-#elif defined __GNUC__
-#    pragma GCC diagnostic pop
-#endif
-
 
 namespace Catch {
     class XmlReporter : public StreamingReporterBase {
@@ -11268,9 +11288,15 @@ namespace Catch {
 
 #ifndef __OBJC__
 
+#if defined(WIN32) && defined(_UNICODE) && !defined(DO_NOT_USE_WMAIN)
+// Standard C/C++ Win32 Unicode wmain entry point
+extern "C" int wmain (int argc, wchar_t * argv[], wchar_t * []) {
+#else
 // Standard C/C++ main entry point
 int main (int argc, char * argv[]) {
-	int result = Catch::Session().run( argc, argv );
+#endif
+
+    int result = Catch::Session().run( argc, argv );
     return ( result < 0xff ? result : 0xff );
 }
 
@@ -11349,7 +11375,7 @@ int main (int argc, char * const argv[]) {
     #define CATCH_METHOD_AS_TEST_CASE( method, ... ) INTERNAL_CATCH_METHOD_AS_TEST_CASE( method, __VA_ARGS__ )
     #define CATCH_REGISTER_TEST_CASE( Function, ... ) INTERNAL_CATCH_REGISTER_TESTCASE( Function, __VA_ARGS__ )
     #define CATCH_SECTION( ... ) INTERNAL_CATCH_SECTION( __VA_ARGS__ )
-    #define CATCH_FAIL( ... ) INTERNAL_CATCH_MSG( Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::Normal, "CATCH_FAIL", __VA_ARGS__ )
+    #define CATCH_FAIL( ... ) INTERNAL_CATCH_MSG( "CATCH_FAIL", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::Normal, __VA_ARGS__ )
     #define CATCH_FAIL_CHECK( ... ) INTERNAL_CATCH_MSG( "CATCH_FAIL_CHECK", Catch::ResultWas::ExplicitFailure, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
     #define CATCH_SUCCEED( ... ) INTERNAL_CATCH_MSG( "CATCH_SUCCEED", Catch::ResultWas::Ok, Catch::ResultDisposition::ContinueOnFailure, __VA_ARGS__ )
 #else
@@ -11470,6 +11496,20 @@ int main (int argc, char * const argv[]) {
 #define AND_THEN( desc ) SECTION( std::string("     And: ") + desc, "" )
 
 using Catch::Detail::Approx;
+
+// #included from: internal/catch_reenable_warnings.h
+
+#define TWOBLUECUBES_CATCH_REENABLE_WARNINGS_H_INCLUDED
+
+#ifdef __clang__
+#    ifdef __ICC // icpc defines the __clang__ macro
+#        pragma warning(pop)
+#    else
+#        pragma clang diagnostic pop
+#    endif
+#elif defined __GNUC__
+#    pragma GCC diagnostic pop
+#endif
 
 #endif // TWOBLUECUBES_SINGLE_INCLUDE_CATCH_HPP_INCLUDED
 

@@ -27,6 +27,7 @@ public:
 
 	// accessors
 	DEFINE_CLASS_ACCESSOR(name);
+	DEFINE_CLASS_ACCESSOR_RO(exist);
 
 	// methods
 	DEFINE_CLASS_METHOD(constructor);

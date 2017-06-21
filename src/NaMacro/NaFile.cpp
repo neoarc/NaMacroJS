@@ -28,17 +28,19 @@ Local<ObjectTemplate> NaFile::MakeObjectTemplate(Isolate * isolate)
 	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
 	templ->SetInternalFieldCount(1);
 
-	// bind image methods
-#define ADD_IMAGE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_IMAGE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
+	// bind file methods
+#define ADD_FILE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
+#define ADD_FILE_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
+#define ADD_FILE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_IMAGE_ACCESSOR(name);
+	ADD_FILE_ACCESSOR(name);
+	ADD_FILE_ACCESSOR_RO(exist);
 
 	// methods
-	ADD_IMAGE_METHOD(read);
-	ADD_IMAGE_METHOD(write);
-	ADD_IMAGE_METHOD(close);
+	ADD_FILE_METHOD(read);
+	ADD_FILE_METHOD(write);
+	ADD_FILE_METHOD(close);
 
 	return handle_scope.Escape(templ);
 }
@@ -77,6 +79,21 @@ void NaFile::set_name(V8_SETTER_ARGS)
 	if (pFile)
 	{
 		// Not Impl
+	}
+}
+
+// description: exist property getter
+void NaFile::get_exist(V8_GETTER_ARGS)
+{
+	UNUSED_PARAMETER(name);
+	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
+	Isolate *isolate = info.GetIsolate();
+	if (pFile)
+	{
+		DWORD dwAttrs = ::GetFileAttributes(pFile->m_strName.wstr());
+		info.GetReturnValue().Set(
+			Boolean::New(isolate, (dwAttrs != INVALID_FILE_ATTRIBUTES))
+		);
 	}
 }
 

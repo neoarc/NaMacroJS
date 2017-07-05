@@ -120,7 +120,7 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	return strRet;
 }
 
-bool NaCurl::Get(NaString strUrl, char *outBuf, long lSize)
+bool NaCurl::Get(NaString strUrl, char *outBuf, long &lSize)
 {
 	NaDebug::Out(L"URL: %ls\n", strUrl.wstr());
 
@@ -149,18 +149,16 @@ bool NaCurl::Get(NaString strUrl, char *outBuf, long lSize)
 	const std::string str = m_ostrOutput.str();
 	const char* cstr = str.c_str();
 
-	/*
-	if ((size_t)lSize == -1)
-		lSize = str.size();
-	*/
-
-	if (str.size() != (size_t)lSize)
+	if ((size_t)lSize != -1 &&str.size() != (size_t)lSize)
 	{
 		m_strLastError.Format(L"Size mismatch: %d, %d", str.size(), lSize);
 		return false;
 	}
 	else
 	{
+		lSize = str.size();
+		if (outBuf == nullptr)
+			outBuf = new char[lSize];
 		memcpy(outBuf, cstr, lSize);
 	}
 

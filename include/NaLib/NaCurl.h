@@ -27,7 +27,7 @@ public:
 
 	NaString Post(NaString strUrl, NaString strBody = L"");
 	NaString Put(NaString strUrl, NaString strBody = L"");
-	bool Get(NaString strUrl, char *outBuf, long lSize);
+	bool Get(NaString strUrl, char *outBuf, long &lSize);
 
 	unsigned long GetLastError();
 	NaString GetLastErrorMessage();

@@ -46,6 +46,8 @@ NaString NaCurl::Post(NaString strUrl, NaString strBody)
 	try
 	{
 		// Execute the request.
+		m_ostrOutput.str("");
+		m_ostrOutput.clear();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
@@ -100,6 +102,8 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	try
 	{
 		// Execute the request.
+		m_ostrOutput.str("");
+		m_ostrOutput.clear();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
@@ -133,6 +137,8 @@ bool NaCurl::Get(NaString strUrl, char *outBuf, long &lSize)
 	try
 	{
 		// Execute the request.
+		m_ostrOutput.str("");
+		m_ostrOutput.clear();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
@@ -149,7 +155,7 @@ bool NaCurl::Get(NaString strUrl, char *outBuf, long &lSize)
 	const std::string str = m_ostrOutput.str();
 	const char* cstr = str.c_str();
 
-	if ((size_t)lSize != -1 &&str.size() != (size_t)lSize)
+	if ((size_t)lSize != -1 && str.size() != (size_t)lSize)
 	{
 		m_strLastError.Format(L"Size mismatch: %d, %d", str.size(), lSize);
 		return false;

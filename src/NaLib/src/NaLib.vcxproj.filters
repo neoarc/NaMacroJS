@@ -16,6 +16,9 @@
     <Filter Include="Header Files\Common">
       <UniqueIdentifier>{92548f05-dec1-42d8-b231-dbd6c42fcc48}</UniqueIdentifier>
     </Filter>
+    <Filter Include="curl">
+      <UniqueIdentifier>{22391507-4e67-419a-a471-9b5f0fae7d28}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -48,7 +51,7 @@
     <ClInclude Include="..\include\NaLib\NaCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\include\NaLib\NaKnownFolder.h">
+    <ClInclude Include="..\include\NaLib\NaCurl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -74,8 +77,44 @@
     <ClCompile Include="NaNotifyWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NaKnownFolder.cpp">
+    <ClCompile Include="NaCurl.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\cookie.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\cookie_date.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\cookie_datetime.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\cookie_time.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_cookie.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_easy.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_exception.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_form.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_header.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_info.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_multi.cpp">
+      <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="CurlLib\src\curl_share.cpp">
+      <Filter>curl</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

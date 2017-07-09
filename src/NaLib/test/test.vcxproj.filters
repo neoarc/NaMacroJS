@@ -38,7 +38,10 @@
     <ClCompile Include="test_namespace_NaDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="test_namespace_NaKnownFolder.cpp">
+    <ClCompile Include="test_class_NaUrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test_class_NaCurl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

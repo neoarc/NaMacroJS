@@ -27,12 +27,13 @@ public:
 
 	NaString Post(NaString strUrl, NaString strBody = L"");
 	NaString Put(NaString strUrl, NaString strBody = L"");
-	bool Get(NaString strUrl, char *outBuf, long &lSize);
+	bool Get(NaString strUrl, char **outBuf, long &lSize);
 
 	unsigned long GetLastError();
 	NaString GetLastErrorMessage();
 
 	size_t write_data(void * ptr, size_t size, size_t nmemb, void * stream);
+	static size_t write_callback(void *contents, size_t size, size_t nmemb, void *userp);
 
 	ostringstream m_ostrOutput;
 	curl_easy *m_pCurlEasy;

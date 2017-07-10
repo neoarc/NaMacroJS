@@ -3,7 +3,7 @@
 
 #include <NaLib/NaCurl.h>
 
-TEST_CASE("NaCurl.Post", "[.]")
+TEST_CASE("NaCurl.Post")
 {
 	NaCurl curl;
 	NaString strRet = curl.Post(L"www.google.com");

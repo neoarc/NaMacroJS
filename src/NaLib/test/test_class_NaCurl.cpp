@@ -3,7 +3,7 @@
 
 #include <NaLib/NaCurl.h>
 
-TEST_CASE("NaCurl.Post", "[.]")
+TEST_CASE("NaCurl.Post")
 {
 	NaCurl curl;
 	NaString strRet = curl.Post(L"www.google.com");
@@ -20,8 +20,8 @@ TEST_CASE("NaCurl.Get", "[.]")
 	char *outBuf = nullptr;
 	long lSize = -1;
 	bool bRet = curl.Get(
-		L"[Your-Server-Url]/update/Resources/Sprite/Font.bmp",
-		outBuf, lSize
+		L"update/Resources/Sprite/Font.bmp",
+		&outBuf, lSize
 	);
 	
 	CHECK(bRet == true);

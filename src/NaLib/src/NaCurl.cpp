@@ -13,11 +13,14 @@
 NaCurl::NaCurl()
 {
 	curl_ios<ostringstream> writer(m_ostrOutput);
+	writer.set_callback(NaCurl::write_callback);
 
 	// Pass the writer to the easy constructor and watch the content returned in that variable!
 	m_pCurlEasy = new curl_easy(writer);
 	m_lLastError = 0;
 	m_strLastError = L"";
+
+	NaDebug::Out(L"this: 0x%08x\n", this);
 }
 
 NaCurl::~NaCurl()
@@ -124,7 +127,7 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	return strRet;
 }
 
-bool NaCurl::Get(NaString strUrl, char *outBuf, long &lSize)
+bool NaCurl::Get(NaString strUrl, char **outBuf, long &lSize)
 {
 	NaDebug::Out(L"URL: %ls\n", strUrl.wstr());
 
@@ -163,9 +166,9 @@ bool NaCurl::Get(NaString strUrl, char *outBuf, long &lSize)
 	else
 	{
 		lSize = str.size();
-		if (outBuf == nullptr)
-			outBuf = new char[lSize];
-		memcpy(outBuf, cstr, lSize);
+		if (*outBuf == nullptr)
+			*outBuf = new char[lSize];
+		memcpy(*outBuf, cstr, lSize);
 	}
 
 	return true;
@@ -185,6 +188,20 @@ size_t NaCurl::write_data(void *ptr, size_t size, size_t nmemb, void *stream)
 {
 	std::string data((const char*)ptr, (size_t)size * nmemb);
 	*((std::stringstream*)stream) << data << endl;
+
+	return size * nmemb;
+}
+
+size_t NaCurl::write_callback(void * contents, size_t size, size_t nmemb, void * userp)
+{
+	// Temporary code: Working in progress
+	static long lTotal = 0;
+	lTotal += (size * nmemb);
+	NaDebug::Out(L"callback: %d (%ld)\n", size * nmemb, lTotal);
+
+	NaCurl* pCurl = reinterpret_cast<NaCurl*>(userp);
+	std::string data((const char*)contents, (size_t)size * nmemb);
+	pCurl->m_ostrOutput << data << endl;
 
 	return size * nmemb;
 }

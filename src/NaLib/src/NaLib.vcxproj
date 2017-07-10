@@ -71,8 +71,8 @@
       <SubSystem>Windows</SubSystem>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>CurlLib/lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)src\CurlLib\lib\libcurl.lib;$(SolutionDir)src\CurlLib\lib\libeay32.lib;$(SolutionDir)src\CurlLib\lib\ssleay32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)CurlLib/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -95,8 +95,8 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>CurlLib/lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>$(SolutionDir)src\CurlLib\lib\libcurl.lib;$(SolutionDir)src\CurlLib\lib\libeay32.lib;$(SolutionDir)src\CurlLib\lib\ssleay32.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)CurlLib/lib/</AdditionalLibraryDirectories>
+      <AdditionalDependencies>libcurl.lib;libeay32.lib;ssleay32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -6,8 +6,8 @@
 
 #include <filesystem>
 
-#include <NaLib\NaString.h>
-#include <NaLib\NaKnownFolder.h>
+#include <NaLib/NaString.h>
+#include <NaLib/NaUrl.h>
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -329,7 +329,7 @@ void CNaMacroRecorderDlg::StopRecord()
 	*/
 
 	namespace fs = std::experimental::filesystem;
-	NaString defaultSaveDir = NaKnownFolder::MyDocument().wstr();
+	NaString defaultSaveDir = NaUrl::GetMyDocumentDirectory().wstr();
 	defaultSaveDir += L"\\NaMacroJS";
 	if (!fs::exists(defaultSaveDir.wstr()))
 		fs::create_directories(defaultSaveDir.wstr());

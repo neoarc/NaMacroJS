@@ -9,7 +9,7 @@
 
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
-#include <NaLib\NaKnownFolder.h>
+#include <NaLib/NaUrl.h>
 
 using namespace v8;
 
@@ -22,7 +22,7 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 		Isolate::Scope _is(isolate);
 		HandleScope _hs(isolate);
 	
-		std::string defaultScriptPath = std::string(NaKnownFolder::MyDocument().cstr());
+		std::string defaultScriptPath = std::string(NaUrl::GetMyDocumentDirectory().cstr());
 		defaultScriptPath += "\\NaMacroJS\\NaMacro.njs";
 		std::string scriptPath = (__argc > 1) ? __argv[1] : defaultScriptPath;
 		Local<String> scriptSource = V8Wrap::ReadScript(isolate, scriptPath);

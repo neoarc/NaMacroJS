@@ -1,14 +1,9 @@
 #include "stdafx.h"
-
 #include "NaCurl.h"
 
 #include "NaDebug.h"
 
-/*
-#pragma comment(lib, "./CurlLib/lib/libcurl.lib")
-#pragma comment(lib, "./CurlLib/lib/libeay32.lib")
-#pragma comment(lib, "./CurlLib/lib/ssleay32.lib")
-*/
+std::map<ostringstream *, void*> NaCurl::s_mapInstance;
 
 NaCurl::NaCurl()
 {
@@ -17,14 +12,25 @@ NaCurl::NaCurl()
 
 	// Pass the writer to the easy constructor and watch the content returned in that variable!
 	m_pCurlEasy = new curl_easy(writer);
+
 	m_lLastError = 0;
 	m_strLastError = L"";
+	m_lDownloaded = 0;
 
-	NaDebug::Out(L"this: 0x%08x\n", this);
+	s_mapInstance.insert(
+		std::pair<ostringstream*, void*>(&m_ostrOutput, this)
+	);
 }
 
 NaCurl::~NaCurl()
 {
+	// #TODO CriticalSection needed?
+	auto it = s_mapInstance.find((ostringstream*)&m_ostrOutput);
+	if (it != s_mapInstance.end())
+	{
+		s_mapInstance.erase(it);
+	}
+
 	if (m_pCurlEasy)
 	{
 		delete m_pCurlEasy;
@@ -49,15 +55,14 @@ NaString NaCurl::Post(NaString strUrl, NaString strBody)
 	try
 	{
 		// Execute the request.
-		m_ostrOutput.str("");
-		m_ostrOutput.clear();
+		ClearOutputStream();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
 	{
 		// If you want to get the entire error stack we can do:
 		curlcpp_traceback errors = error.get_traceback();
-		
+
 		// Otherwise we could print the stack like this:
 		error.print_traceback();
 
@@ -65,7 +70,7 @@ NaString NaCurl::Post(NaString strUrl, NaString strBody)
 
 		/*
 		std::for_each(curl_exception::traceback.begin(), curl_exception::traceback.end(), [](const curlcpp_traceback_object &value) {
-			std::cout << "ERROR: " << value.first << " ::::: FUNCTION: " << value.second << std::endl;
+		std::cout << "ERROR: " << value.first << " ::::: FUNCTION: " << value.second << std::endl;
 		});
 		*/
 
@@ -105,8 +110,7 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	try
 	{
 		// Execute the request.
-		m_ostrOutput.str("");
-		m_ostrOutput.clear();
+		ClearOutputStream();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
@@ -136,12 +140,11 @@ bool NaCurl::Get(NaString strUrl, char **outBuf, long &lSize)
 	m_pCurlEasy->add<CURLOPT_FOLLOWLOCATION>(1L);
 	m_pCurlEasy->add<CURLOPT_NOSIGNAL>(1L);
 	m_pCurlEasy->add<CURLOPT_ACCEPT_ENCODING>("deflate");
-	
+
 	try
 	{
 		// Execute the request.
-		m_ostrOutput.str("");
-		m_ostrOutput.clear();
+		ClearOutputStream();
 		m_pCurlEasy->perform();
 	}
 	catch (curl_easy_exception error)
@@ -184,30 +187,45 @@ NaString NaCurl::GetLastErrorMessage()
 	return m_strLastError;
 }
 
-size_t NaCurl::write_data(void *ptr, size_t size, size_t nmemb, void *stream) 
+
+void NaCurl::ClearOutputStream()
 {
-	std::string data((const char*)ptr, (size_t)size * nmemb);
-	*((std::stringstream*)stream) << data << endl;
-
-	return size * nmemb;
-}
-
-size_t NaCurl::write_callback(void * contents, size_t size, size_t nmemb, void * userp)
-{
-	// Temporary code: Working in progress
-	static long lTotal = 0;
-	lTotal += (size * nmemb);
-	NaDebug::Out(L"callback: %d (%ld)\n", size * nmemb, lTotal);
-
-	NaCurl* pCurl = reinterpret_cast<NaCurl*>(userp);
-	std::string data((const char*)contents, (size_t)size * nmemb);
-	pCurl->m_ostrOutput << data << endl;
-
-	return size * nmemb;
+	m_ostrOutput.str("");
+	m_ostrOutput.clear();
+	m_lDownloaded = 0;
 }
 
 void NaCurl::ClearLastError()
 {
 	m_lLastError = 0;
 	m_strLastError = L"";
+}
+
+void NaCurl::SetCallback(std::function<void(size_t)> fnCallback)
+{
+	m_UserCallback = fnCallback;
+}
+
+void NaCurl::OnCallback(size_t added)
+{
+	if (m_UserCallback)
+		m_UserCallback(added);
+}
+
+size_t NaCurl::write_callback(void * contents, size_t size, size_t nmemb, void * userp)
+{
+	const size_t added = (size * nmemb);
+
+	auto it = s_mapInstance.find((ostringstream*)userp);
+	if (it != s_mapInstance.end())
+	{
+		NaCurl* pCurl = (NaCurl*)it->second;
+		std::string data((const char*)contents, (size_t)added);
+		pCurl->m_ostrOutput << data;
+
+		pCurl->m_lDownloaded += added;
+		pCurl->OnCallback(added);
+	}
+
+	return size * nmemb;
 }

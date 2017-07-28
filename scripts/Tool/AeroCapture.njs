@@ -9,7 +9,6 @@ function main()
   try {
     c.visible = true;
     bindHotkey();
-
   } catch (e) {
     alert(e, "Exception!");
   }

@@ -4,8 +4,8 @@
 //
 
 function main() {
-    var m = system.mouse;
-    m.doubleClick();
+  var m = system.mouse;
+  m.doubleClick();
 
-    exit();
+  exit();
 }

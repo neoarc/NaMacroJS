@@ -5,9 +5,9 @@
 var c = consoleWindow;
 
 function main() {
-    test();
+  test();
 }
 
 function test() {
-    //...
+  //...
 }

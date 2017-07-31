@@ -4,6 +4,6 @@
 //
 
 function main() {
-    exit();
+  exit();
 
-// compile error
+  // compile error

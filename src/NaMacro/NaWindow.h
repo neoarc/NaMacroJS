@@ -74,6 +74,7 @@ public:
 	DEFINE_CLASS_METHOD(create);
 	DEFINE_CLASS_METHOD(move);
 	DEFINE_CLASS_METHOD(activate);
+	DEFINE_CLASS_METHOD(close);
 	DEFINE_CLASS_METHOD(alert);
 	DEFINE_CLASS_METHOD(addControl);
 };

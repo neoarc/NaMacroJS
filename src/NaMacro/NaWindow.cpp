@@ -169,6 +169,7 @@ Local<ObjectTemplate> NaWindow::MakeObjectTemplate(Isolate * isolate)
 	ADD_WINDOW_METHOD(create);
 	ADD_WINDOW_METHOD(move);
 	ADD_WINDOW_METHOD(activate);
+	ADD_WINDOW_METHOD(close);
 	ADD_WINDOW_METHOD(alert);
 	ADD_WINDOW_METHOD(addControl);
 
@@ -788,6 +789,17 @@ void NaWindow::method_activate(V8_FUNCTION_ARGS)
 		return;
 
 	::SetForegroundWindow(pWindow->m_hWnd);
+}
+
+// description: post close message to window
+// syntax:      windowObj.close()
+void NaWindow::method_close(V8_FUNCTION_ARGS)
+{
+	NaWindow *pWindow = reinterpret_cast<NaWindow*>(UnwrapObject(args.This()));
+	if (pWindow == NULL)
+		return;
+
+	::PostMessage(pWindow->m_hWnd, WM_CLOSE, 0, 0);
 }
 
 // description: same as alert but window is its parent

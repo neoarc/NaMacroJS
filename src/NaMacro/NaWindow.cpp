@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "NaWindow.h"
 
+#include <atltypes.h>
+
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
 
@@ -468,6 +470,50 @@ void NaWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 		);
 }
 
+static bool IsTaskbarInAutoHide()
+{
+	APPBARDATA abd = {0};
+	abd.cbSize = sizeof(abd);
+	const UINT state = (UINT)::SHAppBarMessage(ABM_GETSTATE, &abd);
+	return (state == ABS_AUTOHIDE);
+}
+
+static CRect GetTaskbarArea()
+{
+	CRect r;
+	::GetWindowRect(::FindWindow(L"Shell_TrayWnd", nullptr), &r);
+	return r;
+}
+
+static CRect CalcDesktopAreaWithoutTaskbar()
+{
+	CRect screenArea;
+	screenArea.left = 0;
+	screenArea.top = 0;
+	screenArea.right = ::GetSystemMetrics(SM_CXSCREEN);
+	screenArea.bottom = ::GetSystemMetrics(SM_CYSCREEN);
+
+	if (IsTaskbarInAutoHide())
+		return screenArea;
+
+	CRect area;
+	CRect taskbarArea = GetTaskbarArea();
+	area.SubtractRect(screenArea, taskbarArea);
+	return area;
+}
+
+static void MoveConsoleWindowToDefaultPosition(const HWND hConsole)
+{
+	CRect rcConsole;
+	GetWindowRect(hConsole, &rcConsole);
+
+	// Default position is right-bottom
+	CRect rcDesktopArea = CalcDesktopAreaWithoutTaskbar();
+	const int x = rcDesktopArea.right - rcConsole.Width();
+	const int y = rcDesktopArea.bottom - rcConsole.Height();
+	::MoveWindow(hConsole, x, y, rcConsole.Width(), rcConsole.Height(), TRUE);
+}
+
 void NaWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
 	UNUSED_PARAMETER(name);
@@ -495,21 +541,7 @@ void NaWindow::set_visible(Local<String> name, Local<Value> value, const Propert
 				// Console output problem fix (temp)
 				_wsetlocale(0, L"korean"); // LC_ALL
 
-				// Default position is right-bottom
-				// Move console window to right-bottom of screen
-				{
-					RECT rcConsole, rcTray;
-					GetWindowRect(hConsole, &rcConsole);
-					GetWindowRect(FindWindow(L"Shell_TrayWnd", nullptr), &rcTray);
-
-					MoveWindow(
-						hConsole,
-						rcTray.right - (rcConsole.right - rcConsole.left),
-						rcTray.top - (rcConsole.bottom - rcConsole.top),
-						(rcConsole.right - rcConsole.left),
-						(rcConsole.bottom - rcConsole.top),
-						TRUE);
-				}
+				MoveConsoleWindowToDefaultPosition(hConsole);
 
 				// bind handle
 				pWindow->m_hWnd = hConsole;

@@ -8,6 +8,8 @@
 #include <list>
 #include <map>
 
+#include <atltypes.h> // CRect (will be removed)
+
 #define NA_WINDOW_CLASS		L"NaWindowClass"
 #define NA_WINDOW_MARK		0x20160426
 
@@ -50,6 +52,12 @@ public:
 	static NaWindow* GetActiveWindow();
 	static NaWindow* GetWindow(HWND hWnd);
 
+	// utility function for console window
+	
+	// #TODO Remove CRect!!
+	static CRect GetWorkArea();
+	static void MoveConsoleWindowToDefaultPosition(const HWND hConsole);
+
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
 	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_NaWindowTemplate; };
@@ -80,3 +88,10 @@ public:
 };
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
+
+class NaTaskBarWindow
+{
+public:
+	static bool IsAutoHide();
+	static CRect GetRect();	
+};

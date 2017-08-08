@@ -1,8 +1,6 @@
 #include "stdafx.h"
 #include "NaWindow.h"
 
-#include <atltypes.h>
-
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
 
@@ -245,6 +243,40 @@ NaWindow* NaWindow::GetWindow(HWND hWnd)
 	return (new NaWindow(hWnd));
 }
 
+CRect NaWindow::GetWorkArea()
+{
+	CRect rcWorkArea;
+	rcWorkArea.left = 0;
+	rcWorkArea.top = 0;
+	rcWorkArea.right = ::GetSystemMetrics(SM_CXSCREEN);
+	rcWorkArea.bottom = ::GetSystemMetrics(SM_CYSCREEN);
+
+	if (NaTaskBarWindow::IsAutoHide())
+		return rcWorkArea;
+
+	CRect rcResult;
+	CRect rcTaskbar = NaTaskBarWindow::GetRect();
+	rcResult.SubtractRect(rcWorkArea, rcTaskbar);
+
+	return rcResult;
+}
+
+void NaWindow::MoveConsoleWindowToDefaultPosition(const HWND hConsole)
+{
+	// #TODO verify hConsole is ConsoleWindow
+
+	CRect rcConsole;
+	GetWindowRect(hConsole, &rcConsole);
+
+	// Default position is right-bottom
+	CRect rcWorkArea = GetWorkArea();
+
+	const int x = rcWorkArea.right - rcConsole.Width();
+	const int y = rcWorkArea.bottom - rcConsole.Height();
+
+	::MoveWindow(hConsole, x, y, rcConsole.Width(), rcConsole.Height(), TRUE);
+}
+
 // description: x property getter/setter
 void NaWindow::get_x(V8_GETTER_ARGS)
 {
@@ -468,50 +500,6 @@ void NaWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 	info.GetReturnValue().Set(
 		Boolean::New(isolate, bVisible)
 		);
-}
-
-static bool IsTaskbarInAutoHide()
-{
-	APPBARDATA abd = {0};
-	abd.cbSize = sizeof(abd);
-	const UINT state = (UINT)::SHAppBarMessage(ABM_GETSTATE, &abd);
-	return (state == ABS_AUTOHIDE);
-}
-
-static CRect GetTaskbarArea()
-{
-	CRect r;
-	::GetWindowRect(::FindWindow(L"Shell_TrayWnd", nullptr), &r);
-	return r;
-}
-
-static CRect CalcDesktopAreaWithoutTaskbar()
-{
-	CRect screenArea;
-	screenArea.left = 0;
-	screenArea.top = 0;
-	screenArea.right = ::GetSystemMetrics(SM_CXSCREEN);
-	screenArea.bottom = ::GetSystemMetrics(SM_CYSCREEN);
-
-	if (IsTaskbarInAutoHide())
-		return screenArea;
-
-	CRect area;
-	CRect taskbarArea = GetTaskbarArea();
-	area.SubtractRect(screenArea, taskbarArea);
-	return area;
-}
-
-static void MoveConsoleWindowToDefaultPosition(const HWND hConsole)
-{
-	CRect rcConsole;
-	GetWindowRect(hConsole, &rcConsole);
-
-	// Default position is right-bottom
-	CRect rcDesktopArea = CalcDesktopAreaWithoutTaskbar();
-	const int x = rcDesktopArea.right - rcConsole.Width();
-	const int y = rcDesktopArea.bottom - rcConsole.Height();
-	::MoveWindow(hConsole, x, y, rcConsole.Width(), rcConsole.Height(), TRUE);
 }
 
 void NaWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -877,4 +865,21 @@ void NaWindow::method_addControl(V8_FUNCTION_ARGS)
 	pControl->Create(args, pWindow);
 
 	args.GetReturnValue().Set(obj);
+}
+
+bool NaTaskBarWindow::IsAutoHide()
+{
+	APPBARDATA abd = { 0 };
+	abd.cbSize = sizeof(abd);
+
+	const UINT state = (UINT)::SHAppBarMessage(ABM_GETSTATE, &abd);
+	return (state == ABS_AUTOHIDE);
+}
+
+CRect NaTaskBarWindow::GetRect()
+{
+	CRect r;
+	::GetWindowRect(::FindWindow(L"Shell_TrayWnd", nullptr), &r);
+
+	return r;
 }

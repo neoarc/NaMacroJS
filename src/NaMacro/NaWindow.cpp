@@ -526,6 +526,19 @@ void NaWindow::set_visible(Local<String> name, Local<Value> value, const Propert
 
 				hConsole = GetConsoleWindow();
 
+				// Bind application main icon to console window
+				HINSTANCE hInstance = GetModuleHandle(nullptr);
+				HICON hIcon = (HICON)LoadImage(
+					hInstance, 
+					MAKEINTRESOURCE(IDI_MAIN_ICON), 
+					IMAGE_ICON,
+					GetSystemMetrics(SM_CXSMICON),
+					GetSystemMetrics(SM_CYSMICON),
+					LR_DEFAULTCOLOR);
+
+				::SendMessage(hConsole, WM_SETICON, ICON_BIG, (LPARAM)hIcon);
+				::SendMessage(hConsole, WM_SETICON, ICON_SMALL, (LPARAM)hIcon);
+
 				// Console output problem fix (temp)
 				_wsetlocale(0, L"korean"); // LC_ALL
 

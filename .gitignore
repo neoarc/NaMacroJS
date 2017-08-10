@@ -241,3 +241,6 @@ LineCounter.ini
 /installer/bin_src
 /installer/output
 /version.h
+/src/_NaLib/
+/Output/Release-Win32
+/Output/Debug-Win32

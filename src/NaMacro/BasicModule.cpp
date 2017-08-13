@@ -10,6 +10,7 @@
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaMessageBox.h>
 #include <NaLib/NaNotifyWindow.h>
+#include <NaLib/NaCurl.h>
 
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
@@ -38,6 +39,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(print);
 	ADD_GLOBAL_METHOD2(trace, method_print);
 	ADD_GLOBAL_METHOD(notify);
+	ADD_GLOBAL_METHOD(fetch);
 	ADD_GLOBAL_METHOD(exit);
 	ADD_GLOBAL_METHOD(getWindow);
 	ADD_GLOBAL_METHOD(getActiveWindow);
@@ -294,6 +296,28 @@ void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 	}
 
 	NaNotifyWindow::AddNotifyWindow(strMessage, strTitle);
+}
+
+// description: Fetch API
+// syntax:		fetch(url[, parameter]) : Promise
+void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
+{
+	/*
+	String::Value url(args[0]);
+
+	NaString strUrl((const wchar_t*)*url);
+	NaCurl curl;
+	curl.Post(strUrl);
+
+	Isolate *isolate = args.GetIsolate();
+	args.GetReturnValue().Set(
+		Integer::New(isolate, 0)
+	);
+	*/
+
+	Isolate *isolate = args.GetIsolate();
+	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
+	args.GetReturnValue().Set(result);
 }
 
 // description: show MessageBox with message

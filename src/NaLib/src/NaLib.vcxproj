@@ -64,7 +64,7 @@
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <AdditionalIncludeDirectories>../include/NaLib;CurlLib/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include/NaLib;CurlLib/include;CurlLib/include/curl;../include/curl</AdditionalIncludeDirectories>
       <AdditionalOptions>/Wv:18 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
@@ -87,7 +87,7 @@
       <SDLCheck>true</SDLCheck>
       <TreatWarningAsError>true</TreatWarningAsError>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>../include/NaLib;CurlLib/include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../include/NaLib;CurlLib/include;CurlLib/include/curl;../include/curl</AdditionalIncludeDirectories>
       <AdditionalOptions>/Wv:18 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>

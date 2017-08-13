@@ -126,7 +126,10 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	const char* cstr = str.c_str();
 
 	NaString strRet = cstr;
-	NaDebug::Out(L"RET: %ls\n", strRet.wstr());
+	if (strRet.GetLength() > 80)
+		NaDebug::Out(L"RET: %ls ...(skip)\n", strRet.Left(80).wstr());
+	else
+		NaDebug::Out(L"RET: %ls\n", strRet.wstr());
 
 	return strRet;
 }

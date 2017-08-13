@@ -2,6 +2,7 @@
 
 function main()
 {
-    fetch("http://google.com");
+    var ret = fetch("http://google.com");
+    alert(ret);
     exit();
 }

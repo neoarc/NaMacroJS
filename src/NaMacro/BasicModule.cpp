@@ -302,22 +302,21 @@ void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 // syntax:		fetch(url[, parameter]) : Promise
 void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 {
-	/*
 	String::Value url(args[0]);
 
+	// #TODO argument validation
+
+	// #TODO process parameter (json object)
+
 	NaString strUrl((const wchar_t*)*url);
+
+	// #TODO if url is local url, open file.
+
 	NaCurl curl;
-	curl.Post(strUrl);
+	auto ret = curl.Post(strUrl);
 
-	Isolate *isolate = args.GetIsolate();
-	args.GetReturnValue().Set(
-		Integer::New(isolate, 0)
-	);
-	*/
-
-	Isolate *isolate = args.GetIsolate();
-	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
-	args.GetReturnValue().Set(result);
+	// #TODO change return value to Promise object (from string)
+	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), ret.wstr());
 }
 
 // description: show MessageBox with message

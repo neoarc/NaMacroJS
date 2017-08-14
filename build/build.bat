@@ -1,2 +1,2 @@
 set sln=..\NaMacro.sln
-call msbuild_cmd.bat %sln% release
+call _msbuild_cmd.bat %sln% release

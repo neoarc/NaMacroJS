@@ -302,11 +302,32 @@ void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 // syntax:		fetch(url[, parameter]) : Promise
 void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 {
+	auto *isolate = args.GetIsolate();
 	String::Value url(args[0]);
 
 	// #TODO argument validation
 
 	// #TODO process parameter (json object)
+	if (args.Length() >= 2)
+	{
+		if (args[1]->IsObject())
+		{
+			auto objParam = args[1]->ToObject();
+
+			// Method
+			auto method_value = V8Wrap::GetObjectProperty(objParam, "method");
+			if (!method_value->IsUndefined())
+			{
+				// POST, GET, PUT, DELETE
+				NaString strMethod(method_value->ToString());
+				NaDebug::Out(L"%ls\n", strMethod.wstr());
+			}
+
+			// Body
+			
+			// #TODO implement
+		}
+	}
 
 	NaString strUrl((const wchar_t*)*url);
 
@@ -314,6 +335,8 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 
 	NaCurl curl;
 	auto ret = curl.Post(strUrl);
+
+	//new Promise();
 
 	// #TODO change return value to Promise object (from string)
 	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), ret.wstr());

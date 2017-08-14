@@ -310,6 +310,16 @@ namespace V8Wrap
 		return str;
 	}
 
+	Local<Value> GetObjectProperty(Local<Object>& obj, NaString strPropName)
+	{
+		Isolate *isolate = obj->GetIsolate();
+		Local<String> _prop_name = String::NewFromUtf8(isolate, strPropName.cstr(), NewStringType::kNormal).ToLocalChecked();
+		Local<Value> _prop_value = obj->Get(_prop_name);
+
+		return _prop_value;
+		
+	}
+
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt)
 	{
 		returnValue.Set(

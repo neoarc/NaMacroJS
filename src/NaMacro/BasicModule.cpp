@@ -303,11 +303,16 @@ void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 {
 	auto *isolate = args.GetIsolate();
+	isolate; // not used
+
 	String::Value url(args[0]);
 
 	// #TODO argument validation
 
 	// #TODO process parameter (json object)
+	NaString strMethod = L"POST";
+	NaString strBody = L"";
+
 	if (args.Length() >= 2)
 	{
 		if (args[1]->IsObject())
@@ -319,12 +324,24 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 			if (!method_value->IsUndefined())
 			{
 				// POST, GET, PUT, DELETE
-				NaString strMethod(method_value->ToString());
-				NaDebug::Out(L"%ls\n", strMethod.wstr());
+				Local<String> method_string = method_value->ToString();
+				String::Utf8Value method_string_value(method_string);
+				strMethod = (*method_string_value);
+
+				NaDebug::Out(L"Method: %ls\n", strMethod.wstr());
 			}
 
 			// Body
-			
+			auto body_value = V8Wrap::GetObjectProperty(objParam, "body");
+			if (!body_value->IsUndefined())
+			{
+				Local<String> body_string = body_value->ToString();
+				String::Utf8Value body_string_value(body_string);
+				strBody = (*body_string_value);
+
+				NaDebug::Out(L"Body: %ls\n", strBody.wstr());
+			}
+
 			// #TODO implement
 		}
 	}
@@ -334,12 +351,14 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 	// #TODO if url is local url, open file.
 
 	NaCurl curl;
-	auto ret = curl.Post(strUrl);
+	NaString strRet = L"";
+	if (strMethod.CompareNoCase(L"POST") == 0)
+		strRet = curl.Post(strUrl, strBody);
 
 	//new Promise();
 
 	// #TODO change return value to Promise object (from string)
-	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), ret.wstr());
+	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), strRet.wstr());
 }
 
 // description: show MessageBox with message

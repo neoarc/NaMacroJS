@@ -1,6 +1,6 @@
 #pragma once
 
-#include "NaObject.h"
+#include "JsObjectBase.h"
 #include "V8Wrap.h"
 
 #include <map>
@@ -14,7 +14,7 @@ enum NaControlTypes
 };
 
 class NaWindow;
-class NaControl : public NaObject
+class NaControl : public JsObjectBase
 {
 public:
 	NaControl();

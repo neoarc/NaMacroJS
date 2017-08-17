@@ -63,9 +63,6 @@
     <ClCompile Include="NaWindow.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
-    <ClCompile Include="NaObject.cpp">
-      <Filter>Source Files\Objects</Filter>
-    </ClCompile>
     <ClCompile Include="NaControl.cpp">
       <Filter>Source Files\Objects</Filter>
     </ClCompile>
@@ -80,6 +77,9 @@
     </ClCompile>
     <ClCompile Include="NaMacroCommon.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="JsObjectBase.cpp">
+      <Filter>Source Files\Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,9 +116,6 @@
     <ClInclude Include="NaWindow.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
-    <ClInclude Include="NaObject.h">
-      <Filter>Header Files\Objects</Filter>
-    </ClInclude>
     <ClInclude Include="NaControl.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>
@@ -133,6 +130,9 @@
     </ClInclude>
     <ClInclude Include="NaMacroCommon.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="JsObjectBase.h">
+      <Filter>Header Files\Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

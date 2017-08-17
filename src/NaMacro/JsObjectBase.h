@@ -2,13 +2,11 @@
 
 #include "V8Wrap.h"
 
-#define Global	Global
-
-class NaObject
+class JsObjectBase
 {
 public:
-	NaObject();
-	virtual ~NaObject();
+	JsObjectBase();
+	virtual ~JsObjectBase();
 
 	virtual int AddRef();
 	virtual int Release();
@@ -16,11 +14,11 @@ public:
 	Persistent<Object> m_Persistent;
 
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
-	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_NaObjectTemplate; }
-	static Global<ObjectTemplate> s_NaObjectTemplate;
+	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_JsObjectTemplate; }
+	static Global<ObjectTemplate> s_JsObjectTemplate;
 
-	static Local<Object> WrapObject(Isolate *isolate, NaObject *pObject);
-	static NaObject* UnwrapObject(Local<Object> obj);
+	static Local<Object> WrapObject(Isolate *isolate, JsObjectBase *pObject);
+	static JsObjectBase* UnwrapObject(Local<Object> obj);
 
 	// #FIXME: open this after complete v8 on nuget
 //	virtual void MakeWeak();

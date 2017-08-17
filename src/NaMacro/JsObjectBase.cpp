@@ -1,15 +1,14 @@
 #include "stdafx.h"
-#include "NaObject.h"
+#include "JsObjectBase.h"
 
-Global<ObjectTemplate> NaObject::s_NaObjectTemplate;
+Global<ObjectTemplate> JsObjectBase::s_JsObjectTemplate;
 
-NaObject::NaObject()
+JsObjectBase::JsObjectBase()
 {
 	m_nRef = 0;
 }
 
-
-NaObject::~NaObject()
+JsObjectBase::~JsObjectBase()
 {
 	if (!m_Persistent.IsEmpty())
 	{
@@ -18,7 +17,7 @@ NaObject::~NaObject()
 	}
 }
 
-int NaObject::AddRef()
+int JsObjectBase::AddRef()
 {
 	if (!m_Persistent.IsEmpty())
 		m_Persistent.ClearWeak();
@@ -26,7 +25,7 @@ int NaObject::AddRef()
 	return ++m_nRef;
 }
 
-int NaObject::Release()
+int JsObjectBase::Release()
 {
 	if (--m_nRef == 0)
 	{
@@ -37,7 +36,7 @@ int NaObject::Release()
 	return m_nRef;
 }
 
-Local<ObjectTemplate> NaObject::MakeObjectTemplate(Isolate * isolate)
+Local<ObjectTemplate> JsObjectBase::MakeObjectTemplate(Isolate * isolate)
 {
 	EscapableHandleScope handle_scope(isolate);
 
@@ -48,7 +47,7 @@ Local<ObjectTemplate> NaObject::MakeObjectTemplate(Isolate * isolate)
 	return handle_scope.Escape(result);
 }
 
-Local<Object> NaObject::WrapObject(Isolate *isolate, NaObject * pObject)
+Local<Object> JsObjectBase::WrapObject(Isolate *isolate, JsObjectBase * pObject)
 {
 	// Local scope for temporary handles.
 	EscapableHandleScope handle_scope(isolate);
@@ -89,12 +88,12 @@ Local<Object> NaObject::WrapObject(Isolate *isolate, NaObject * pObject)
 	return handle_scope.Escape(result);
 }
 
-NaObject * NaObject::UnwrapObject(Local<Object> obj)
+JsObjectBase * JsObjectBase::UnwrapObject(Local<Object> obj)
 {
 	Local<External> field = Local<External>::Cast(obj->GetInternalField(0));
 	void* ptr = field->Value();
 
-	return static_cast<NaObject*>(ptr);
+	return static_cast<JsObjectBase*>(ptr);
 }
 
 // #FIXME: open this after complete v8 on nuget

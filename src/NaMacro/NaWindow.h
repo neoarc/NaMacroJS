@@ -1,7 +1,7 @@
 #pragma once
 
 #include "V8Wrap.h"
-#include "NaObject.h"
+#include "JsObjectBase.h"
 
 #include <Windows.h>
 
@@ -22,7 +22,7 @@ enum NaWindowTypes
 	NA_WINDOW_INTERNAL,
 };
 
-class NaWindow : public NaObject
+class NaWindow : public JsObjectBase
 {
 public:
 	NaWindow(HWND hWnd = NULL, NaWindowTypes enType = NA_WINDOW_UNKNOWN);

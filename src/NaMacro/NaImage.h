@@ -1,12 +1,12 @@
 #pragma once
 
 #include "V8Wrap.h"
-#include "NaObject.h"
+#include "JsObjectBase.h"
 
 #include <Windows.h>
 #include <map>
 
-class NaImage : public NaObject
+class NaImage : public JsObjectBase
 {
 public:
 	NaImage();

@@ -6,7 +6,14 @@ function main()
 	var url = "https://namacrojs.slack.com/services/hooks/slackbot?token=ElG94WIcYOZdD7xHZWKTh0PL";
 	url += "&channel=%23general";
 
+    var ret = fetch(url, {
+		method: "POST",
+		body: "FetchTest from NaMacro"
+		//body: "NaMacro에서 테스트" // #FIXME
+	});
+
 	// TODO
+	// multipart prototype1 ---> from official fetch api
 	// slack - image upload (multipart/form-data)
 	// -F filename=test.bmp
 	// -F file=@D:\private\SlackNotify\test.bmp
@@ -14,16 +21,29 @@ function main()
 	// -F initial_comment=image_upload_test
 	// -F token=??
 	// "https://slack.com/api/files.upload"
-
-	// TODO
-	// multipart sample:
-	// curl -i -H "Content-Type: multipart/form-data; boundary=CUSTOM" -d $'--CUSTOM\r\nContent-Type: multipart/octet-stream\r\nContent-Disposition: file; filename="test"\r\n\r\nHello World!\n--CUSTOM--' "http://localhost:5001/api/v0/add"
-
-    var ret = fetch(url, {
+	/*
+	var formData = new FormData();
+	formData.append("filename", "test.bmp");
+	formData.append("file", "d:\private\SlackNotify\test.bmp");
+	var ret = fetch(url, {
 		method: "POST",
-		body: "FetchTest from NaMacro"
-		//body: "NaMacro에서 테스트"
+		body:	formData
 	});
+	*/
+
+	// multipart prototype2:
+	/*
+	var ret = fetch(url, {
+		method: "POST",
+		header: "Content-Type: multipart/form-data; boundary=CUSTOM",
+		body:	"--CUSTOM\r\n"
+				"Content-Type: multipart/octet-stream\r\n"
+				"Content-Disposition: file; filename='test'\r\n"
+				"\r\nHello World!\n"
+				"--CUSTOM--"
+	});
+	*/
+
     alert(ret);
     exit();
 }

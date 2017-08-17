@@ -156,7 +156,6 @@
     <ClCompile Include="TwitterModule.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\NaLib\NaHttp.h" />
     <ClInclude Include="BasicModule.h" />
     <ClInclude Include="NaMacroCommon.h" />
     <ClInclude Include="V8Wrap.h" />

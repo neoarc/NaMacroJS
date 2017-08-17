@@ -125,9 +125,6 @@
     <ClInclude Include="TwitterModule.h">
       <Filter>Header Files\Module</Filter>
     </ClInclude>
-    <ClInclude Include="..\NaLib\NaHttp.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NaFile.h">
       <Filter>Header Files\Objects</Filter>
     </ClInclude>

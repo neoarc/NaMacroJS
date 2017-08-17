@@ -4,6 +4,7 @@
 // ex: down,down,right
 include("VirtualKey.js")
 
+// "alt+a,alt+c"
 system.keyboard.pressCompositeKey = function(keystr)
 {
 	var list = keystr.split(",");

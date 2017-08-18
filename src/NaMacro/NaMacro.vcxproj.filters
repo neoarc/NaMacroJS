@@ -25,10 +25,16 @@
     <Filter Include="Source Files\Module">
       <UniqueIdentifier>{e1c57263-c55e-4062-9587-a04231423c36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Objects">
+    <Filter Include="Header Files\NaObjects">
       <UniqueIdentifier>{9c24ac98-f245-440b-8c63-dd485d45dada}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Objects">
+    <Filter Include="Header Files\JsObjects">
+      <UniqueIdentifier>{13a82fe8-d713-4e47-93cb-028f1c5476bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\JsObjects">
+      <UniqueIdentifier>{b2cea7e1-b4fc-46c2-915e-68cc37dcac46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NaObjects">
       <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -58,19 +64,16 @@
       <Filter>Source Files\Module</Filter>
     </ClCompile>
     <ClCompile Include="NaImage.cpp">
-      <Filter>Source Files\Objects</Filter>
+      <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
     <ClCompile Include="NaWindow.cpp">
-      <Filter>Source Files\Objects</Filter>
+      <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
     <ClCompile Include="NaControl.cpp">
-      <Filter>Source Files\Objects</Filter>
+      <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
     <ClCompile Include="TwitterModule.cpp">
       <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NaFile.cpp">
-      <Filter>Source Files\Objects</Filter>
     </ClCompile>
     <ClCompile Include="V8Wrap.cpp">
       <Filter>Source Files</Filter>
@@ -78,8 +81,14 @@
     <ClCompile Include="NaMacroCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="NaFile.cpp">
+      <Filter>Source Files\NaObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsFile.cpp">
+      <Filter>Source Files\JsObjects</Filter>
+    </ClCompile>
     <ClCompile Include="JsObjectBase.cpp">
-      <Filter>Source Files\Objects</Filter>
+      <Filter>Source Files\JsObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,19 +120,16 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="NaImage.h">
-      <Filter>Header Files\Objects</Filter>
+      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="NaWindow.h">
-      <Filter>Header Files\Objects</Filter>
+      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="NaControl.h">
-      <Filter>Header Files\Objects</Filter>
+      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="TwitterModule.h">
       <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="NaFile.h">
-      <Filter>Header Files\Objects</Filter>
     </ClInclude>
     <ClInclude Include="V8Wrap.h">
       <Filter>Header Files</Filter>
@@ -131,8 +137,14 @@
     <ClInclude Include="NaMacroCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NaFile.h">
+      <Filter>Header Files\NaObjects</Filter>
+    </ClInclude>
     <ClInclude Include="JsObjectBase.h">
-      <Filter>Header Files\Objects</Filter>
+      <Filter>Header Files\JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsFile.h">
+      <Filter>Header Files\JsObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

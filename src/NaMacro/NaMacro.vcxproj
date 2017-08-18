@@ -136,13 +136,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
+    <ClCompile Include="NaFile.cpp" />
     <ClCompile Include="NaMacroCommon.cpp" />
     <ClCompile Include="V8Wrap.cpp" />
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
     <ClCompile Include="NaControl.cpp" />
-    <ClCompile Include="NaFile.cpp" />
+    <ClCompile Include="JsFile.cpp" />
     <ClCompile Include="NaImage.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
@@ -157,13 +158,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicModule.h" />
+    <ClInclude Include="NaFile.h" />
     <ClInclude Include="NaMacroCommon.h" />
     <ClInclude Include="V8Wrap.h" />
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />
     <ClInclude Include="NaControl.h" />
-    <ClInclude Include="NaFile.h" />
+    <ClInclude Include="JsFile.h" />
     <ClInclude Include="NaImage.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />

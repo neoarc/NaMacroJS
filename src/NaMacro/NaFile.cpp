@@ -3,46 +3,49 @@
 
 #include <NaLib/NaDebug.h>
 
-Global<ObjectTemplate> NaFile::s_NaFileTemplate;
-
 NaFile::NaFile()
 {
 	m_hFile = NULL;
-	NaDebug::Out(L"NaFile(): 0x%08x\n", this);
 }
 
 NaFile::~NaFile()
 {
-	NaDebug::Out(L"~NaFile(): 0x%08x\n", this);
-
 	if (m_hFile)
 	{
 		fclose(m_hFile);
 	}
 }
 
-Local<ObjectTemplate> NaFile::MakeObjectTemplate(Isolate * isolate)
+bool NaFile::IsExist()
 {
-	EscapableHandleScope handle_scope(isolate);
+	return NaFile::IsExist(m_strName.wstr());
+}
 
-	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
-	templ->SetInternalFieldCount(1);
+char * NaFile::Read()
+{
+	fseek(m_hFile, 0, SEEK_END);
+	int nSize = ftell(m_hFile);
+	rewind(m_hFile);
 
-	// bind file methods
-#define ADD_FILE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_FILE_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
-#define ADD_FILE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
+	char *buf = new char[nSize + 1];
+	fread(buf, nSize, 1, m_hFile);
+	buf[nSize] = '\0';
 
-	// accessor
-	ADD_FILE_ACCESSOR(name);
-	ADD_FILE_ACCESSOR_RO(exist);
+	return buf;
+}
 
-	// methods
-	ADD_FILE_METHOD(read);
-	ADD_FILE_METHOD(write);
-	ADD_FILE_METHOD(close);
+size_t NaFile::Write(NaString & str)
+{
+	return fwrite(str.cstr(), str.GetLength(), 1, m_hFile);
+}
 
-	return handle_scope.Escape(templ);
+void NaFile::Close()
+{
+	if (m_hFile != nullptr)
+	{
+		fclose(m_hFile);
+		m_hFile = nullptr;
+	}
 }
 
 // description: load file for read/write
@@ -56,173 +59,8 @@ NaFile * NaFile::Load(const wchar_t * filename, const char * mode)
 	return pFile;
 }
 
-// description: name property getter/setter
-void NaFile::get_name(V8_GETTER_ARGS)
+bool NaFile::IsExist(const wchar_t * filename)
 {
-	UNUSED_PARAMETER(name);
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
-	if (pFile)
-	{
-		info.GetReturnValue().Set(
-			String::NewFromUtf8(isolate, pFile->m_strName.cstr(), NewStringType::kNormal).ToLocalChecked()
-		);
-	}
-}
-
-void NaFile::set_name(V8_SETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
-
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
-	if (pFile)
-	{
-		// Not Impl
-	}
-}
-
-// description: exist property getter
-void NaFile::get_exist(V8_GETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
-	if (pFile)
-	{
-		DWORD dwAttrs = ::GetFileAttributes(pFile->m_strName.wstr());
-		info.GetReturnValue().Set(
-			Boolean::New(isolate, (dwAttrs != INVALID_FILE_ATTRIBUTES))
-		);
-	}
-}
-
-// description: constructor function
-// syntax:		new Window([x, y[, width, height]]) : windowObj
-void NaFile::method_constructor(V8_FUNCTION_ARGS)
-{
-	if (args.Length() >= 1)
-	{
-		String::Value filepath(args[0]);
-
-		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(
-			args.GetIsolate(), 1, StackTrace::kScriptName);
-		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		
-		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
-		NaString strFilePath(*String::Utf8Value(args[0]));
-
-		NaUrl url;
-		url.SetBase(strBase);
-		url.SetUrl(strFilePath);
-
-		NaString strFullPath(url.GetFullUrl());
-
-		NaString strMode;
-		if (args.Length() >= 2)
-		{
-			String::Value arg_mode(args[1]);
-			strMode = (wchar_t*)*arg_mode;
-		}
-		else
-		{
-			strMode = L"r";
-		}
-
-		NaFile *pFile = NaFile::Load(strFullPath.wstr(), strMode.cstr());
-		Local<Object> obj = WrapObject(args.GetIsolate(), pFile);
-
-		args.GetReturnValue().Set(obj);
-		return;
-	}
-
-	V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
-}
-
-// description: read file
-// syntax:		fileObj.read() : string
-void NaFile::method_read(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> obj = args.This();
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(obj));
-	if (pFile == nullptr)
-	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
-		return;
-	}
-
-	if (pFile->m_hFile == nullptr)
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	fseek(pFile->m_hFile, 0, SEEK_END);
-	int nSize = ftell(pFile->m_hFile);
-	rewind(pFile->m_hFile);
-
-	char *buf = new char[nSize + 1];
-	fread(buf, nSize, 1, pFile->m_hFile);
-	buf[nSize] = '\0';
-
-	// return
-	args.GetReturnValue().Set(
-		String::NewFromUtf8(isolate, buf, NewStringType::kNormal).ToLocalChecked()
-	);
-
-	delete[] buf;
-}
-
-// description: write file
-// syntax:		fileObj.write(text);
-void NaFile::method_write(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> obj = args.This();
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(obj));
-	if (pFile == nullptr || args.Length() < 1)
-	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
-		return;
-	}
-
-	if (pFile->m_hFile == nullptr)
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	String::Value strV8(args[0]);
-	NaString str((wchar_t*)*strV8);
-	size_t ret = fwrite(str.cstr(), str.GetLength(), 1, pFile->m_hFile);
-
-	// return
-	args.GetReturnValue().Set(Integer::New(isolate, ret));
-}
-
-// description: close file
-// syntax:		fileObj.close()
-void NaFile::method_close(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> obj = args.This();
-	NaFile *pFile = reinterpret_cast<NaFile*>(UnwrapObject(obj));
-	if (pFile == nullptr)
-	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
-		return;
-	}
-
-	if (pFile->m_hFile != nullptr)
-	{
-		fclose(pFile->m_hFile);
-		pFile->m_hFile = nullptr;
-	}
-
-	// return
-	args.GetReturnValue().Set(Boolean::New(isolate, true));
+	DWORD dwAttrs = ::GetFileAttributes(filename);
+	return (dwAttrs != INVALID_FILE_ATTRIBUTES);
 }

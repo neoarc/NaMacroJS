@@ -18,7 +18,7 @@
 #include "NaWindow.h"
 #include "NaControl.h"
 #include "NaImage.h"
-#include "NaFile.h"
+#include "JsFile.h"
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -71,7 +71,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 		// Note: Control class is not allowed to create by constructor
 		ADD_GLOBAL_CONSTRUCTOR(Window, global);
 		ADD_GLOBAL_CONSTRUCTOR(Image, global);
-		ADD_GLOBAL_CONSTRUCTOR(File, global);
+		ADD_GLOBAL_CONSTRUCTOR2(File, global);
 
 		// Note: Another way to add class constructor
 		/*

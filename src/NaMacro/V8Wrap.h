@@ -55,11 +55,21 @@ namespace V8Wrap
 		FunctionTemplate::New(isolate, _c_func) \
 	);
 
+// #NOTE will be deprecated
 #define ADD_GLOBAL_CONSTRUCTOR(_class, _global_obj) \
 	Local<String> _class##_name = String::NewFromUtf8(isolate, #_class, NewStringType::kNormal).ToLocalChecked(); \
 	Local<Value> _class##_value = _global_obj->Get(_class##_name); \
 	if (!_class##_value.IsEmpty() && _class##_value->IsUndefined()) { \
 		Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, Na##_class::method_constructor); \
+		_global_obj->Set(_class##_name, templ->GetFunction()); \
+	}
+
+// #NOTE new interface (based on JsClass)
+#define ADD_GLOBAL_CONSTRUCTOR2(_class, _global_obj) \
+	Local<String> _class##_name = String::NewFromUtf8(isolate, #_class, NewStringType::kNormal).ToLocalChecked(); \
+	Local<Value> _class##_value = _global_obj->Get(_class##_name); \
+	if (!_class##_value.IsEmpty() && _class##_value->IsUndefined()) { \
+		Local<FunctionTemplate> templ = FunctionTemplate::New(isolate, Js##_class::method_constructor); \
 		_global_obj->Set(_class##_name, templ->GetFunction()); \
 	}
 

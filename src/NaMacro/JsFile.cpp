@@ -140,8 +140,6 @@ void JsFile::method_constructor(V8_FUNCTION_ARGS)
 // syntax:		fileObj.read() : string
 void JsFile::method_read(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
@@ -158,13 +156,8 @@ void JsFile::method_read(V8_FUNCTION_ARGS)
 
 	// #TODO smart pointer?
 	auto buf = pFile->Read();
-
-	// return
-	//V8Wrap::SetReturnValueAsString(args.GetReturnValue(), buf); // wchar only :'(
-	args.GetReturnValue().Set(
-		String::NewFromUtf8(isolate, buf, NewStringType::kNormal).ToLocalChecked()
-	);
-
+	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), buf);
+	
 	delete[] buf;
 }
 
@@ -178,13 +171,13 @@ void JsFile::method_write(V8_FUNCTION_ARGS)
 	if (pFile == nullptr || args.Length() < 1)
 	{
 		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
 		return;
 	}
 
 	if (pFile->m_hFile == nullptr)
 	{
-		args.GetReturnValue().Set(Null(isolate));
+		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
 		return;
 	}
 
@@ -206,7 +199,7 @@ void JsFile::method_close(V8_FUNCTION_ARGS)
 	if (pFile == nullptr)
 	{
 		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
 		return;
 	}
 

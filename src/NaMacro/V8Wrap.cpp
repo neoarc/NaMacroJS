@@ -320,10 +320,22 @@ namespace V8Wrap
 		
 	}
 
+	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char * sz)
+	{
+		returnValue.Set(
+			String::NewFromUtf8(
+				returnValue.GetIsolate(),
+				sz,
+				NewStringType::kNormal
+			).ToLocalChecked()
+		);
+	}
+
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt)
 	{
 		returnValue.Set(
-			String::NewFromTwoByte(returnValue.GetIsolate(),
+			String::NewFromTwoByte(
+				returnValue.GetIsolate(),
 				(const uint16_t*)(&txt[0]),
 				NewStringType::kNormal
 			).ToLocalChecked()

@@ -30,6 +30,7 @@ namespace V8Wrap
 
 	Local<Value> GetObjectProperty(Local<Object>& obj, NaString strPropName);
 
+	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char* sz);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt);
 	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue);

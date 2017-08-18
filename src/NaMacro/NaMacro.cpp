@@ -16,17 +16,23 @@ using namespace v8;
 int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char*, int /*nShowCmd*/)
 {
 	Platform* platform = V8Wrap::Initialize();
+
 	//SetFlagsFromCommandLine(&argc, argv, true);
 	{
 		Isolate* isolate = V8Wrap::CreateNewIsolate();
 		Isolate::Scope _is(isolate);
 		HandleScope _hs(isolate);
 	
+		// this is little weird.
+		// #TODO remove default script
+		// #TODO change to usage
 		std::string defaultScriptPath = std::string(NaUrl::GetMyDocumentDirectory().cstr());
 		defaultScriptPath += "\\NaMacroJS\\NaMacro.njs";
+
 		std::string scriptPath = (__argc > 1) ? __argv[1] : defaultScriptPath;
 		Local<String> scriptSource = V8Wrap::ReadScript(isolate, scriptPath);
-		if (scriptSource.IsEmpty()) return 1;
+		if (scriptSource.IsEmpty())
+			return 1;
 
 		// Create a template for the global object.
 		Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);
@@ -39,11 +45,12 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 		V8Wrap::InitModules(isolate, global_template);
 
 		Local<Script> script = V8Wrap::Compile(isolate, context, scriptPath, scriptSource);
-		if (script.IsEmpty()) return 1;
-
-		bool ok = true;
-		ok = V8Wrap::RunScript(isolate, context, script);	if (!ok) return 1;
-		ok = V8Wrap::RunMainFunc(isolate);					if (!ok) return 1;
+		if (script.IsEmpty())
+			return 1;
+		if (!V8Wrap::RunScript(isolate, context, script))
+			return 1;
+		if (!V8Wrap::RunMainFunc(isolate))
+			return 1;
 
 		NaMacroCommon::MessageLoopTillExit(isolate);
 
@@ -52,6 +59,7 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 	}
 
 	V8Wrap::TearDown(platform);
+
 	return 0;
 }
 

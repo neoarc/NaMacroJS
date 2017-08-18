@@ -100,8 +100,7 @@ void JsFile::method_constructor(V8_FUNCTION_ARGS)
 
 		String::Value filepath(args[0]);
 
-		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(
-			isolate, 1, StackTrace::kScriptName);
+		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
 		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
 		
 		// Calculate fullpath based on current javascript path

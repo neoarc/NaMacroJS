@@ -1,14 +1,6 @@
 #pragma once
 
-#include "V8Wrap.h"
 #include "JsObjectBase.h"
-
-#include <Windows.h>
-
-#include <list>
-#include <map>
-
-#include <atltypes.h> // CRect (will be removed)
 
 class NaWindow;
 class JsWindow : public JsObjectBase
@@ -33,8 +25,8 @@ public:
 	DEFINE_CLASS_ACCESSOR(y);
 	DEFINE_CLASS_ACCESSOR(width);
 	DEFINE_CLASS_ACCESSOR(height);
-	DEFINE_CLASS_ACCESSOR_RO(clientWidth); 
-	DEFINE_CLASS_ACCESSOR_RO(clientHeight); 
+	DEFINE_CLASS_ACCESSOR_RO(clientWidth);
+	DEFINE_CLASS_ACCESSOR_RO(clientHeight);
 	DEFINE_CLASS_ACCESSOR_RO(class);
 	DEFINE_CLASS_ACCESSOR(text);
 	DEFINE_CLASS_ACCESSOR(visible);

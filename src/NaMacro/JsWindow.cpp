@@ -4,13 +4,12 @@
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
 
-#include "V8Wrap.h"
-#include "resource.h"
-
 #include "BasicModule.h"
 #include "NaControl.h"
-
 #include "NaWindow.h"
+
+#include "V8Wrap.h"
+#include "resource.h"
 
 Global<ObjectTemplate> JsWindow::s_JsWindowTemplate;
 
@@ -275,7 +274,7 @@ void JsWindow::set_visible(Local<String> name, Local<Value> value, const Propert
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	bool bVisible = value->BooleanValue();
 	if (pWindow)
-		pWindow->SetVisible(bVisible);	
+		pWindow->SetVisible(bVisible);
 }
 
 // description: topmost property getter/setter
@@ -385,7 +384,7 @@ void JsWindow::method_constructor(V8_FUNCTION_ARGS)
 {
 	JsWindow *pJsWindow = new JsWindow();
 	auto pWindow = pJsWindow->m_pNativeWindow = new NaWindow(0, NA_WINDOW_USERCREATED);
-	
+
 	Local<Object> obj = WrapObject(args.GetIsolate(), pJsWindow);
 
 	if (args.Length() >= 2)
@@ -498,7 +497,7 @@ void JsWindow::method_move(V8_FUNCTION_ARGS)
 void JsWindow::method_activate(V8_FUNCTION_ARGS)
 {
 	NaWindow *pWindow = UnwrapNativeWindow(args.This());
-	if (pWindow == NULL)
+	if (pWindow == nullptr)
 		return;
 
 	pWindow->Activate();
@@ -509,7 +508,7 @@ void JsWindow::method_activate(V8_FUNCTION_ARGS)
 void JsWindow::method_close(V8_FUNCTION_ARGS)
 {
 	NaWindow *pWindow = UnwrapNativeWindow(args.This());
-	if (pWindow == NULL)
+	if (pWindow == nullptr)
 		return;
 
 	pWindow->Close();
@@ -519,7 +518,7 @@ void JsWindow::method_close(V8_FUNCTION_ARGS)
 // syntax:      windowObj.alert(message[, title[, type]])
 void JsWindow::method_alert(V8_FUNCTION_ARGS)
 {
-	HWND hParent = NULL;
+	HWND hParent = nullptr;
 	NaWindow *pWindow = UnwrapNativeWindow(args.This());
 	if (pWindow)
 		hParent = pWindow->m_hWnd;

@@ -31,19 +31,28 @@ public:
 	HWND Create();
 	void Destroy();
 
+	// Coordinates
 	RECT GetRect();
 	RECT GetClientRect();
 	void Move(int x, int y, int w, int h, bool bRepaint = false);
+	
 	NaString GetClass();
+
 	NaString GetText();
 	void SetText(const wchar_t* wszText);
+
 	bool IsVisible();
 	void SetVisible(bool bVisible);
+
 	bool IsTopmost();
 	void SetTopmost(bool bTopmost);
+
 	void SetHandle(HWND hWnd);
+
 	int GetState();
 	void SetState(int nState);
+
+	// Methods
 	void Activate();
 	void Close();
 
@@ -69,7 +78,7 @@ public:
 	static NaWindow* GetWindow(HWND hWnd);
 
 	// utility function for console window
-	
+
 	// #TODO Remove CRect!!
 	static CRect GetWorkArea();
 	static void MoveConsoleWindowToDefaultPosition(const HWND hConsole);
@@ -81,5 +90,5 @@ class NaTaskBarWindow
 {
 public:
 	static bool IsAutoHide();
-	static CRect GetRect();	
+	static CRect GetRect();
 };

@@ -90,6 +90,9 @@
     <ClCompile Include="JsObjectBase.cpp">
       <Filter>Source Files\JsObjects</Filter>
     </ClCompile>
+    <ClCompile Include="JsWindow.cpp">
+      <Filter>Source Files\JsObjects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -144,6 +147,9 @@
       <Filter>Header Files\JsObjects</Filter>
     </ClInclude>
     <ClInclude Include="JsFile.h">
+      <Filter>Header Files\JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsWindow.h">
       <Filter>Header Files\JsObjects</Filter>
     </ClInclude>
   </ItemGroup>

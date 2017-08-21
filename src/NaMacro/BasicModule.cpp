@@ -19,6 +19,7 @@
 #include "NaControl.h"
 #include "NaImage.h"
 #include "JsFile.h"
+#include "JsWindow.h"
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -58,8 +59,9 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 		Local<Value> consolewindow_value = global->Get(consolewindow_name);
 		if (!consolewindow_value.IsEmpty() && consolewindow_value->IsUndefined())
 		{
-			NaWindow *pWindow = new NaWindow(0, NA_WINDOW_CONSOLE);
-			Local<Object> consolewindow_object = NaWindow::WrapObject(isolate, pWindow);
+			JsWindow *pJsWindow = new JsWindow();
+			pJsWindow->m_pNativeWindow = new NaWindow(0, NA_WINDOW_CONSOLE);
+			Local<Object> consolewindow_object = JsWindow::WrapObject(isolate, pJsWindow);
 			consolewindow_value = consolewindow_object;
 
 			global->Set(consolewindow_name, consolewindow_value);
@@ -69,7 +71,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	{
 		// Init class constructors to global
 		// Note: Control class is not allowed to create by constructor
-		ADD_GLOBAL_CONSTRUCTOR(Window, global);
+		ADD_GLOBAL_CONSTRUCTOR2(Window, global);
 		ADD_GLOBAL_CONSTRUCTOR(Image, global);
 		ADD_GLOBAL_CONSTRUCTOR2(File, global);
 
@@ -534,8 +536,9 @@ void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
 
-	NaWindow *pWindow = NaWindow::GetWindow(x, y);
-	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
+	JsWindow *pJsWindow = new JsWindow();
+	pJsWindow->m_pNativeWindow = NaWindow::GetWindow(x, y);
+	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
 	args.GetReturnValue().Set(result);
 }
@@ -546,8 +549,9 @@ void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
-	NaWindow *pWindow = NaWindow::GetActiveWindow();
-	Local<Object> result = NaWindow::WrapObject(isolate, pWindow);
+	JsWindow *pJsWindow = new JsWindow();
+	pJsWindow->m_pNativeWindow = NaWindow::GetActiveWindow();
+	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
 	args.GetReturnValue().Set(result);
 }

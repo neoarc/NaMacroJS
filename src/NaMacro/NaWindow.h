@@ -22,7 +22,7 @@ enum NaWindowTypes
 	NA_WINDOW_INTERNAL,
 };
 
-class NaWindow : public JsObjectBase
+class NaWindow
 {
 public:
 	NaWindow(HWND hWnd = NULL, NaWindowTypes enType = NA_WINDOW_UNKNOWN);
@@ -30,6 +30,22 @@ public:
 
 	HWND Create();
 	void Destroy();
+
+	RECT GetRect();
+	RECT GetClientRect();
+	void Move(int x, int y, int w, int h, bool bRepaint = false);
+	NaString GetClass();
+	NaString GetText();
+	void SetText(const wchar_t* wszText);
+	bool IsVisible();
+	void SetVisible(bool bVisible);
+	bool IsTopmost();
+	void SetTopmost(bool bTopmost);
+	void SetHandle(HWND hWnd);
+	int GetState();
+	void SetState(int nState);
+	void Activate();
+	void Close();
 
 	// Member
 	NaWindowTypes m_enType;
@@ -57,34 +73,6 @@ public:
 	// #TODO Remove CRect!!
 	static CRect GetWorkArea();
 	static void MoveConsoleWindowToDefaultPosition(const HWND hConsole);
-
-	// wrap object
-	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
-	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_NaWindowTemplate; };
-	static Global<ObjectTemplate> s_NaWindowTemplate;
-
-	// accessors
-	DEFINE_CLASS_ACCESSOR(x);
-	DEFINE_CLASS_ACCESSOR(y);
-	DEFINE_CLASS_ACCESSOR(width);
-	DEFINE_CLASS_ACCESSOR(height);
-	DEFINE_CLASS_ACCESSOR_RO(clientWidth); 
-	DEFINE_CLASS_ACCESSOR_RO(clientHeight); 
-	DEFINE_CLASS_ACCESSOR_RO(class);
-	DEFINE_CLASS_ACCESSOR(text);
-	DEFINE_CLASS_ACCESSOR(visible);
-	DEFINE_CLASS_ACCESSOR(topmost);
-	DEFINE_CLASS_ACCESSOR(handle);
-	DEFINE_CLASS_ACCESSOR(state);
-
-	// methods
-	DEFINE_CLASS_METHOD(constructor);
-	DEFINE_CLASS_METHOD(create);
-	DEFINE_CLASS_METHOD(move);
-	DEFINE_CLASS_METHOD(activate);
-	DEFINE_CLASS_METHOD(close);
-	DEFINE_CLASS_METHOD(alert);
-	DEFINE_CLASS_METHOD(addControl);
 };
 
 BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);

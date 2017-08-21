@@ -351,6 +351,15 @@ namespace V8Wrap
 		);
 	}
 
+	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value)
+	{
+		returnValue.Set(
+			Boolean::New(
+				returnValue.GetIsolate(),
+				value)
+		);
+	}
+
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue)
 	{
 		returnValue.Set(Null(returnValue.GetIsolate()));

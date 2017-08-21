@@ -33,6 +33,7 @@ namespace V8Wrap
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char* sz);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt);
 	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
+	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value);
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue);
 }
 

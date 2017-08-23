@@ -137,9 +137,11 @@
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
     <ClCompile Include="JsImage.cpp" />
+    <ClCompile Include="JsProcess.cpp" />
     <ClCompile Include="JsWindow.cpp" />
     <ClCompile Include="NaFile.cpp" />
     <ClCompile Include="NaMacroCommon.cpp" />
+    <ClCompile Include="NaProcess.cpp" />
     <ClCompile Include="V8Wrap.cpp" />
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
@@ -161,9 +163,11 @@
   <ItemGroup>
     <ClInclude Include="BasicModule.h" />
     <ClInclude Include="JsImage.h" />
+    <ClInclude Include="JsProcess.h" />
     <ClInclude Include="JsWindow.h" />
     <ClInclude Include="NaFile.h" />
     <ClInclude Include="NaMacroCommon.h" />
+    <ClInclude Include="NaProcess.h" />
     <ClInclude Include="V8Wrap.h" />
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />

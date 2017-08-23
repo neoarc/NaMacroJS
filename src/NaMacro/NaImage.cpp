@@ -12,8 +12,6 @@
 
 #include "ScreenModule.h"
 
-Global<ObjectTemplate> NaImage::s_NaImageTemplate;
-
 NaImage::NaImage()
 {
 	m_hMemoryDC = NULL;
@@ -33,30 +31,6 @@ NaImage::~NaImage()
 	{
 		::DeleteObject(m_hBitmap);
 	}
-}
-
-Local<ObjectTemplate> NaImage::MakeObjectTemplate(Isolate * isolate)
-{
-	EscapableHandleScope handle_scope(isolate);
-
-	Local<ObjectTemplate> templ = ObjectTemplate::New(isolate);
-	templ->SetInternalFieldCount(1);
-
-	// bind image methods
-#define ADD_IMAGE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_IMAGE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
-
-	// accessor
-	ADD_IMAGE_ACCESSOR(width);
-	ADD_IMAGE_ACCESSOR(height);
-
-	// methods
-	ADD_IMAGE_METHOD(getPixel);
-	ADD_IMAGE_METHOD(findImage);
-	ADD_IMAGE_METHOD(reset);
-	ADD_IMAGE_METHOD(save);
-
-	return handle_scope.Escape(templ);
 }
 
 POINT NaImage::FindColor(DWORD dwColor)
@@ -134,6 +108,32 @@ bool NaImage::Save(const wchar_t *filename)
 	}
 
 	return false;
+}
+
+COLORREF NaImage::GetPixel(int x, int y)
+{
+	HGDIOBJ hOldBitmap = ::SelectObject(m_hMemoryDC, m_hBitmap);
+	COLORREF color = ::GetPixel(m_hMemoryDC, x, y);
+	::SelectObject(m_hMemoryDC, hOldBitmap);
+
+	return color;
+}
+
+void NaImage::Reset()
+{
+	if (m_hMemoryDC)
+	{
+		::DeleteDC(m_hMemoryDC);
+		m_hMemoryDC = nullptr;
+	}
+
+	if (m_hBitmap)
+	{
+		::DeleteObject(m_hBitmap);
+		m_hBitmap = nullptr;
+	}
+
+	m_rc = { 0, 0, 0, 0 };
 }
 
 // description: get clsid for Save
@@ -419,238 +419,4 @@ POINT NaImage::SearchImageInImage(NaImage * pTarget, NaImage * pSource, int nAcc
 	}
 
 	return pt;
-}
-
-// description: width property getter/setter
-void NaImage::get_width(V8_GETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
-	int nWidth = 0;
-	if (pImage)
-	{
-		nWidth = pImage->m_rc.right - pImage->m_rc.left;
-	}
-
-	info.GetReturnValue().Set(
-		Integer::New(isolate, nWidth)
-		);
-}
-
-void NaImage::set_width(V8_SETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
-
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
-	if (pImage)
-	{
-		// Not Impl
-	}
-}
-
-// description: height property getter/setter
-void NaImage::get_height(V8_GETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
-	int nHeight = 0;
-	if (pImage)
-	{
-		nHeight = pImage->m_rc.bottom - pImage->m_rc.top;
-	}
-
-	info.GetReturnValue().Set(
-		Integer::New(isolate, nHeight)
-		);
-}
-
-void NaImage::set_height(V8_SETTER_ARGS)
-{
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
-
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(info.This()));
-	if (pImage)
-	{
-		// Not Impl
-	}
-}
-
-// description: constructor function
-// syntax:		new Window([x, y[, width, height]]) : windowObj
-void NaImage::method_constructor(V8_FUNCTION_ARGS)
-{
-	if (args.Length() >= 1)
-	{
-		String::Value filepath(args[0]);
-
-		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(
-			args.GetIsolate(), 1, StackTrace::kScriptName);
-		Local<StackFrame> cur_frame = stack_trace->GetFrame(0);
-		NaString strBase(*String::Utf8Value(cur_frame->GetScriptName()));
-		NaString strFilePath(*String::Utf8Value(args[0]));
-
-		NaUrl url;
-		url.SetBase(strBase);
-		url.SetUrl(strFilePath);
-
-		NaString strFullPath(url.GetFullUrl());
-
-		NaImage *pImage = NaImage::Load(strFullPath.wstr());
-		Local<Object> obj = WrapObject(args.GetIsolate(), pImage);
-
-		args.GetReturnValue().Set(obj);
-		return;
-	}
-
-	args.GetReturnValue().Set(Null(args.GetIsolate()));
-}
-
-// description: get pixel from image buffer
-// syntax:		imageObj.getPixel(x, y);
-void NaImage::method_getPixel(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> obj = args.This();
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(obj));
-	if (pImage == nullptr)
-	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
-		return;
-	}
-
-	if (args.Length() < 2)
-	{
-		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
-		return;
-	}
-
-	int x = args[0]->Int32Value();
-	int y = args[1]->Int32Value();
-
-	HGDIOBJ hOldBitmap = ::SelectObject(pImage->m_hMemoryDC, pImage->m_hBitmap);
-	COLORREF color = ::GetPixel(pImage->m_hMemoryDC, x, y);
-	::SelectObject(pImage->m_hMemoryDC, hOldBitmap);
-
-	// return
-	args.GetReturnValue().Set(Integer::New(isolate, color));
-}
-
-// description: find image(argument) from image(this)
-// syntax:		imageObj.findImage(image_object, accuracy_factor)
-void NaImage::method_findImage(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> objThis = args.This();
-	NaImage *pImageThis = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
-	if (pImageThis == nullptr)
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	if (args.Length() < 1)
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	if (!args[0]->IsObject())
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	Local<Object> objFind = args[0]->ToObject();
-	NaImage *pImageFind = reinterpret_cast<NaImage*>(UnwrapObject(objFind));
-	if (pImageFind == nullptr)
-	{
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	int nAccuracyFactor = 0;
-	if (args.Length() >= 2)
-	{
-		nAccuracyFactor = args[1]->Int32Value();
-		if (nAccuracyFactor < 0)
-			nAccuracyFactor = 0;
-	}
-
-	POINT pt = SearchImageInImage(pImageThis, pImageFind, nAccuracyFactor);
-	if (pt.x == -1 || pt.y == -1)
-	{
-		// not found!
-		args.GetReturnValue().Set(Null(isolate));
-		return;
-	}
-
-	Local<Object> objRet = Object::New(isolate);
-	objRet->Set(
-		String::NewFromUtf8(isolate, "x", NewStringType::kNormal).ToLocalChecked(),
-		Integer::New(isolate, pt.x)
-	);
-	objRet->Set(
-		String::NewFromUtf8(isolate, "y", NewStringType::kNormal).ToLocalChecked(),
-		Integer::New(isolate, pt.y)
-	);
-
-	// return
-	args.GetReturnValue().Set(objRet);
-}
-
-// description: reset image buffer
-// syntax:		imageObj.reset()
-void NaImage::method_reset(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> objThis = args.This();
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
-	if (pImage == nullptr)
-	{
-		args.GetReturnValue().Set(Boolean::New(isolate, false));
-		return;
-	}
-
-	if (pImage->m_hMemoryDC)
-	{
-		::DeleteDC(pImage->m_hMemoryDC);
-		pImage->m_hMemoryDC = nullptr;
-	}
-	
-	if (pImage->m_hBitmap)
-	{
-		::DeleteObject(pImage->m_hBitmap);
-		pImage->m_hBitmap = nullptr;
-	}
-
-	pImage->m_rc = { 0, 0, 0, 0 };	
-	
-	args.GetReturnValue().Set(Boolean::New(isolate, true));
-}
-
-// description: save image buffer to file
-// syntax:		imageObj.save(filename)
-void NaImage::method_save(V8_FUNCTION_ARGS)
-{
-	Isolate *isolate = args.GetIsolate();
-	Local<Object> objThis = args.This();
-	NaImage *pImage = reinterpret_cast<NaImage*>(UnwrapObject(objThis));
-	if (pImage == nullptr || args.Length() < 1)
-	{
-		args.GetReturnValue().Set(Boolean::New(isolate, false));
-		return;
-	}
-
-	String::Value strV8(args[0]);
-	bool bRet = pImage->Save((wchar_t*)*strV8);
-
-	args.GetReturnValue().Set(Boolean::New(isolate, bRet));
 }

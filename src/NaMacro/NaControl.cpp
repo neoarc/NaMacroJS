@@ -5,6 +5,7 @@
 
 #include "NaWindow.h"
 #include "NaImage.h"
+#include "JsImage.h"
 
 Global<ObjectTemplate> NaControl::s_NaControlTemplate;
 std::map<HWND, Persistent<Function, CopyablePersistentTraits<Function>>> NaControl::s_mapControlCallback;
@@ -414,9 +415,10 @@ void NaControl::set_image(Local<String> name, Local<Value> value, const Property
 
 	if (value->IsObject())
 	{
-		pImage = reinterpret_cast<NaImage*>(
-			NaImage::UnwrapObject(value->ToObject())
-			);		
+		auto pJsImage = reinterpret_cast<JsImage*>(
+			JsImage::UnwrapObject(value->ToObject())
+			);
+		pImage = pJsImage->m_pNativeImage;
 	}
 	else if (value->IsString())
 	{

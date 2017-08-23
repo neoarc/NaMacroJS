@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
+    <ClCompile Include="JsImage.cpp" />
     <ClCompile Include="JsWindow.cpp" />
     <ClCompile Include="NaFile.cpp" />
     <ClCompile Include="NaMacroCommon.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicModule.h" />
+    <ClInclude Include="JsImage.h" />
     <ClInclude Include="JsWindow.h" />
     <ClInclude Include="NaFile.h" />
     <ClInclude Include="NaMacroCommon.h" />

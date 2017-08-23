@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ScreenModule.h"
 
+#include "JsImage.h"
 #include "NaImage.h"
 
 HWND NaScreenModule::m_hDesktopWnd = NULL;
@@ -102,8 +103,10 @@ void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 	int w = args[2]->Int32Value();
 	int h = args[3]->Int32Value();
 
-	NaImage *pImage = NaImage::CaptureScreen(x, y, w, h);
-	auto image_obj = NaImage::WrapObject(isolate, pImage);
+	JsImage *pJsImage = new JsImage();
+	pJsImage->m_pNativeImage = NaImage::CaptureScreen(x, y, w, h);
+
+	auto image_obj = JsImage::WrapObject(isolate, pJsImage);
 
 	// return
 	args.GetReturnValue().Set(

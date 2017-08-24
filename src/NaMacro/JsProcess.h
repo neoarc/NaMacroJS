@@ -19,6 +19,8 @@ public:
 
 	// static
 	static NaProcess* UnwrapNativeProcess(Local<Object> obj);
+
+	static void FindProcesses(Isolate *isolate, const wchar_t *name, Local<Array> &results);
 	
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);

@@ -10,6 +10,7 @@ class NaProcess
 {
 public:
 	NaProcess();
+	NaProcess(HANDLE hHandle);
 	virtual ~NaProcess();
 
 	// members
@@ -27,4 +28,5 @@ public:
 	// static
 	static void FindProcesses(const wchar_t *name, FindProcessInfo &info);
 	static void KillProcess(HANDLE hProcess);
+	static NaProcess* GetProcess(HANDLE hProcess);
 };

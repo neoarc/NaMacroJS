@@ -22,6 +22,7 @@
 #include "JsFile.h"
 #include "JsWindow.h"
 #include "JsImage.h"
+#include "JSProcess.h"
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -570,14 +571,16 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 	args.GetReturnValue().Set(results);
 }
 
-// description:
-// syntax:
+// description: find processes which contains specific name
+// syntax:		findProcesses(text)
 void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 {
-	// Not Impl
 	Isolate *isolate = args.GetIsolate();
-	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
-	args.GetReturnValue().Set(result);
+	String::Value str(args[0]);
+	Local<Array> results = Array::New(isolate);
+
+	JsProcess::FindProcesses(isolate, (const wchar_t*)*str, results);
+	args.GetReturnValue().Set(results);
 }
 
 // description:

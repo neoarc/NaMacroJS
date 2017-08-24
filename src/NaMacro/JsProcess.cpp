@@ -27,6 +27,30 @@ NaProcess* JsProcess::UnwrapNativeProcess(Local<Object> obj)
 	return nullptr;
 }
 
+void JsProcess::FindProcesses(Isolate * isolate, const wchar_t * name, Local<Array>& results)
+{
+	NaProcess::FindProcessInfo info;
+	info.name = const_cast<wchar_t*>(name);
+	NaProcess::FindProcesses(name, info);
+
+	// Wrap HANDLE to V8Object
+	int nIndex = 0;
+
+	auto it = info.foundlist.begin();
+	for (; it != info.foundlist.end(); ++it) 
+	{
+		HANDLE hHandle = *it;
+
+		JsProcess *pJsProcess = new JsProcess();
+		pJsProcess->m_pNativeProcess = NaProcess::GetProcess(hHandle);
+
+		Local<Value> obj = JsProcess::WrapObject(isolate, pJsProcess);
+
+		// Fill V8Object Array
+		results->Set(nIndex++, obj);
+	}
+}
+
 Local<ObjectTemplate> JsProcess::MakeObjectTemplate(Isolate * isolate)
 {
 	EscapableHandleScope handle_scope(isolate);

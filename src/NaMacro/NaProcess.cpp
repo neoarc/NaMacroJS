@@ -10,6 +10,11 @@ NaProcess::NaProcess()
 	m_hProcess = nullptr;
 }
 
+NaProcess::NaProcess(HANDLE hHandle)
+{
+	m_hProcess = hHandle;
+}
+
 NaProcess::~NaProcess()
 {
 }
@@ -31,6 +36,10 @@ void NaProcess::FindProcesses(const wchar_t * name, FindProcessInfo & info)
 	while (hRes)
 	{
 		NaString strFound = entry.szExeFile;
+		NaString strFind(name);
+		strFound.ToLower();
+		strFind.ToLower();
+
 		if (strFound.Find(name) >= 0)
 		{
 			// #CHECK rights = terminate ...
@@ -52,4 +61,9 @@ void NaProcess::KillProcess(HANDLE hProcess)
 		TerminateProcess(hProcess, 9);
 		CloseHandle(hProcess);
 	}
+}
+
+NaProcess* NaProcess::GetProcess(HANDLE hProcess)
+{
+	return (new NaProcess(hProcess));
 }

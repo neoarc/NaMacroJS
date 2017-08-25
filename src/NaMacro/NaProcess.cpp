@@ -40,7 +40,7 @@ void NaProcess::FindProcesses(const wchar_t * name, FindProcessInfo & info)
 		strFound.ToLower();
 		strFind.ToLower();
 
-		if (strFound.Find(name) >= 0)
+		if (strFound.Find(strFind.wstr()) >= 0)
 		{
 			// #CHECK rights = terminate ...
 			HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, 0, (DWORD)entry.th32ProcessID);

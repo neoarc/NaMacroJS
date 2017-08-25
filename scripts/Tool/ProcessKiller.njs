@@ -7,11 +7,17 @@ var initial_values = [
   "DestinyECMAgent.exe",
 ];
 
+var app = {
+  name: "Process Killer",
+  version: "0.2"
+};
+
+
 function main() {
   try {
     var w = new Window(0, 0, 350, 90 + 35);
     w.create();
-    w.text = "Process Killer v0.1";
+    w.text = app.name + " v" + app.version;
     w.visible = true;
     w.topmost = true;
 

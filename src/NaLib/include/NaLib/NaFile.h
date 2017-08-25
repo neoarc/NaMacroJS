@@ -2,7 +2,7 @@
 
 #include <Windows.h>
 #include <map>
-#include <NaString.h>
+#include "NaString.h"
 
 class NaFile
 {

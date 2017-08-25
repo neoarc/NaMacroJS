@@ -54,10 +54,10 @@
     <ClInclude Include="..\include\NaLib\NaCurl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaFile.h">
+    <ClInclude Include="..\include\NaLib\NaFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaProcess.h">
+    <ClInclude Include="..\include\NaLib\NaProcess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

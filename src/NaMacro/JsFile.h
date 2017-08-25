@@ -6,7 +6,7 @@
 #include <Windows.h>
 #include <map>
 
-#include "NaFile.h"
+#include <NaLib/NaFile.h>
 
 class JsFile : public JsObjectBase
 {

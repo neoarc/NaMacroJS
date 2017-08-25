@@ -81,9 +81,6 @@
     <ClCompile Include="NaMacroCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="NaFile.cpp">
-      <Filter>Source Files\NaObjects</Filter>
-    </ClCompile>
     <ClCompile Include="JsFile.cpp">
       <Filter>Source Files\JsObjects</Filter>
     </ClCompile>
@@ -95,9 +92,6 @@
     </ClCompile>
     <ClCompile Include="JsImage.cpp">
       <Filter>Source Files\JsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="NaProcess.cpp">
-      <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
     <ClCompile Include="JsProcess.cpp">
       <Filter>Source Files\JsObjects</Filter>
@@ -149,9 +143,6 @@
     <ClInclude Include="NaMacroCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="NaFile.h">
-      <Filter>Header Files\NaObjects</Filter>
-    </ClInclude>
     <ClInclude Include="JsObjectBase.h">
       <Filter>Header Files\JsObjects</Filter>
     </ClInclude>
@@ -163,9 +154,6 @@
     </ClInclude>
     <ClInclude Include="JsImage.h">
       <Filter>Header Files\JsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="NaProcess.h">
-      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="JsProcess.h">
       <Filter>Header Files\JsObjects</Filter>

@@ -54,6 +54,12 @@
     <ClInclude Include="..\include\NaLib\NaCurl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="NaFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NaProcess.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -115,6 +121,12 @@
     </ClCompile>
     <ClCompile Include="CurlLib\src\curl_share.cpp">
       <Filter>curl</Filter>
+    </ClCompile>
+    <ClCompile Include="NaFile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaProcess.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

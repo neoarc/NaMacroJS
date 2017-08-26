@@ -16,12 +16,12 @@ class NaString
 {
 private:
 	union {
-		wchar_t* m_debugBuf; // for debug
-		unsigned char* m_buf;
+		wchar_t* m_pDebugBuf; // for debug
+		unsigned char* m_pBuf;
 	};
-	int m_bufLen;
-	int m_len;
-	char* m_charBuf;
+	int m_nBufLen;
+	int m_nLen;
+	char* m_szBuf;
 
 public:
 	// constructor
@@ -69,6 +69,7 @@ public:
 	NaString Right(const int count) const;
 	NaStrArray Split(wchar_t* ch) const;
 	int ReplaceAll(wchar_t* from, wchar_t* to);
+	void Trim();
 
 	// utility
 	const NaString& AppendFormat(const wchar_t* fmt, ...);

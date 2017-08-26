@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NaProcess.h"
 
-#include <NaLib/NaDebug.h>
+#include "NaDebug.h"
 
 #include <TlHelp32.h>
 

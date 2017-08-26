@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NaFile.h"
 
-#include <NaLib/NaDebug.h>
+#include "NaDebug.h"
 
 NaFile::NaFile()
 {
@@ -54,7 +54,7 @@ NaFile * NaFile::Load(const wchar_t * filename, const char * mode)
 	NaFile *pFile = new NaFile;
 
 	pFile->m_strName = filename;
-	pFile->m_hFile = fopen(pFile->m_strName.cstr(), mode);
+	fopen_s(&(pFile->m_hFile), pFile->m_strName.cstr(), mode);
 
 	return pFile;
 }

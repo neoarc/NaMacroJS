@@ -1,10 +1,8 @@
 #pragma once
 
-#include "V8Wrap.h"
-#include "JsObjectBase.h"
-
 #include <Windows.h>
 #include <map>
+#include "NaString.h"
 
 class NaProcess
 {

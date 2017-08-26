@@ -2,6 +2,7 @@
 #include "JsProcess.h"
 
 #include <NaLib/NaDebug.h>
+#include <NaLib/NaProcess.h>
 
 Global<ObjectTemplate> JsProcess::s_JsProcessTemplate;
 

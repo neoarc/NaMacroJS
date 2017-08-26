@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "JsFile.h"
 
+#include <NaLib/NaFile.h>
 #include <NaLib/NaDebug.h>
 
 Global<ObjectTemplate> JsFile::s_JsFileTemplate;

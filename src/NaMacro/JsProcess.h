@@ -6,8 +6,7 @@
 #include <Windows.h>
 #include <map>
 
-#include "NaProcess.h"
-
+class NaProcess;
 class JsProcess : public JsObjectBase
 {
 public:

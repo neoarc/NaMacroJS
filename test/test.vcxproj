@@ -106,7 +106,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="test_class_NaCurl.cpp" />
-    <ClCompile Include="test_class_NaHttp.cpp" />
     <ClCompile Include="test_class_NaProcess.cpp" />
     <ClCompile Include="test_class_NaStrArray.cpp" />
     <ClCompile Include="test_class_NaString.cpp" />

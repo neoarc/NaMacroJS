@@ -378,8 +378,8 @@ int NaString::ReplaceAll(wchar_t* from, wchar_t* to)
 void NaString::Trim()
 {
 	// find left
-	int left = 0;
-	for (int left = 0; left < m_nLen; left++)
+	int left;
+	for (left = 0; left < m_nLen; left++)
 	{
 		if (*((wchar_t*)m_pBuf + left) == L' ')
 			continue;
@@ -387,10 +387,10 @@ void NaString::Trim()
 	}
 
 	// find right
-	int right = m_nLen - 1;
-	for (int right = m_nLen - 1; right >= left; right--)
+	int right;
+	for (right = m_nLen - 1; right > left; right--)
 	{
-		if (*((wchar_t*)m_pBuf + left) == L' ')
+		if (*((wchar_t*)m_pBuf + right) == L' ')
 			continue;
 		break;
 	}
@@ -398,7 +398,7 @@ void NaString::Trim()
 	if (left == right)
 		SetBuf(L"");
 	else
-		SetBuf(Mid(left, right - left).wstr());
+		SetBuf(Mid(left, right - left + 1).wstr());
 }
 
 const NaString & NaString::AppendFormat(const wchar_t* fmt, ...)

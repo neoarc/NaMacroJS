@@ -142,6 +142,31 @@ TEST_CASE("NaString.Right")
 	CHECK(ns.Right(-5) == L"");  // act as CString.Right
 }
 
+TEST_CASE("NaString.Trim")
+{
+	NaString ns;
+
+	ns = (L"    Neoarc");
+	ns.Trim();
+	CHECK(ns == L"Neoarc");
+
+	ns = (L"Neoarc       ");
+	ns.Trim();
+	CHECK(ns == L"Neoarc");
+
+	ns = (L"             Neoarc            ");
+	ns.Trim();
+	CHECK(ns == L"Neoarc");
+
+	ns = (L"Neoarc");
+	ns.Trim();
+	CHECK(ns == L"Neoarc");
+
+	ns = (L"Neoarc   c");
+	ns.Trim();
+	CHECK(ns == L"Neoarc   c");
+}
+
 TEST_CASE("NaString.ToInt")
 {
 	// Not initialized (null value)

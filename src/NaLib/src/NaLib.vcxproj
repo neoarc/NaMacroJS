@@ -105,7 +105,6 @@
     <ClInclude Include="..\include\NaLib\NaCurl.h" />
     <ClInclude Include="..\include\NaLib\NaDebug.h" />
     <ClInclude Include="..\include\NaLib\NaFile.h" />
-    <ClInclude Include="..\include\NaLib\NaHttp.h" />
     <ClInclude Include="..\include\NaLib\NaLibDefines.h" />
     <ClInclude Include="..\include\NaLib\NaMessageBox.h" />
     <ClInclude Include="..\include\NaLib\NaNotifyWindow.h" />
@@ -191,7 +190,6 @@
     <ClCompile Include="NaCurl.cpp" />
     <ClCompile Include="NaDebug.cpp" />
     <ClCompile Include="NaFile.cpp" />
-    <ClCompile Include="NaHttp.cpp" />
     <ClCompile Include="NaMessageBox.cpp" />
     <ClCompile Include="NaNotifyWindow.cpp" />
     <ClCompile Include="NaProcess.cpp" />

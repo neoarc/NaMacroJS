@@ -31,11 +31,18 @@ namespace V8Wrap
 	Local<Value> GetObjectProperty(Local<Object>& obj, NaString strPropName);
 
 	template<typename T> void NullReturnValue(T &t) { SetReturnValueAsNull(t.GetReturnValue()); };
+
 	template<typename T> void SetReturnValue(T &t, bool bValue) { SetReturnValueAsBoolean(t.GetReturnValue(), bValue); };
 	template<typename T> void SetReturnValue(T &t, int nValue) { SetReturnValueAsInteger(t.GetReturnValue(), nValue); };
 	template<typename T> void SetReturnValue(T &t, const char* sz) { SetReturnValueAsString(t.GetReturnValue(), sz); };
 	template<typename T> void SetReturnValue(T &t, const wchar_t *wsz) { SetReturnValueAsString(t.GetReturnValue(), wsz); };
 	template<typename T> void SetReturnValue(T &t, const std::wstring &wstr) { SetReturnValueAsString(t.GetReturnValue(), wstr); };
+
+	// #TODO check & replace
+	template<typename T, typename T2> void SetReturnValue(T &t, Local<T2> t2) {
+		auto r = t.GetReturnValue();
+		r.set(t2);
+	};
 
 	// #TODO change to protected
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue);

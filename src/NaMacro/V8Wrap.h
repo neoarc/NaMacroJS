@@ -30,11 +30,19 @@ namespace V8Wrap
 
 	Local<Value> GetObjectProperty(Local<Object>& obj, NaString strPropName);
 
+	template<typename T> void NullReturnValue(T &t) { SetReturnValueAsNull(t.GetReturnValue()); };
+	template<typename T> void SetReturnValue(T &t, bool bValue) { SetReturnValueAsBoolean(t.GetReturnValue(), bValue); };
+	template<typename T> void SetReturnValue(T &t, int nValue) { SetReturnValueAsInteger(t.GetReturnValue(), nValue); };
+	template<typename T> void SetReturnValue(T &t, const char* sz) { SetReturnValueAsString(t.GetReturnValue(), sz); };
+	template<typename T> void SetReturnValue(T &t, const wchar_t *wsz) { SetReturnValueAsString(t.GetReturnValue(), wsz); };
+	template<typename T> void SetReturnValue(T &t, const std::wstring &wstr) { SetReturnValueAsString(t.GetReturnValue(), wstr); };
+
+	// #TODO change to protected
+	void SetReturnValueAsNull(ReturnValue<Value> returnValue);
+	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value);
+	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char* sz);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt);
-	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
-	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value);
-	void SetReturnValueAsNull(ReturnValue<Value> returnValue);
 }
 
 //------------------------------------------------------------------------------

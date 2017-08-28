@@ -66,16 +66,13 @@ void JsImage::get_width(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
-	Isolate *isolate = info.GetIsolate();
 	int nWidth = 0;
 	if (pImage)
 	{
 		nWidth = pImage->m_rc.right - pImage->m_rc.left;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, nWidth)
-		);
+	V8Wrap::SetReturnValue(info, nWidth);
 }
 
 void JsImage::set_width(V8_SETTER_ARGS)
@@ -96,16 +93,13 @@ void JsImage::get_height(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
-	Isolate *isolate = info.GetIsolate();
 	int nHeight = 0;
 	if (pImage)
 	{
 		nHeight = pImage->m_rc.bottom - pImage->m_rc.top;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, nHeight)
-		);
+	V8Wrap::SetReturnValue(info, nHeight);
 }
 
 void JsImage::set_height(V8_SETTER_ARGS)
@@ -159,14 +153,14 @@ void JsImage::method_getPixel(V8_FUNCTION_ARGS)
 	if (pImage == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
 	if (args.Length() < 2)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
@@ -185,19 +179,19 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	NaImage *pImageThis = UnwrapNativeImage(args.This());
 	if (pImageThis == nullptr)
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
 	if (args.Length() < 1)
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
 	if (!args[0]->IsObject())
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -205,7 +199,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	NaImage *pImageFind = UnwrapNativeImage(objFind);
 	if (pImageFind == nullptr)
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -221,7 +215,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	if (pt.x == -1 || pt.y == -1)
 	{
 		// not found!
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -249,11 +243,11 @@ void JsImage::method_reset(V8_FUNCTION_ARGS)
 	NaImage *pImage = UnwrapNativeImage(args.This());
 	if (pImage == nullptr)
 	{
-		V8Wrap::SetReturnValueAsBoolean(args.GetReturnValue(), false);
+		V8Wrap::SetReturnValue(args, false);
 		return;
 	}
 	
-	V8Wrap::SetReturnValueAsBoolean(args.GetReturnValue(), true);
+	V8Wrap::SetReturnValue(args, true);
 }
 
 // description: save image buffer to file
@@ -263,12 +257,12 @@ void JsImage::method_save(V8_FUNCTION_ARGS)
 	NaImage *pImage = UnwrapNativeImage(args.This());
 	if (pImage == nullptr || args.Length() < 1)
 	{
-		V8Wrap::SetReturnValueAsBoolean(args.GetReturnValue(), false);
+		V8Wrap::SetReturnValue(args, false);
 		return;
 	}
 
 	String::Value strV8(args[0]);
 	bool bRet = pImage->Save((wchar_t*)*strV8);
 
-	V8Wrap::SetReturnValueAsBoolean(args.GetReturnValue(), bRet);
+	V8Wrap::SetReturnValue(args, bRet);
 }

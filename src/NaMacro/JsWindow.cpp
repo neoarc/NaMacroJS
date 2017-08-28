@@ -112,7 +112,7 @@ void JsWindow::get_x(V8_GETTER_ARGS)
 		pWindow->m_x = rc.left;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_x);
+	V8Wrap::SetReturnValue(info, pWindow->m_x);
 }
 
 void JsWindow::set_x(V8_SETTER_ARGS)
@@ -139,7 +139,7 @@ void JsWindow::get_y(V8_GETTER_ARGS)
 		pWindow->m_y = rc.top;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_y);
+	V8Wrap::SetReturnValue(info, pWindow->m_y);
 }
 
 void JsWindow::set_y(V8_SETTER_ARGS)
@@ -166,7 +166,7 @@ void JsWindow::get_width(V8_GETTER_ARGS)
 		pWindow->m_width = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_width);
+	V8Wrap::SetReturnValue(info, pWindow->m_width);
 }
 
 void JsWindow::set_width(V8_SETTER_ARGS)
@@ -193,7 +193,7 @@ void JsWindow::get_height(V8_GETTER_ARGS)
 		pWindow->m_height = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_height);
+	V8Wrap::SetReturnValue(info, pWindow->m_height);
 }
 
 void JsWindow::set_height(V8_SETTER_ARGS)
@@ -220,7 +220,7 @@ void JsWindow::get_clientWidth(V8_GETTER_ARGS)
 		pWindow->m_clientWidth = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_clientWidth);
+	V8Wrap::SetReturnValue(info, pWindow->m_clientWidth);
 }
 
 // description: client height property getter
@@ -235,7 +235,7 @@ void JsWindow::get_clientHeight(V8_GETTER_ARGS)
 		pWindow->m_clientHeight = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), pWindow->m_clientHeight);
+	V8Wrap::SetReturnValue(info, pWindow->m_clientHeight);
 }
 
 // description: class property getter/setter
@@ -247,7 +247,7 @@ void JsWindow::get_class(V8_GETTER_ARGS)
 	if (pWindow)
 	{
 		auto strClass = pWindow->GetClass();
-		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), strClass.wstr());
+		V8Wrap::SetReturnValue(info, strClass.wstr());
 	}
 }
 
@@ -260,7 +260,7 @@ void JsWindow::get_text(V8_GETTER_ARGS)
 	if (pWindow)
 	{
 		auto strText = pWindow->GetText();
-		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), strText.wstr());
+		V8Wrap::SetReturnValue(info, strText.wstr());
 	}
 }
 
@@ -288,7 +288,7 @@ void JsWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 		bVisible = pWindow->IsVisible();
 	}
 
-	V8Wrap::SetReturnValueAsBoolean(info.GetReturnValue(), bVisible);
+	V8Wrap::SetReturnValue(info, bVisible);
 }
 
 void JsWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -312,7 +312,7 @@ void JsWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>
 	if (pWindow)
 		bTopmost = pWindow->IsTopmost();
 
-	V8Wrap::SetReturnValueAsBoolean(info.GetReturnValue(), bTopmost);
+	V8Wrap::SetReturnValue(info, bTopmost);
 }
 
 void JsWindow::set_topmost(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -333,11 +333,11 @@ void JsWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>&
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
 	{
-		V8Wrap::SetReturnValueAsInteger(info.GetReturnValue(), (int)pWindow->m_hWnd);
+		V8Wrap::SetReturnValue(info, (int)pWindow->m_hWnd);
 	}
 	else
 	{
-		V8Wrap::SetReturnValueAsNull(info.GetReturnValue());
+		V8Wrap::NullReturnValue(info);
 	}
 }
 
@@ -364,19 +364,19 @@ void JsWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& 
 		switch(nState)
 		{
 		case SW_MAXIMIZE:
-			V8Wrap::SetReturnValueAsString(info.GetReturnValue(), "maximized");
+			V8Wrap::SetReturnValue(info, "maximized");
 			break;
 		case SW_NORMAL:
-			V8Wrap::SetReturnValueAsString(info.GetReturnValue(), "normal");
+			V8Wrap::SetReturnValue(info, "normal");
 			break;
 		case SW_MINIMIZE:
-			V8Wrap::SetReturnValueAsString(info.GetReturnValue(), "minimized");
+			V8Wrap::SetReturnValue(info, "minimized");
 			break;
 		}
 	}
 	else
 	{
-		info.GetReturnValue().SetNull();
+		V8Wrap::NullReturnValue(info);
 	}
 }
 
@@ -560,10 +560,7 @@ void JsWindow::method_alert(V8_FUNCTION_ARGS)
 		args.Length() >= 3 ? nType : MB_OK
 		);
 
-	Isolate *isolate = args.GetIsolate();
-	args.GetReturnValue().Set(
-		Integer::New(isolate, nRet)
-		);
+	V8Wrap::SetReturnValue(args, nRet);
 }
 
 // description: add control object on window

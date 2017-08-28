@@ -82,10 +82,7 @@ void JsProcess::get_name(V8_GETTER_ARGS)
 	auto pProcess = UnwrapNativeProcess(info.This());
 	if (pProcess)
 	{
-		V8Wrap::SetReturnValueAsString(
-			info.GetReturnValue(),
-			pProcess->m_strName.wstr()
-		);
+		V8Wrap::SetReturnValue(info, pProcess->m_strName.wstr());
 	}
 }
 
@@ -132,23 +129,21 @@ void JsProcess::method_constructor(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+	V8Wrap::NullReturnValue(args);
 }
 
 void JsProcess::method_terminate(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-	
 	auto pProcess = UnwrapNativeProcess(args.This());
 	if (pProcess == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
 	pProcess->Terminate();
 
 	// return
-	args.GetReturnValue().Set(Boolean::New(isolate, true));
+	V8Wrap::SetReturnValue(args, true);
 }

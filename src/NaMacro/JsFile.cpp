@@ -60,10 +60,7 @@ void JsFile::get_name(V8_GETTER_ARGS)
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
 	{
-		V8Wrap::SetReturnValueAsString(
-			info.GetReturnValue(),
-			pFile->m_strName.wstr()
-		);
+		V8Wrap::SetReturnValue(info, pFile->m_strName.wstr());
 	}
 }
 
@@ -84,10 +81,7 @@ void JsFile::get_exist(V8_GETTER_ARGS)
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
 	{
-		Isolate *isolate = info.GetIsolate();
-		info.GetReturnValue().Set(
-			Boolean::New(isolate, pFile->IsExist())
-		);
+		V8Wrap::SetReturnValue(info, pFile->IsExist());
 	}
 }
 
@@ -144,19 +138,19 @@ void JsFile::method_read(V8_FUNCTION_ARGS)
 	if (pFile == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
 	if (pFile->m_hFile == nullptr)
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
 	// #TODO smart pointer?
 	auto buf = pFile->Read();
-	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), buf);
+	V8Wrap::SetReturnValue(args, buf);
 	
 	delete[] buf;
 }
@@ -165,19 +159,17 @@ void JsFile::method_read(V8_FUNCTION_ARGS)
 // syntax:		fileObj.write(text);
 void JsFile::method_write(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr || args.Length() < 1)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
 	if (pFile->m_hFile == nullptr)
 	{
-		V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -186,25 +178,23 @@ void JsFile::method_write(V8_FUNCTION_ARGS)
 	auto ret = pFile->Write(str);
 
 	// return
-	args.GetReturnValue().Set(Integer::New(isolate, ret));
+	V8Wrap::SetReturnValue(args, (int)ret);
 }
 
 // description: close file
 // syntax:		fileObj.close()
 void JsFile::method_close(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-	
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), -1);
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
 	pFile->Close();
 
 	// return
-	args.GetReturnValue().Set(Boolean::New(isolate, true));
+	V8Wrap::SetReturnValue(args, true);
 }

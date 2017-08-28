@@ -4,13 +4,10 @@
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
 
-#include "V8Wrap.h"
 #include "resource.h"
 
 #include "BasicModule.h"
 #include "NaControl.h"
-
-#include "JsWindow.h"
 
 bool NaWindow::s_bRegisterClass = false;
 
@@ -286,31 +283,14 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	return 1;
 }
 
-void NaWindow::FindWindows(Isolate *isolate, const wchar_t * name, Local<Array> &results)
+void NaWindow::FindWindows(const wchar_t *name, FindWindowsInfo &info)
 {
 	// NOTE
 	// ::FindWindow can find only exactly same named window can found.
-
-	FindWindowsInfo info;
-	info.name = const_cast<wchar_t*>(name);
+	if (info.name == 0)
+		info.name = const_cast<wchar_t*>(name);
 
 	EnumWindows(EnumWindowsProc, (LPARAM)(&info));
-
-	// Wrap HWND to V8Object
-	int nIndex = 0;
-	std::list<HWND>::iterator it;
-	it = info.foundlist.begin();
-	for (; it != info.foundlist.end(); ++it) {
-		HWND hWnd = *it;
-
-		JsWindow *pJsWindow = new JsWindow();
-		pJsWindow->m_pNativeWindow = GetWindow(hWnd);
-
-		Local<Value> obj = JsWindow::WrapObject(isolate, pJsWindow);
-
-		// Fill V8Object Array
-		results->Set(nIndex++, obj);
-	}
 }
 
 NaWindow* NaWindow::GetWindow(int x, int y)

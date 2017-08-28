@@ -15,6 +15,8 @@ public:
 	// static
 	static NaWindow* UnwrapNativeWindow(Local<Object> obj);
 
+	static void FindWindows(Isolate *isolate, const wchar_t *name, Local<Array> &results);
+
 	// wrap object
 	virtual Local<ObjectTemplate> MakeObjectTemplate(Isolate *isolate);
 	virtual Global<ObjectTemplate>& GetObjectTemplate() { return s_JsWindowTemplate; };

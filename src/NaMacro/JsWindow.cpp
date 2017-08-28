@@ -38,6 +38,31 @@ NaWindow * JsWindow::UnwrapNativeWindow(Local<Object> obj)
 	return nullptr;
 }
 
+void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>& results)
+{
+	NaWindow::FindWindowsInfo info;
+	info.name = const_cast<wchar_t*>(name);
+
+	NaWindow::FindWindows(name, info);
+
+	// Wrap HWND to V8Object
+	int nIndex = 0;
+
+	auto it = info.foundlist.begin();
+	for (; it != info.foundlist.end(); ++it)
+	{
+		HWND hWnd = *it;
+
+		JsWindow *pJsWindow = new JsWindow();
+		pJsWindow->m_pNativeWindow = NaWindow::GetWindow(hWnd);
+
+		Local<Value> obj = JsWindow::WrapObject(isolate, pJsWindow);
+
+		// Fill V8Object Array
+		results->Set(nIndex++, obj);
+	}
+}
+
 Local<ObjectTemplate> JsWindow::MakeObjectTemplate(Isolate * isolate)
 {
 	EscapableHandleScope handle_scope(isolate);

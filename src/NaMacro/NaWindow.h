@@ -1,7 +1,6 @@
 #pragma once
 
-#include "V8Wrap.h"
-#include "JsObjectBase.h"
+#include <NaLib/NaString.h>
 
 #include <Windows.h>
 
@@ -72,7 +71,7 @@ public:
 	static bool s_bRegisterClass;
 	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
-	static void FindWindows(Isolate *isolate, const wchar_t *name, Local<Array> &results);
+	static void FindWindows(const wchar_t *name, FindWindowsInfo &info);
 	static NaWindow* GetWindow(int x, int y);
 	static NaWindow* GetActiveWindow();
 	static NaWindow* GetWindow(HWND hWnd);

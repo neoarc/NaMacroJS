@@ -567,7 +567,7 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 	String::Value str(args[0]);
 	Local<Array> results = Array::New(isolate);
 
-	NaWindow::FindWindows(isolate, (const wchar_t*)*str, results);
+	JsWindow::FindWindows(isolate, (const wchar_t*)*str, results);
 	args.GetReturnValue().Set(results);
 }
 

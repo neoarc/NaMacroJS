@@ -1,8 +1,5 @@
 #pragma once
 
-#include "V8Wrap.h"
-#include "JsObjectBase.h"
-
 #include <Windows.h>
 #include <map>
 
@@ -24,7 +21,6 @@ public:
 	void Reset();
 
 	// static
-	static Local<Object> CreateV8Image(Isolate *isolate, NaImage *pImage = NULL);
 	static NaImage* CaptureScreen(int x, int y, int width, int height);
 	static NaImage* Load(const wchar_t *filename);
 	static int GetEncoderClsid(const wchar_t *format, CLSID *pClsid);

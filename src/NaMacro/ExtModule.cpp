@@ -48,7 +48,6 @@ void NaExtModule::Release()
 void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
-	Isolate *isolate = args.GetIsolate();
 
 	// Load GMacro Data
 	String::Utf8Value arg0(args[0]);

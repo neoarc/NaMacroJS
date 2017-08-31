@@ -319,6 +319,29 @@ namespace V8Wrap
 		return _prop_value;
 		
 	}
+	
+	void SetReturnValueAsNull(ReturnValue<Value> returnValue)
+	{
+		returnValue.Set(Null(returnValue.GetIsolate()));
+	}
+
+	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value)
+	{
+		returnValue.Set(
+			Boolean::New(
+				returnValue.GetIsolate(),
+				value)
+		);
+	}
+
+	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value)
+	{
+		returnValue.Set(
+			Integer::New(
+				returnValue.GetIsolate(),
+				value)
+		);
+	}
 
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char * sz)
 	{
@@ -342,26 +365,8 @@ namespace V8Wrap
 		);
 	}
 
-	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value)
+	void SetReturnValueAsObject(ReturnValue<Value> returnValue, const Local<Object>& obj)
 	{
-		returnValue.Set(
-			Integer::New(
-				returnValue.GetIsolate(),
-				value)
-		);
-	}
-
-	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value)
-	{
-		returnValue.Set(
-			Boolean::New(
-				returnValue.GetIsolate(),
-				value)
-		);
-	}
-
-	void SetReturnValueAsNull(ReturnValue<Value> returnValue)
-	{
-		returnValue.Set(Null(returnValue.GetIsolate()));
+		returnValue.Set(obj);
 	}
 }

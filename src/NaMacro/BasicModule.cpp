@@ -529,7 +529,7 @@ void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetWindow(x, y);
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, result);
 }
 
 // description: get active window
@@ -542,7 +542,7 @@ void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetActiveWindow();
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, result);
 }
 
 // description: find windows which contains specific text
@@ -554,7 +554,8 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 	Local<Array> results = Array::New(isolate);
 
 	JsWindow::FindWindows(isolate, (const wchar_t*)*str, results);
-	args.GetReturnValue().Set(results);
+
+	V8Wrap::SetReturnValue(args, results);
 }
 
 // description: find processes which contains specific name
@@ -566,7 +567,8 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 	Local<Array> results = Array::New(isolate);
 
 	JsProcess::FindProcesses(isolate, (const wchar_t*)*str, results);
-	args.GetReturnValue().Set(results);
+
+	V8Wrap::SetReturnValue(args, results);
 }
 
 // description:

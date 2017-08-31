@@ -127,7 +127,7 @@ void JsFile::method_constructor(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	V8Wrap::SetReturnValueAsNull(args.GetReturnValue());
+	V8Wrap::NullReturnValue(args);
 }
 
 // description: read file

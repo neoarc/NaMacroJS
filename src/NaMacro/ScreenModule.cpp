@@ -64,12 +64,9 @@ void NaScreenModule::get_width(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CXSCREEN);
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, metrics)
-		);
+	V8Wrap::SetReturnValue(info, metrics);
 }
 
 // description: height property getter
@@ -105,9 +102,7 @@ void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 	auto image_obj = JsImage::WrapObject(isolate, pJsImage);
 
 	// return
-	args.GetReturnValue().Set(
-		image_obj
-		);
+	V8Wrap::SetReturnValue(args, image_obj);
 }
 
 // description: find specific color from area
@@ -119,7 +114,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	if (args.Length() < 1)
 	{
 		// error
-		args.GetReturnValue().SetNull();
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -165,9 +160,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	);
 
 	// return
-	args.GetReturnValue().Set(
-		info_obj
-	);
+	V8Wrap::SetReturnValue(args, info_obj);
 }
 
 // description: get piyel color from point x,y

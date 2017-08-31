@@ -252,7 +252,7 @@ namespace V8Wrap
 
 	Local<Object> GetSystemObject(Isolate* isolate)
 	{
-		// HandleScope 안에서 호출
+		// call inside of HandleScope
 
 		Local<Object> global = isolate->GetCurrentContext()->Global();
 		Local<String> system_name = String::NewFromUtf8(isolate, "system", NewStringType::kNormal).ToLocalChecked();

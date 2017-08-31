@@ -108,16 +108,19 @@ void NaControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
 
 	if (args.Length() >= 8)
 	{
-		Local<Object> callback = args[7]->ToObject();
-		if (callback->IsFunction())
+		if (!args[7].IsEmpty() && !args[7]->IsUndefined())
 		{
-			Isolate *isolate = args.GetIsolate();
-			Local<Function> callback_func = Local<Function>::Cast(args[7]);
-			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+			Local<Object> callback = args[7]->ToObject();
+			if (callback->IsFunction())
+			{
+				Isolate *isolate = args.GetIsolate();
+				Local<Function> callback_func = Local<Function>::Cast(args[7]);
+				Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
 
-			NaControl::s_mapControlCallback.insert(
-				std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
-			);
+				NaControl::s_mapControlCallback.insert(
+					std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
+				);
+			}
 		}
 	}
 }
@@ -185,6 +188,7 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 	ADD_CONTROL_ACCESSOR(visible);
 	ADD_CONTROL_ACCESSOR_RO(parent);
 	ADD_CONTROL_ACCESSOR(image);
+	ADD_CONTROL_ACCESSOR(callback);
 
 	// methods
 	ADD_CONTROL_METHOD(focus);
@@ -439,6 +443,39 @@ void NaControl::set_image(Local<String> name, Local<Value> value, const Property
 		SetWindowLong(pControl->m_hWnd, GWL_STYLE, lStyle | SS_BITMAP);
 		SendMessage(pControl->m_hWnd, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)pImage->m_hBitmap);
 		break;
+	}
+}
+
+// description: callback property getter/setter
+void NaControl::get_callback(Local<String> name, const PropertyCallbackInfo<Value>& info)
+{
+	UNUSED_PARAMETER(name);
+
+	// #TODO Impl
+	V8Wrap::SetReturnValue(info, L"NotImplemented");
+}
+
+void NaControl::set_callback(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+{
+	UNUSED_PARAMETER(name);
+
+	// get control object(this)
+	Local<Object> obj = info.This();
+	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(obj));
+	
+	if (!value.IsEmpty() && !value->IsUndefined())
+	{
+		Local<Object> callback = value->ToObject();
+		if (callback->IsFunction())
+		{
+			Isolate *isolate = info.GetIsolate();
+			Local<Function> callback_func = Local<Function>::Cast(value);
+			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+			NaControl::s_mapControlCallback.insert(
+				std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
+			);
+		}
 	}
 }
 

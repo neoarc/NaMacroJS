@@ -72,9 +72,6 @@
     <ClCompile Include="NaControl.cpp">
       <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
-    <ClCompile Include="TwitterModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
     <ClCompile Include="V8Wrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -133,9 +130,6 @@
     </ClInclude>
     <ClInclude Include="NaControl.h">
       <Filter>Header Files\NaObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="TwitterModule.h">
-      <Filter>Header Files\Module</Filter>
     </ClInclude>
     <ClInclude Include="V8Wrap.h">
       <Filter>Header Files</Filter>

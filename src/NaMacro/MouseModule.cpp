@@ -82,10 +82,7 @@ void NaMouseModule::get_x(Local<String> /*name*/, const PropertyCallbackInfo<Val
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	Isolate *isolate = info.GetIsolate();
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pt.x)
-		);
+	V8Wrap::SetReturnValue(info, pt.x);
 }
 
 // description: x setter 
@@ -104,10 +101,7 @@ void NaMouseModule::get_y(Local<String> /*name*/, const PropertyCallbackInfo<Val
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	Isolate *isolate = info.GetIsolate();
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pt.y)
-		);
+	V8Wrap::SetReturnValue(info, pt.y);
 }
 
 // description: y setter 

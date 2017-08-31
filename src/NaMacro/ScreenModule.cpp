@@ -77,24 +77,19 @@ void NaScreenModule::get_height(V8_GETTER_ARGS)
 {
 	UNUSED_PARAMETER(name);
 
-	Isolate *isolate = info.GetIsolate();
 	int metrics = GetSystemMetrics(SM_CYSCREEN);
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, metrics)
-		);
+	V8Wrap::SetReturnValue(info, metrics);
 }
 
 // description: capture screen area to image object
 // syntax:		system.screen.capture(x, y, width, height) : image object
 void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-
 	if (args.Length() < 4)
 	{
 		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
@@ -106,6 +101,7 @@ void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 	JsImage *pJsImage = new JsImage();
 	pJsImage->m_pNativeImage = NaImage::CaptureScreen(x, y, w, h);
 
+	Isolate *isolate = args.GetIsolate();
 	auto image_obj = JsImage::WrapObject(isolate, pJsImage);
 
 	// return
@@ -153,7 +149,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	if (pt.x == -1 || pt.y == -1)
 	{
 		// error
-		args.GetReturnValue().SetNull();
+		V8Wrap::NullReturnValue(args);
 		return;
 	}
 
@@ -178,12 +174,10 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 // syntax:		system.screen.getPixel(x, y) : color
 void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 {
-	Isolate *isolate = args.GetIsolate();
-
 	if (args.Length() < 2)
 	{
 		// error
-		args.GetReturnValue().Set(Integer::New(isolate, -1));
+		V8Wrap::SetReturnValue(args, -1);
 		return;
 	}
 
@@ -216,7 +210,7 @@ void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 
 	// return
-	args.GetReturnValue().Set(Integer::New(isolate, color));
+	V8Wrap::SetReturnValue(args, (int)color);
 }
 
 // description: change aero mode to on/off
@@ -226,7 +220,6 @@ void NaScreenModule::method_setAero(V8_FUNCTION_ARGS)
 	if (args.Length() < 1)
 		return;
 
-	Isolate *isolate = args.GetIsolate();
 	bool bAeroOn = args[0]->BooleanValue();
 
 	WCHAR strFullPath[MAX_PATH * 2];
@@ -255,6 +248,6 @@ void NaScreenModule::method_setAero(V8_FUNCTION_ARGS)
 		hr = DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
 	*/
 
-	args.GetReturnValue().Set(Boolean::New(isolate, SUCCEEDED(hr)));
+	V8Wrap::SetReturnValue(args, SUCCEEDED(hr));
 	return;
 }

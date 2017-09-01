@@ -1,8 +1,8 @@
 //
 // 2017.08.17 neoarc
 //
-
 include("../Addon/UI.js");
+include("../Addon/Config.js");
 
 // you can define your initial values for find/kill process
 var initial_values = [
@@ -41,6 +41,8 @@ function main() {
 
     // powered by UI addon
     generateUI(ui_define);
+
+    config.init(app.name, ui_define.window);
     
     // initialize UI callbacks
     const cs = ui_define.controls;

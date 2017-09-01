@@ -1,4 +1,5 @@
-include("../Addon/Window.js")
+include("../Addon/Window.js");
+include("../Addon/Config.js");
 
 var annoyingWindows = [
     // name, width, height, closebutton x, closebutton y, checkConditionFunction, closeFunction
@@ -22,31 +23,26 @@ var annoyingWindows = [
     */
 ];
 
-var appConfig = {
-    x: undefined,
-    y: undefined,
-};
-
 function main()
 {
-    loadConfig();
-
     var c = consoleWindow;
     c.visible = true;
     c.width = 400;
     c.height = 80;
     c.move("right","bottom");
 
+    config.init("Do Not Annoy", c);
+
     var indicator = ["＼","│","／","ㅡ"];
     var indicatorIdx = 0;
-    for ( ; ; )
-    {
+    
+    setInterval(500, function() {
         c.text = indicator[indicatorIdx++] + " DNA - Do Not Annoy v0.3 ";
         if (indicatorIdx >= indicator.length)
             indicatorIdx = 0;
         checkWindows();
         sleep(500);
-    }
+    });
 }
 
 function checkWindows()
@@ -69,9 +65,4 @@ function checkWindows()
             }
         }
     }
-}
-
-function loadConfig()
-{
-    //... todo
 }

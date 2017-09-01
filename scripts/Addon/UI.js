@@ -12,6 +12,7 @@ function generateUI(data)
     w.create();
     w.text = title;
     w.visible = true;
+    data.window = w;
 
     // calc nc size
     var border_width = (w.width - w.clientWidth) / 2;
@@ -55,7 +56,7 @@ function generateUI(data)
     // let's create controls
     if (data.controls === undefined)
         data.controls = [];
-    
+
     const controls_input = data.controls;
     data.controls = {};
     data.callbacks = new Array(line_cnt);

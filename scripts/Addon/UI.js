@@ -2,7 +2,7 @@
 // for easy UI initialize
 // 2017.08.25 neoarc
 //
-function createUI(data)
+function generateUI(data)
 {
     var title = data.title;
     var line_cnt = data.controls.length;
@@ -17,6 +17,11 @@ function createUI(data)
     var border_width = (w.width - w.clientWidth) / 2;
     var titlebar_height = (w.height - border_width - w.clientHeight);
 
+    const index_id = 0;
+    const index_type = 1;
+    const index_width = 2;
+    const index_text = 3;
+
     // calc correct client size
     var line_width_max = 0;
     var default_padding = 10;
@@ -27,15 +32,10 @@ function createUI(data)
 
         // calc line width
         var line_width = default_padding;
-
         for (var i=0; i<line_controls_cnt; i++) {
             var control_data = line_controls[i];
             var control_data2 = control_data.split(":");
-
-            var control_type = control_data2[0];
-            var control_width = parseInt(control_data2[1]);
-            var control_text = control_data2.length >= 3 ? control_data2[2] : "";
-
+            var control_width = parseInt(control_data2[index_width]);
             line_width += control_width;
             line_width += default_padding;
         }
@@ -53,9 +53,12 @@ function createUI(data)
         (default_padding * (line_cnt + 1));
 
     // let's create controls
+    const controls_input = data.controls;
+    data.controls = {};
+    data.callbacks = new Array(line_cnt);
     var current_y = default_padding;
     for (var line=0; line<line_cnt; line++) {
-        var line_controls = data.controls[line];
+        var line_controls = controls_input[line];
         var line_controls_cnt = line_controls.length;
 
         var current_x = default_padding;
@@ -63,14 +66,14 @@ function createUI(data)
             var control_data = line_controls[i];
             var control_data2 = control_data.split(":");
 
-            var control_type = control_data2[0];
-            var control_width = parseInt(control_data2[1]);
-            var control_text = control_data2.length >= 3 ? control_data2[2] : "";
+            var control_type = control_data2[index_type];
+            var control_width = parseInt(control_data2[index_width]);
+            var control_text = control_data2.length >= 4 ? control_data2[index_text] : "";
 
             line_width += control_width;
             line_width += default_padding;
 
-            w.addControl(
+            var control = w.addControl(
                 control_type,
                 current_x, 
                 current_y,
@@ -78,8 +81,10 @@ function createUI(data)
                 default_line_height,
                 control_text,
                 true,
-                function () {}
+                undefined
             );
+            control.id = control_data2[index_id];
+            data.controls[control.id] = control;
 
             current_x += control_width;
             current_x += default_padding;

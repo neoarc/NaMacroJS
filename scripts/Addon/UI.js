@@ -53,6 +53,9 @@ function generateUI(data)
         (default_padding * (line_cnt + 1));
 
     // let's create controls
+    if (data.controls === undefined)
+        data.controls = [];
+    
     const controls_input = data.controls;
     data.controls = {};
     data.callbacks = new Array(line_cnt);

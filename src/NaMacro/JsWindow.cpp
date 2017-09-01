@@ -425,7 +425,7 @@ void JsWindow::method_constructor(V8_FUNCTION_ARGS)
 	}
 
 	// #TODO SetReturnValueAsObject
-	args.GetReturnValue().Set(obj);
+	V8Wrap::SetReturnValue(args, obj);
 }
 
 // description: create a new window handle
@@ -579,5 +579,5 @@ void JsWindow::method_addControl(V8_FUNCTION_ARGS)
 
 	pControl->Create(args, pWindow);
 
-	args.GetReturnValue().Set(obj);
+	V8Wrap::SetReturnValue(args, obj);
 }

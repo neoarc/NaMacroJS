@@ -108,16 +108,19 @@ void NaControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
 
 	if (args.Length() >= 8)
 	{
-		Local<Object> callback = args[7]->ToObject();
-		if (callback->IsFunction())
+		if (!args[7].IsEmpty() && !args[7]->IsUndefined())
 		{
-			Isolate *isolate = args.GetIsolate();
-			Local<Function> callback_func = Local<Function>::Cast(args[7]);
-			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+			Local<Object> callback = args[7]->ToObject();
+			if (callback->IsFunction())
+			{
+				Isolate *isolate = args.GetIsolate();
+				Local<Function> callback_func = Local<Function>::Cast(args[7]);
+				Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
 
-			NaControl::s_mapControlCallback.insert(
-				std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
-			);
+				NaControl::s_mapControlCallback.insert(
+					std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
+				);
+			}
 		}
 	}
 }
@@ -185,6 +188,7 @@ Local<ObjectTemplate> NaControl::MakeObjectTemplate(Isolate * isolate)
 	ADD_CONTROL_ACCESSOR(visible);
 	ADD_CONTROL_ACCESSOR_RO(parent);
 	ADD_CONTROL_ACCESSOR(image);
+	ADD_CONTROL_ACCESSOR(callback);
 
 	// methods
 	ADD_CONTROL_METHOD(focus);
@@ -198,7 +202,6 @@ void NaControl::get_x(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
 	{
 		RECT rc;
@@ -206,9 +209,7 @@ void NaControl::get_x(V8_GETTER_ARGS)
 		pControl->m_x = rc.left;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pControl->m_x)
-	);
+	V8Wrap::SetReturnValue(info, pControl->m_x);
 }
 
 void NaControl::set_x(V8_SETTER_ARGS)
@@ -230,7 +231,6 @@ void NaControl::get_y(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
 	{
 		RECT rc;
@@ -238,9 +238,7 @@ void NaControl::get_y(V8_GETTER_ARGS)
 		pControl->m_y = rc.top;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pControl->m_y)
-	);
+	V8Wrap::SetReturnValue(info, pControl->m_y);
 }
 
 void NaControl::set_y(V8_SETTER_ARGS)
@@ -262,7 +260,6 @@ void NaControl::get_width(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
 	{
 		RECT rc;
@@ -270,9 +267,7 @@ void NaControl::get_width(V8_GETTER_ARGS)
 		pControl->m_width = rc.right - rc.left;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pControl->m_width)
-	);
+	V8Wrap::SetReturnValue(info, pControl->m_width);
 }
 
 void NaControl::set_width(V8_SETTER_ARGS)
@@ -294,7 +289,6 @@ void NaControl::get_height(V8_GETTER_ARGS)
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 	if (pControl && pControl->m_hWnd)
 	{
 		RECT rc;
@@ -302,9 +296,7 @@ void NaControl::get_height(V8_GETTER_ARGS)
 		pControl->m_height = rc.bottom - rc.top;
 	}
 
-	info.GetReturnValue().Set(
-		Integer::New(isolate, pControl->m_height)
-	);
+	V8Wrap::SetReturnValue(info, pControl->m_height);
 }
 
 void NaControl::set_height(V8_SETTER_ARGS)
@@ -330,7 +322,8 @@ void NaControl::get_text(V8_GETTER_ARGS)
 	{
 		wchar_t str[1024];
 		::GetWindowText(pControl->m_hWnd, str, 1024);
-		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), str);
+
+		V8Wrap::SetReturnValue(info, str);
 	}
 }
 
@@ -352,15 +345,12 @@ void NaControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 	UNUSED_PARAMETER(name);
 
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(info.This()));
-	Isolate *isolate = info.GetIsolate();
 
 	bool bVisible = false;
 	if (pControl)
 		bVisible = (::IsWindowVisible(pControl->m_hWnd) == TRUE);
 
-	info.GetReturnValue().Set(
-		Boolean::New(isolate, bVisible)
-	);
+	V8Wrap::SetReturnValue(info, bVisible);
 }
 
 void NaControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -384,7 +374,7 @@ void NaControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>
 
 	Isolate *isolate = info.GetIsolate();
 
-	// TODO Impl
+	// #TODO Impl
 	info.GetReturnValue().Set(
 		Undefined(isolate)
 	);
@@ -397,7 +387,7 @@ void NaControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>&
 
 	Isolate *isolate = info.GetIsolate();
 
-	// TODO Impl
+	// #TODO Impl
 	info.GetReturnValue().Set(
 		Undefined(isolate)
 	);
@@ -456,6 +446,39 @@ void NaControl::set_image(Local<String> name, Local<Value> value, const Property
 	}
 }
 
+// description: callback property getter/setter
+void NaControl::get_callback(Local<String> name, const PropertyCallbackInfo<Value>& info)
+{
+	UNUSED_PARAMETER(name);
+
+	// #TODO Impl
+	V8Wrap::SetReturnValue(info, L"NotImplemented");
+}
+
+void NaControl::set_callback(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
+{
+	UNUSED_PARAMETER(name);
+
+	// get control object(this)
+	Local<Object> obj = info.This();
+	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(obj));
+	
+	if (!value.IsEmpty() && !value->IsUndefined())
+	{
+		Local<Object> callback = value->ToObject();
+		if (callback->IsFunction())
+		{
+			Isolate *isolate = info.GetIsolate();
+			Local<Function> callback_func = Local<Function>::Cast(value);
+			Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
+
+			NaControl::s_mapControlCallback.insert(
+				std::pair<HWND, Persistent<Function, CopyablePersistentTraits<Function>>>(pControl->m_hWnd, percy)
+			);
+		}
+	}
+}
+
 // description: set focus to control
 // syntax:		controlObj.focus();
 void NaControl::method_focus(V8_FUNCTION_ARGS)
@@ -463,18 +486,13 @@ void NaControl::method_focus(V8_FUNCTION_ARGS)
 	NaControl *pControl = reinterpret_cast<NaControl*>(UnwrapObject(args.This()));
 
 	HWND hWnd = pControl->m_hWnd;
-	Isolate *isolate = args.GetIsolate();
 	if (hWnd)
 	{
 		SetFocus(hWnd);
 
-		args.GetReturnValue().Set(
-			Boolean::New(isolate, true)
-		);
+		V8Wrap::SetReturnValue(args, true);
 		return;
 	}
 
-	args.GetReturnValue().Set(
-		Boolean::New(isolate, false)
-	);
+	V8Wrap::SetReturnValue(args, false);
 }

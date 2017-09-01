@@ -1,75 +1,80 @@
 //
 // 2017.08.17 neoarc
 //
+include("../Addon/UI.js");
+include("../Addon/Config.js");
 
+// you can define your initial values for find/kill process
 var initial_values = [
   "PantaAgent.exe",
   "DestinyECMAgent.exe",
 ];
 
+// define this script itself
 var app = {
   name: "Process Killer",
-  version: "0.2"
+  version: "0.3"
 };
-
 
 function main() {
   try {
-    var w = new Window(0, 0, 350, 90 + 35);
-    w.create();
-    w.text = app.name + " v" + app.version;
-    w.visible = true;
-    w.topmost = true;
+    // UI definition
+    var ui_define = {
+      title: (app.name + " v" + app.version),
+      controls: []
+    };
 
-    if (initial_values && initial_values.length > 0)
-    {
-      for (var i=0; i<initial_values.length; i++)
-      {
-        initUI(w, i * 35, initial_values[i]);
-      }
+    // creating UI definition dynamically
+    const len = initial_values.length;
+    if (len == 0)
+      ui_define.controls.push([ "Edit0:Edit:180", "Static0:Static:30:-", "Button0:Button:80:Kill" ]);
+
+    // refers initial_values
+    for (var i=0; i<len; i++) {
+      controls_per_line = [ 
+        "Edit" + i + ":Edit:180:" + initial_values[i],
+        "Static" + i + ":Static:30:-", 
+        "Button" + i + ":Button:80:Kill" 
+      ];
+      ui_define.controls.push(controls_per_line);
     }
-    else
-      initUI(w, 0);
+
+    // powered by UI addon
+    generateUI(ui_define);
+
+    config.init(app.name, ui_define.window);
     
+    // initialize UI callbacks
+    const cs = ui_define.controls;
+    for (var i=0; i<initial_values.length; i++) {
+      var static = cs["Static" + i];
+      var edit = cs["Edit" + i];
+      var button = cs["Button" + i];
+      
+      initCallbacks(static, edit, button);
+    }    
   } catch (e) {
     alert("Error: " + e + " / " + typeof(e));
   }
 }
 
-function initUI(_window, y, initial_value)
-{
-  if (initial_value === undefined)
-    initial_value = "";
-
-  var edtFocus;
-  var edtName;
-  var staticResult;
-  edtName = _window.addControl("Edit", 10, y + 10, 180, 30, initial_value, true, function(code) {
-      if (code == 256)
-        edtFocus = edtName;
-      if (edtFocus != edtName)
-        return;
-  });
-
-  staticResult = _window.addControl("Static", 200, y + 10, 30, 30, "-", true, function () {});
-
-  var c = _window.addControl("Button", 240, y + 10, 80, 30, "Kill", true, function() {
-    var ar = findProcesses(edtName.text);
-    for (var i=0; i<ar.length; i++)
-    {
-      ar[i].terminate();
+function initCallbacks(static, edit, button) {
+  // kill button callback
+  button.callback = function () {
+    var ar = findProcesses(edit.text);
+    for (var j=0; j<ar.length; j++) {
+      ar[j].terminate();
     }
-  });
+  };
 
+  // realtime search process
   setInterval(1000, function() {
-    var name = edtName.text;
-    if (name.length > 0)
-    {
-      var ar = findProcesses(edtName.text);
-      staticResult.text = ar.length;
+    var name = edit.text;
+    if (name.length > 0) {
+      var ar = findProcesses(edit.text);
+      static.text = ar.length;
     }
     else
-      staticResult.text = "-";
+      static.text = "-";
   });
 }
-

@@ -48,6 +48,7 @@ public:
 	DEFINE_CLASS_ACCESSOR(visible);
 	DEFINE_CLASS_ACCESSOR_RO(parent);
 	DEFINE_CLASS_ACCESSOR(image);
+	DEFINE_CLASS_ACCESSOR(callback);
 
 	// methods
 	DEFINE_CLASS_METHOD(focus);

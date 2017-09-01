@@ -119,7 +119,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
-		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), pcname);
+		V8Wrap::SetReturnValue(info, pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
@@ -128,7 +128,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 
 	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
-		V8Wrap::SetReturnValueAsString(info.GetReturnValue(), username);
+		V8Wrap::SetReturnValue(info, username);
 }
 
 void NaBasicModule::Release()
@@ -363,7 +363,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 	//new Promise();
 
 	// #TODO change return value to Promise object (from string)
-	V8Wrap::SetReturnValueAsString(args.GetReturnValue(), strRet.wstr());
+	V8Wrap::SetReturnValue(args, strRet.wstr());
 }
 
 // description: show MessageBox with message
@@ -380,10 +380,7 @@ void NaBasicModule::method_alert(V8_FUNCTION_ARGS)
 		args.Length() >= 3 ? nType : MB_OK
 		);
 
-	Isolate *isolate = args.GetIsolate();
-	args.GetReturnValue().Set(
-		Integer::New(isolate, nRet)
-		);
+	V8Wrap::SetReturnValue(args, nRet);
 }
 
 // description: show MessageBox with message
@@ -410,11 +407,7 @@ void NaBasicModule::method_confirm(V8_FUNCTION_ARGS)
 		break;
 	}
 
-	Isolate *isolate = args.GetIsolate();
-	args.GetReturnValue().Set(
-		//Integer::New(isolate, nRet)
-		Boolean::New(isolate, bRet)
-	);
+	V8Wrap::SetReturnValue(args, bRet);
 }
 
 // description: show MessageBox with message
@@ -433,10 +426,7 @@ void NaBasicModule::method_prompt(V8_FUNCTION_ARGS)
 			args.Length() >= 3 ? (const wchar_t*)*default_string : L""
 		);
 
-	Isolate *isolate = args.GetIsolate();
-	args.GetReturnValue().Set(
-		String::NewFromUtf8(isolate, strRet.cstr(), NewStringType::kNormal, strRet.GetLength()).ToLocalChecked()
-	);
+	V8Wrap::SetReturnValue(args, strRet.cstr());
 }
 
 // description: suspends the excution script
@@ -471,9 +461,7 @@ void NaBasicModule::method_setInterval(V8_FUNCTION_ARGS)
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		args.GetReturnValue().Set(
-			Integer::New(isolate, nTimerID)
-		);
+		V8Wrap::SetReturnValue(args, nTimerID);
 	}
 }
 
@@ -517,9 +505,7 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		args.GetReturnValue().Set(
-			Integer::New(isolate, nTimerID)
-		);
+		V8Wrap::SetReturnValue(args, nTimerID);
 	}
 }
 
@@ -543,7 +529,7 @@ void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetWindow(x, y);
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, result);
 }
 
 // description: get active window
@@ -556,7 +542,7 @@ void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetActiveWindow();
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, result);
 }
 
 // description: find windows which contains specific text
@@ -568,7 +554,8 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 	Local<Array> results = Array::New(isolate);
 
 	JsWindow::FindWindows(isolate, (const wchar_t*)*str, results);
-	args.GetReturnValue().Set(results);
+
+	V8Wrap::SetReturnValue(args, results);
 }
 
 // description: find processes which contains specific name
@@ -580,7 +567,8 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 	Local<Array> results = Array::New(isolate);
 
 	JsProcess::FindProcesses(isolate, (const wchar_t*)*str, results);
-	args.GetReturnValue().Set(results);
+
+	V8Wrap::SetReturnValue(args, results);
 }
 
 // description:
@@ -588,9 +576,7 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 void NaBasicModule::method_findTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl
-	Isolate *isolate = args.GetIsolate();
-	Local<String> result = String::NewFromUtf8(isolate, "NotImpl", NewStringType::kNormal, 7).ToLocalChecked();
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, L"NotImplemented");
 }
 
 // description: Execute external process
@@ -676,5 +662,5 @@ void NaBasicModule::method_executeSync(V8_FUNCTION_ARGS)
 	GetExitCodeProcess(info.hProcess, &dwExitCode);
 
 	// implement return value
-	V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), dwExitCode);
+	V8Wrap::SetReturnValue(args, (int)dwExitCode);
 }

@@ -44,11 +44,10 @@ void NaExtModule::Release()
 }
 
 // description: Convert GMacro data to NaMacro script
-// syxtax:		convGMacroToNaMacro(filename)
+// syntax:		convGMacroToNaMacro(filename)
 void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
-	Isolate *isolate = args.GetIsolate();
 
 	// Load GMacro Data
 	String::Utf8Value arg0(args[0]);
@@ -185,8 +184,7 @@ void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 		strNaScript += str;
 	}
 
-	Local<String> result = String::NewFromUtf8(isolate, strNaScript.data(), NewStringType::kNormal, strNaScript.length()).ToLocalChecked();
-	args.GetReturnValue().Set(result);
+	V8Wrap::SetReturnValue(args, strNaScript.data());
 }
 
 // description: text to speech

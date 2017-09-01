@@ -124,8 +124,8 @@ void JsProcess::method_constructor(V8_FUNCTION_ARGS)
 		//pJsProcess->m_pNativeProcess = NaProcess::Load(strFullPath.wstr(), strMode.cstr());
 
 		Local<Object> obj = WrapObject(isolate, pJsProcess);
-		args.GetReturnValue().Set(obj);
 
+		V8Wrap::SetReturnValue(args, obj);
 		return;
 	}
 

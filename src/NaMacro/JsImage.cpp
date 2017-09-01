@@ -138,11 +138,11 @@ void JsImage::method_constructor(V8_FUNCTION_ARGS)
 		pJsImage->m_pNativeImage = NaImage::Load(strFullPath.wstr());
 		Local<Object> obj = WrapObject(args.GetIsolate(), pJsImage);
 
-		args.GetReturnValue().Set(obj);
+		V8Wrap::SetReturnValue(args, obj);
 		return;
 	}
 
-	args.GetReturnValue().Set(Null(args.GetIsolate()));
+	V8Wrap::NullReturnValue(args);
 }
 
 // description: get pixel from image buffer
@@ -169,7 +169,7 @@ void JsImage::method_getPixel(V8_FUNCTION_ARGS)
 	auto color = pImage->GetPixel(x, y);
 
 	// return
-	V8Wrap::SetReturnValueAsInteger(args.GetReturnValue(), color);
+	V8Wrap::SetReturnValue(args, (int)color);
 }
 
 // description: find image(argument) from image(this)
@@ -233,7 +233,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	);
 
 	// return
-	args.GetReturnValue().Set(objRet);
+	V8Wrap::SetReturnValue(args, objRet);
 }
 
 // description: reset image buffer

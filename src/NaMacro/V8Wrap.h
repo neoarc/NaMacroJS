@@ -37,19 +37,16 @@ namespace V8Wrap
 	template<typename T> void SetReturnValue(T &t, const char* sz) { SetReturnValueAsString(t.GetReturnValue(), sz); };
 	template<typename T> void SetReturnValue(T &t, const wchar_t *wsz) { SetReturnValueAsString(t.GetReturnValue(), wsz); };
 	template<typename T> void SetReturnValue(T &t, const std::wstring &wstr) { SetReturnValueAsString(t.GetReturnValue(), wstr); };
-
-	// #TODO check & replace
-	template<typename T, typename T2> void SetReturnValue(T &t, Local<T2> t2) {
-		auto r = t.GetReturnValue();
-		r.set(t2);
-	};
+	template<typename T> void SetReturnValue(T &t, const Local<Object> &obj) { SetReturnValueAsObject(t.GetReturnValue(), obj); };
 
 	// #TODO change to protected
+	// #TODO or remove?
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue);
 	void SetReturnValueAsBoolean(ReturnValue<Value> returnValue, bool value);
 	void SetReturnValueAsInteger(ReturnValue<Value> returnValue, const int value);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const char* sz);
 	void SetReturnValueAsString(ReturnValue<Value> returnValue, const std::wstring& txt);
+	void SetReturnValueAsObject(ReturnValue<Value> returnValue, const Local<Object> &obj);
 }
 
 //------------------------------------------------------------------------------

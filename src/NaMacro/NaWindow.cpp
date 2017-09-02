@@ -5,8 +5,6 @@
 #include <NaLib/NaNotifyWindow.h>
 
 #include "resource.h"
-
-#include "BasicModule.h"
 #include "NaControl.h"
 
 bool NaWindow::s_bRegisterClass = false;

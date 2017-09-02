@@ -55,6 +55,8 @@ public:
 	operator const wchar_t* () const;
 
 	// functions
+	bool IsEmpty() const;
+	void Empty();
 	void ToLower();
 	void ToUpper();
 	const NaString& Format(const wchar_t* fmt, ...);

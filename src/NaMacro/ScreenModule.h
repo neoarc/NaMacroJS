@@ -11,24 +11,6 @@ public:
 
 	Local<Object> GetScreenObject(Isolate *isolate);
 
-	static HWND GetDesktopHWND()
-	{
-		if (m_hDesktopWnd)
-			return m_hDesktopWnd;
-		m_hDesktopWnd = ::GetDesktopWindow();
-		return m_hDesktopWnd;
-	}
-	static HDC GetDesktopDC()
-	{
-		if (m_hDesktopDC)
-			return m_hDesktopDC;
-		m_hDesktopDC = ::GetWindowDC(m_hDesktopWnd);
-		return m_hDesktopDC;
-	}
-	static HWND m_hDesktopWnd;
-	static HDC m_hDesktopDC;
-	static bool m_bAeroStatus;
-
 	// accessors
 	DEFINE_CLASS_ACCESSOR_RO(width);
 	DEFINE_CLASS_ACCESSOR_RO(height);

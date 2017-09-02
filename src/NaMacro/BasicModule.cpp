@@ -11,13 +11,13 @@
 #include <NaLib/NaMessageBox.h>
 #include <NaLib/NaNotifyWindow.h>
 #include <NaLib/NaCurl.h>
+#include <NaLib/NaImage.h>
 
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
 
 #include "NaWindow.h"
 #include "NaControl.h"
-#include "NaImage.h"
 
 #include "JsFile.h"
 #include "JsWindow.h"

@@ -1,16 +1,15 @@
 #include "stdafx.h"
 #include "NaImage.h"
 
-#include <NaLib/NaString.h>
-#include <NaLib/NaDebug.h>
+#include "NaString.h"
+#include "NaDebug.h"
+#include "NaDesktop.h"
 
 #pragma warning(push)
 	#pragma warning(disable:4458)
 	#include <gdiplus.h>
 #pragma warning(pop)
 #pragma comment(lib, "gdiplus.lib")
-
-#include "ScreenModule.h"
 
 NaImage::NaImage()
 {
@@ -183,7 +182,7 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 {
 	NaImage *pImage = new NaImage();
 
-	HDC hDC = NaScreenModule::GetDesktopDC();
+	HDC hDC = NaDesktop::GetDC();
 	pImage->m_hMemoryDC = ::CreateCompatibleDC(hDC);
 	pImage->m_hBitmap = ::CreateCompatibleBitmap(hDC, width, height);
 	HGDIOBJ hOldBitmap = ::SelectObject(pImage->m_hMemoryDC, pImage->m_hBitmap);
@@ -207,7 +206,7 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 NaImage * NaImage::Load(const wchar_t * filename)
 {
 	NaImage *pImage = new NaImage;
-	HDC hDC = NaScreenModule::GetDesktopDC();
+	HDC hDC = NaDesktop::GetDC();
 	pImage->m_hMemoryDC = ::CreateCompatibleDC(hDC);
 
 	// initialize gdi+

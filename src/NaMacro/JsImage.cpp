@@ -3,9 +3,9 @@
 
 #include <NaLib/NaString.h>
 #include <NaLib/NaDebug.h>
+#include <NaLib/NaImage.h>
 
 #include "ScreenModule.h"
-#include "NaImage.h"
 
 Global<ObjectTemplate> JsImage::s_JsImageTemplate;
 

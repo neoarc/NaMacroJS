@@ -4,6 +4,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <algorithm>
 
 using namespace std;
 
@@ -27,16 +28,8 @@ void NaExtModule::Release()
 {
 	if (NaExtModule::s_bInitTTS == true) 
 	{
-		vector<ISpVoice*>::iterator it = NaExtModule::s_vecVoices.begin();
-		for (; it != NaExtModule::s_vecVoices.end(); )
-		{
-			// NaExtModule::s_vecVoices.erase(it);
-			ISpVoice* pVoice = (*it);
-			pVoice->Release();
-			pVoice = NULL;
-
-			++it;
-		}
+		for_each(s_vecVoices.begin(), s_vecVoices.end(),
+			[&](ISpVoice* v) { v->Release(); } );
 
 		NaExtModule::s_vecVoices.clear();
 		::CoUninitialize();
@@ -121,68 +114,69 @@ void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 
 	// Create NaMacro Script
 	string strNaScript = "// Converted NaMacro Script from GMacro\n";
-	vector<MacroData>::iterator it = MacroDataList.begin();
-	for (; it != MacroDataList.end(); ++it)
-	{
-		MacroData m = *it;
-		printf("[%s][type: %x]\n", m.numname, (unsigned char)m.type[0]);
 
-		string strNumName = m.numname;
-		int nBegin = strNumName.find("(");
-		int nEnd = strNumName.find(")");
-		string strValue = strNumName.substr(nBegin + 1, nEnd - nBegin - 1);
+	for_each(MacroDataList.begin(), MacroDataList.end(),
+		[&](MacroData m)
+		{
+			printf("[%s][type: %x]\n", m.numname, (unsigned char)m.type[0]);
 
-		string str = "";
-		switch (m.type[0])
-		{
-		case key:
-			str += "// keyboard command // not support yet\n";
-			break;
-		case mousemove:
-		{
-			str += "mouse.move(";
-			str += strValue;
-			str += ");\n";
-			break;
-		}
-		case mouseclick:
-			str += "mouse.click();\n";
-			break;
-		case mouselbuttondown:
-			str += "mouse.lbuttonDown();\n";
-			break;
-		case mouselbuttonup:
-			str += "mouse.lbuttonUp();\n";
-			break;
-		case delay:
-		{
-			if (nBegin != -1 && nEnd != -1 && strValue.length() > 0)
+			string strNumName = m.numname;
+			int nBegin = strNumName.find("(");
+			int nEnd = strNumName.find(")");
+			string strValue = strNumName.substr(nBegin + 1, nEnd - nBegin - 1);
+
+			string str = "";
+			switch (m.type[0])
 			{
-				strValue = strValue.substr(0, strValue.length() - 2); // cut '√ '
-				double dDelay = atof(strValue.c_str());
-
-				std::ostringstream strDelay;
-				strDelay << (dDelay * 1000);
-				
-				str += "sleep(";
-				str += strDelay.str();
+			case key:
+				str += "// keyboard command // not support yet\n";
+				break;
+			case mousemove:
+			{
+				str += "mouse.move(";
+				str += strValue;
 				str += ");\n";
+				break;
 			}
-			break;
-		}
-		case mouserbuttonclick:
-			str += "// mouse.rbuttonClick(); // not support yet :p\n";
-			break;
-		case mouserbuttondown:
-			str += "mouse.rbuttonDown();\n";
-			break;
-		default:
-			str += "// unknown command // not support yet\n";
-			break;
-		}
+			case mouseclick:
+				str += "mouse.click();\n";
+				break;
+			case mouselbuttondown:
+				str += "mouse.lbuttonDown();\n";
+				break;
+			case mouselbuttonup:
+				str += "mouse.lbuttonUp();\n";
+				break;
+			case delay:
+			{
+				if (nBegin != -1 && nEnd != -1 && strValue.length() > 0)
+				{
+					strValue = strValue.substr(0, strValue.length() - 2); // cut '√ '
+					double dDelay = atof(strValue.c_str());
 
-		strNaScript += str;
-	}
+					std::ostringstream strDelay;
+					strDelay << (dDelay * 1000);
+				
+					str += "sleep(";
+					str += strDelay.str();
+					str += ");\n";
+				}
+				break;
+			}
+			case mouserbuttonclick:
+				str += "// mouse.rbuttonClick(); // not support yet :p\n";
+				break;
+			case mouserbuttondown:
+				str += "mouse.rbuttonDown();\n";
+				break;
+			default:
+				str += "// unknown command // not support yet\n";
+				break;
+			}
+
+			strNaScript += str;
+		}
+	);
 
 	V8Wrap::SetReturnValue(args, strNaScript.data());
 }

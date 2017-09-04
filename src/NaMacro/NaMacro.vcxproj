@@ -146,7 +146,6 @@
     <ClCompile Include="MouseModule.cpp" />
     <ClCompile Include="NaControl.cpp" />
     <ClCompile Include="JsFile.cpp" />
-    <ClCompile Include="NaImage.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
     <ClCompile Include="JsObjectBase.cpp" />
@@ -169,7 +168,6 @@
     <ClInclude Include="MouseModule.h" />
     <ClInclude Include="NaControl.h" />
     <ClInclude Include="JsFile.h" />
-    <ClInclude Include="NaImage.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />
     <ClInclude Include="JsObjectBase.h" />

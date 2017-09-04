@@ -2,9 +2,9 @@
 #include "NaControl.h"
 
 #include <NaLib/NaDebug.h>
+#include <NaLib/NaImage.h>
 
 #include "NaWindow.h"
-#include "NaImage.h"
 #include "JsImage.h"
 
 Global<ObjectTemplate> NaControl::s_NaControlTemplate;

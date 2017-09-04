@@ -1,12 +1,11 @@
 #include "stdafx.h"
 #include "ScreenModule.h"
 
-#include "JsImage.h"
-#include "NaImage.h"
+#include <NaLib/NaImage.h>
+#include <NaLib/NaDesktop.h>
 
-HWND NaScreenModule::m_hDesktopWnd = NULL;
-HDC NaScreenModule::m_hDesktopDC = NULL;
-bool NaScreenModule::m_bAeroStatus = false;
+#include "JsImage.h"
+
 
 void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_template*/)
 {
@@ -32,13 +31,6 @@ void NaScreenModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_tem
 
 void NaScreenModule::Release()
 {
-	if (m_hDesktopDC)
-	{
-		::DeleteDC(m_hDesktopDC);
-		m_hDesktopDC = NULL;
-	}
-
-	// TODO restore Aero status
 }
 
 Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
@@ -177,7 +169,7 @@ void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 	int x = args[0]->Int32Value();
 	int y = args[1]->Int32Value();
 
-	HDC hDC = NaScreenModule::GetDesktopDC();
+	HDC hDC = NaDesktop::GetDC();
 
 	// get pixel from point
 #define USE_FAST_GETPIXEL

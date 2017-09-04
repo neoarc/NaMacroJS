@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdarg.h>
 #include <vector>
+#include <algorithm>
 
 #include <Windows.h>
 
@@ -85,23 +86,14 @@ namespace V8Wrap
 
 	void InitModules(Isolate* isolate, Local<ObjectTemplate>& global_template)
 	{
-		vector<ModuleBase*>::iterator it = g_ModuleList.begin();
-		for (; it != g_ModuleList.end(); ++it)
-		{
-			ModuleBase *pModule = *it;
-			pModule->Init(isolate, global_template);
-		}
+		for_each(g_ModuleList.begin(), g_ModuleList.end(),
+				 [&](ModuleBase* m) { m->Init(isolate, global_template); } );
 	}
 
 	void ReleaseModules()
 	{
-		vector<ModuleBase*>::iterator it = g_ModuleList.begin();
-		for (; it != g_ModuleList.end(); ++it)
-		{
-			ModuleBase *pModule = *it;
-			pModule->Release();
-			delete pModule;
-		}
+		for_each(g_ModuleList.begin(), g_ModuleList.end(),
+				 [&](ModuleBase* m) { m->Release(); delete m; });
 
 		g_ModuleList.clear();
 	}

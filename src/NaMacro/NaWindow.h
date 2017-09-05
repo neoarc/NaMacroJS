@@ -27,7 +27,7 @@ public:
 	NaWindow(HWND hWnd = NULL, NaWindowTypes enType = NA_WINDOW_UNKNOWN);
 	virtual ~NaWindow();
 
-	HWND Create();
+	HWND Create(WNDPROC Proc);
 	void Destroy();
 
 	// Coordinates
@@ -51,16 +51,20 @@ public:
 	int GetState();
 	void SetState(int nState);
 
+	// Member
+	HWND m_hWnd;
+	int m_x, m_y, m_width, m_height;
+	int m_clientWidth, m_clientHeight;
+	NaWindowTypes m_enType;
+	std::list<HWND> m_arControls;
+
 	// Methods
 	void Activate();
 	void Close();
 
 	// Member
-	NaWindowTypes m_enType;
-	HWND m_hWnd;
-	int m_x, m_y, m_width, m_height, m_clientWidth, m_clientHeight;
-	std::list<HWND> m_arControls;
 
+public:
 	// internal struct
 	struct FindWindowsInfo {
 		wchar_t *name;

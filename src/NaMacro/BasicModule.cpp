@@ -93,7 +93,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	{
 		// Create Timer Window
 		s_pTimerWindow = new NaWindow(NULL, NA_WINDOW_INTERNAL);
-		s_pTimerWindow->Create();
+		s_pTimerWindow->Create(JsWindow::WndProc);
 	}
 
 	// Must in Init() not in Create()

@@ -14,7 +14,7 @@ public:
 
 	// static
 	static NaWindow* UnwrapNativeWindow(Local<Object> obj);
-
+	static LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 	static void FindWindows(Isolate *isolate, const wchar_t *name, Local<Array> &results);
 
 	// wrap object

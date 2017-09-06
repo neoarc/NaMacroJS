@@ -20,12 +20,12 @@ NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 	m_clientWidth = 0;
 	m_clientHeight = 0;
 
-	//NaDebug::Out(L"NaWindow(): 0x%08x, %d\n", this, enType);
+	//NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
 
 NaWindow::~NaWindow()
 {
-	//NaDebug::Out(L"~NaWindow(): 0x%08x\n", this);
+	//NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
 }
 
 // description: native create method
@@ -258,7 +258,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	GetWindowText(hWnd, buf, nLen);
 	wchar_t *buf2 = new wchar_t[1024];
 	RealGetWindowClass(hWnd, buf2, 1024);
-	NaDebug::Out(L"EnumWindowsProc: %s / %s\n", buf, buf2);
+	NaDebugOut(L"EnumWindowsProc: %s / %s\n", buf, buf2);
 
 	NaWindow::FindWindowsInfo *pInfo = (NaWindow::FindWindowsInfo*)lParam;
 

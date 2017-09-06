@@ -18,13 +18,13 @@ NaControl::NaControl()
 	m_width = 0;
 	m_height = 0;
 
-	NaDebug::Out(L"NaControl(): 0x%08x\n", this);
+	NaDebugOut(L"NaControl(): 0x%08x\n", this);
 }
 
 
 NaControl::~NaControl()
 {
-	NaDebug::Out(L"~NaControl(): 0x%08x\n", this);
+	NaDebugOut(L"~NaControl(): 0x%08x\n", this);
 }
 
 HWND NaControl::Create()

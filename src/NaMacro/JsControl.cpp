@@ -16,12 +16,12 @@ JsControl::JsControl()
 {
 	m_pNativeControl = nullptr;
 
-	NaDebug::Out(L"JsControl(): 0x%08x\n", this);
+	NaDebugOut(L"JsControl(): 0x%08x\n", this);
 }
 
 JsControl::~JsControl()
 {
-	NaDebug::Out(L"~JsControl(): 0x%08x\n", this);
+	NaDebugOut(L"~JsControl(): 0x%08x\n", this);
 }
 
 // description: create function called by parent

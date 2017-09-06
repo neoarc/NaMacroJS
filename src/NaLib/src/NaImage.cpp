@@ -14,12 +14,12 @@
 NaImage::NaImage()
 {
 	m_hMemoryDC = NULL;
-	NaDebug::Out(L"NaImage(): 0x%08x\n", this);
+	NaDebugOut(L"NaImage(): 0x%08x\n", this);
 }
 
 NaImage::~NaImage()
 {
-	NaDebug::Out(L"~NaImage(): 0x%08x\n", this);
+	NaDebugOut(L"~NaImage(): 0x%08x\n", this);
 
 	if (m_hMemoryDC)
 	{

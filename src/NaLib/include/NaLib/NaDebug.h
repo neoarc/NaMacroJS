@@ -1,5 +1,8 @@
 #pragma once
 
+#define NaDebugOut		NaDebug::Out
+#define NaDebugOutA		NaDebug::OutA
+
 namespace NaDebug
 {
 	void OutA(const char* pszFormat, ...);

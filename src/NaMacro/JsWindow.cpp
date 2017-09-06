@@ -21,14 +21,14 @@ JsWindow::JsWindow()
 {
 	m_pNativeWindow = nullptr;
 
-	//NaDebug::Out(L"JsWindow(): 0x%08x, %d\n", this, enType);
+	//NaDebugOut(L"JsWindow(): 0x%08x, %d\n", this, enType);
 }
 
 JsWindow::~JsWindow()
 {
 	// #TODO delete m_pNativeWindow
 
-	//NaDebug::Out(L"~JsWindow(): 0x%08x\n", this);
+	//NaDebugOut(L"~JsWindow(): 0x%08x\n", this);
 }
 
 NaWindow * JsWindow::UnwrapNativeWindow(Local<Object> obj)

@@ -8,13 +8,13 @@ Global<ObjectTemplate> JsFile::s_JsFileTemplate;
 
 JsFile::JsFile()
 {
-	NaDebug::Out(L"JsFile(): 0x%08x\n", this);
+	NaDebugOut(L"JsFile(): 0x%08x\n", this);
 	m_pNativeFile = nullptr;
 }
 
 JsFile::~JsFile()
 {
-	NaDebug::Out(L"~JsFile(): 0x%08x\n", this);
+	NaDebugOut(L"~JsFile(): 0x%08x\n", this);
 }
 
 NaFile * JsFile::UnwrapNativeFile(Local<Object> obj)

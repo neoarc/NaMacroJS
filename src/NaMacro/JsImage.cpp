@@ -12,12 +12,12 @@ Global<ObjectTemplate> JsImage::s_JsImageTemplate;
 JsImage::JsImage()
 {
 	m_pNativeImage = nullptr;
-	NaDebug::Out(L"JsImage(): 0x%08x\n", this);
+	NaDebugOut(L"JsImage(): 0x%08x\n", this);
 }
 
 JsImage::~JsImage()
 {
-	NaDebug::Out(L"~JsImage(): 0x%08x\n", this);
+	NaDebugOut(L"~JsImage(): 0x%08x\n", this);
 	if (m_pNativeImage)
 	{
 		delete m_pNativeImage;

@@ -10,13 +10,13 @@ Global<ObjectTemplate> JsProcess::s_JsProcessTemplate;
 
 JsProcess::JsProcess()
 {
-	NaDebug::Out(L"JsProcess(): 0x%08x\n", this);
+	NaDebugOut(L"JsProcess(): 0x%08x\n", this);
 	m_pNativeProcess = nullptr;
 }
 
 JsProcess::~JsProcess()
 {
-	NaDebug::Out(L"~JsProcess(): 0x%08x\n", this);
+	NaDebugOut(L"~JsProcess(): 0x%08x\n", this);
 }
 
 NaProcess* JsProcess::UnwrapNativeProcess(Local<Object> obj)

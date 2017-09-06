@@ -9,7 +9,7 @@ function main() {
 function test() {
   consoleWindow.visible = true;
 
-  var w = findWindows("카카오톡");
+  var w = findWindows("NaMacro");
   if (w.length == 0)
     return;
   w = w[0];

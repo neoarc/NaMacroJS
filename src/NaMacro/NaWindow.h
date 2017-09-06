@@ -14,11 +14,14 @@
 
 enum NaWindowTypes
 {
-	NA_WINDOW_UNKNOWN,
+	NA_WINDOW_UNKNOWN = 0,
+
 	NA_WINDOW_NORMAL,
 	NA_WINDOW_CONSOLE,
 	NA_WINDOW_USERCREATED,
 	NA_WINDOW_INTERNAL,
+
+	NA_WINDOW_LAST,
 };
 
 class NaWindow
@@ -37,34 +40,31 @@ public:
 	
 	NaString GetClass();
 
-	NaString GetText();
-	void SetText(const wchar_t* wszText);
+	virtual NaString GetText();
+	virtual void SetText(const wchar_t* wszText);
 
-	bool IsVisible();
-	void SetVisible(bool bVisible);
+	virtual bool IsVisible();
+	virtual void SetVisible(bool bVisible);
 
-	bool IsTopmost();
-	void SetTopmost(bool bTopmost);
+	virtual bool IsTopmost();
+	virtual void SetTopmost(bool bTopmost);
 
-	void SetHandle(HWND hWnd);
+	virtual void SetHandle(HWND hWnd);
 
-	int GetState();
-	void SetState(int nState);
+	virtual int GetState();
+	virtual void SetState(int nState);
+
+	// Methods
+	virtual void Activate();
+	virtual void Close();
 
 	// Member
 	HWND m_hWnd;
 	int m_x, m_y, m_width, m_height;
 	int m_clientWidth, m_clientHeight;
-	NaWindowTypes m_enType;
+	int m_enType;
 	std::list<HWND> m_arControls;
 
-	// Methods
-	void Activate();
-	void Close();
-
-	// Member
-
-public:
 	// internal struct
 	struct FindWindowsInfo {
 		wchar_t *name;

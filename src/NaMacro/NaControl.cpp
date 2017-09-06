@@ -8,6 +8,7 @@
 #include "JsImage.h"
 
 NaControl::NaControl()
+	: NaWindow()
 {
 	m_enType = NA_CONTROL_UNKNOWN;
 	m_hWnd = nullptr;
@@ -63,13 +64,6 @@ HWND NaControl::Create()
 	return m_hWnd;
 }
 
-// description: create function called by parent
-void NaControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
-{
-	UNUSED_VARIABLE(pParent);
-	UNUSED_VARIABLE(args);
-}
-
 void NaControl::Destroy()
 {
 
@@ -80,3 +74,8 @@ void NaControl::SetFocus()
 	::SetFocus(m_hWnd);
 }
 
+void NaControl::SetVisible(bool bVisible)
+{
+	if (m_hWnd)
+		::ShowWindow(m_hWnd, bVisible ? SW_SHOW : SW_HIDE);
+}

@@ -27,7 +27,7 @@ JsControl::~JsControl()
 // description: create function called by parent
 void JsControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
 {
-	NaControl *pControl = UnwrapNativeControl(args.This());
+	NaControl *pControl = m_pNativeControl;
 
 	String::Value type(args[0]);
 	NaString strType((const wchar_t*)*type);
@@ -102,7 +102,7 @@ void JsControl::Destroy()
 
 NaControl * JsControl::UnwrapNativeControl(Local<Object> obj)
 {
-	JsControl* pJsControl = static_cast<JsControl*>(UnwrapObject(obj));
+	JsControl* pJsControl = reinterpret_cast<JsControl*>(UnwrapObject(obj));
 	if (pJsControl && pJsControl->m_pNativeControl)
 	{
 		return pJsControl->m_pNativeControl;

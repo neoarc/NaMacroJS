@@ -13,7 +13,6 @@ public:
 	JsControl();
 	~JsControl();
 
-	HWND Create();
 	void Create(V8_FUNCTION_ARGS, NaWindow *pParent);
 	void Destroy();
 

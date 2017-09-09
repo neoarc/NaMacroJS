@@ -66,6 +66,33 @@ TEST_CASE("NaString.GetLength")
 	CHECK(ns.GetLength() == 5);
 }
 
+TEST_CASE("NaString.IsEmpty")
+{
+	NaString ns;
+	ns = "";
+	CHECK(ns.IsEmpty());
+	ns = L"";
+	CHECK(ns.IsEmpty());
+
+	ns = L" ";
+	CHECK_FALSE(ns.IsEmpty());
+}
+
+TEST_CASE("NaString.Empty")
+{
+	NaString ns;
+	
+	ns = "abc";
+	ns.Empty();
+	CHECK(ns.GetLength() == 0);
+	CHECK(ns.IsEmpty());
+
+	ns = L"abc";
+	ns.Empty();
+	CHECK(ns.GetLength() == 0);
+	CHECK(ns.IsEmpty());
+}
+
 TEST_CASE("NaString.ToLower")
 {
 	NaString ns = L"Hello World? °¡³ª´Ù";

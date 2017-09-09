@@ -12,12 +12,11 @@
 #include <NaLib/NaNotifyWindow.h>
 #include <NaLib/NaCurl.h>
 #include <NaLib/NaImage.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
-
-#include "NaWindow.h"
-#include "NaControl.h"
 
 #include "JsFile.h"
 #include "JsWindow.h"

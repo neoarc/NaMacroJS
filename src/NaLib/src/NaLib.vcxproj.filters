@@ -63,6 +63,12 @@
     <ClInclude Include="..\include\NaLib\NaImage.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\NaLib\NaControl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\NaLib\NaWindow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -129,6 +135,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NaImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaControl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="NaWindow.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

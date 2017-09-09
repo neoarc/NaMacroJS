@@ -25,17 +25,11 @@
     <Filter Include="Source Files\Module">
       <UniqueIdentifier>{e1c57263-c55e-4062-9587-a04231423c36}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\NaObjects">
-      <UniqueIdentifier>{9c24ac98-f245-440b-8c63-dd485d45dada}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\JsObjects">
       <UniqueIdentifier>{13a82fe8-d713-4e47-93cb-028f1c5476bc}</UniqueIdentifier>
     </Filter>
     <Filter Include="Source Files\JsObjects">
       <UniqueIdentifier>{b2cea7e1-b4fc-46c2-915e-68cc37dcac46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\NaObjects">
-      <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -62,12 +56,6 @@
     </ClCompile>
     <ClCompile Include="ModuleBase.cpp">
       <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NaWindow.cpp">
-      <Filter>Source Files\NaObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="NaControl.cpp">
-      <Filter>Source Files\NaObjects</Filter>
     </ClCompile>
     <ClCompile Include="V8Wrap.cpp">
       <Filter>Source Files</Filter>
@@ -121,12 +109,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NaWindow.h">
-      <Filter>Header Files\NaObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="NaControl.h">
-      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="V8Wrap.h">
       <Filter>Header Files</Filter>

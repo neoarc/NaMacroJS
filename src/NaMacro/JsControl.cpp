@@ -3,11 +3,11 @@
 
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaImage.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
-#include "NaWindow.h"
 #include "JsImage.h"
 
-#include "NaControl.h"
 
 Global<ObjectTemplate> JsControl::s_JsControlTemplate;
 std::map<HWND, Persistent<Function, CopyablePersistentTraits<Function>>> JsControl::s_mapControlCallback;

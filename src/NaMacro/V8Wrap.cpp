@@ -86,14 +86,17 @@ namespace V8Wrap
 
 	void InitModules(Isolate* isolate, Local<ObjectTemplate>& global_template)
 	{
-		for_each(g_ModuleList.begin(), g_ModuleList.end(),
-				 [&](ModuleBase* m) { m->Init(isolate, global_template); } );
+		for (ModuleBase* m: g_ModuleList)
+			m->Init(isolate, global_template);
 	}
 
 	void ReleaseModules()
 	{
-		for_each(g_ModuleList.begin(), g_ModuleList.end(),
-				 [&](ModuleBase* m) { m->Release(); delete m; });
+		for (ModuleBase* m: g_ModuleList)
+		{
+			m->Release();
+			delete m;
+		}
 
 		g_ModuleList.clear();
 	}

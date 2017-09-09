@@ -125,6 +125,16 @@ NaString::operator const wchar_t* () const
 	return (const wchar_t*)m_pBuf;
 }
 
+bool NaString::IsEmpty() const
+{
+	return (*this == "");
+}
+
+void NaString::Empty()
+{
+	*this = L"";
+}
+
 void NaString::ToLower()
 {
 #ifdef WIN32

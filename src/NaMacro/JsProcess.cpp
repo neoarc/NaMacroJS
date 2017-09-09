@@ -38,18 +38,16 @@ void JsProcess::FindProcesses(Isolate * isolate, const wchar_t * name, Local<Arr
 
 	// Wrap HANDLE to V8Object
 	int nIndex = 0;
-	for_each(info.foundlist.begin(), info.foundlist.end(), 
-		[&](HANDLE h)
-		{
-			JsProcess *pJsProcess = new JsProcess();
-			pJsProcess->m_pNativeProcess = NaProcess::GetProcess(h);
+	for (const HANDLE h: info.foundlist)
+	{
+		JsProcess *pJsProcess = new JsProcess();
+		pJsProcess->m_pNativeProcess = NaProcess::GetProcess(h);
 
-			Local<Value> obj = JsProcess::WrapObject(isolate, pJsProcess);
+		Local<Value> obj = JsProcess::WrapObject(isolate, pJsProcess);
 
-			// Fill V8Object Array
-			results->Set(nIndex++, obj);
-		}
-	);
+		// Fill V8Object Array
+		results->Set(nIndex++, obj);
+	}
 }
 
 Local<ObjectTemplate> JsProcess::MakeObjectTemplate(Isolate * isolate)

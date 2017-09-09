@@ -5,10 +5,10 @@
 
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
 #include "BasicModule.h"
-#include "NaControl.h"
-#include "NaWindow.h"
 
 #include "JsControl.h"
 

@@ -1,11 +1,10 @@
 #include "stdafx.h"
 #include "NaControl.h"
 
-#include <NaLib/NaDebug.h>
-#include <NaLib/NaImage.h>
+#include "NaDebug.h"
+#include "NaImage.h"
 
 #include "NaWindow.h"
-#include "JsImage.h"
 
 NaControl::NaControl()
 	: NaWindow()

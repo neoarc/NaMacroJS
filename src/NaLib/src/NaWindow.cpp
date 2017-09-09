@@ -1,11 +1,12 @@
 #include "stdafx.h"
 #include "NaWindow.h"
 
-#include <NaLib/NaDebug.h>
-#include <NaLib/NaNotifyWindow.h>
+#include "NaDebug.h"
+#include "NaNotifyWindow.h"
 
-#include "resource.h"
 #include "NaControl.h"
+
+#define IDI_MAIN_ICON		102
 
 bool NaWindow::s_bRegisterClass = false;
 
@@ -151,7 +152,8 @@ void NaWindow::SetVisible(bool bVisible)
 			if (hConsole == NULL)
 			{
 				AllocConsole();
-				freopen("CONOUT$", "wt", stdout);
+				FILE* f;
+				freopen_s(&f, "CONOUT$", "wt", stdout);
 
 				hConsole = GetConsoleWindow();
 

@@ -10,6 +10,8 @@
 #include "NaControl.h"
 #include "NaWindow.h"
 
+#include "JsControl.h"
+
 #include "V8Wrap.h"
 #include "resource.h"
 
@@ -19,14 +21,14 @@ JsWindow::JsWindow()
 {
 	m_pNativeWindow = nullptr;
 
-	//NaDebug::Out(L"JsWindow(): 0x%08x, %d\n", this, enType);
+	//NaDebugOut(L"JsWindow(): 0x%08x, %d\n", this, enType);
 }
 
 JsWindow::~JsWindow()
 {
 	// #TODO delete m_pNativeWindow
 
-	//NaDebug::Out(L"~JsWindow(): 0x%08x\n", this);
+	//NaDebugOut(L"~JsWindow(): 0x%08x\n", this);
 }
 
 NaWindow * JsWindow::UnwrapNativeWindow(Local<Object> obj)
@@ -38,6 +40,24 @@ NaWindow * JsWindow::UnwrapNativeWindow(Local<Object> obj)
 	}
 
 	return nullptr;
+}
+
+LRESULT JsWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	switch (message)
+	{
+	case WM_COMMAND:
+		{
+			HWND hControlWnd = (HWND)lParam;
+			int nCode = HIWORD(wParam);
+
+			Isolate *isolate = Isolate::GetCurrent();
+			JsControl::OnCommand(isolate, hControlWnd, nCode);
+		}
+		break;
+	}
+
+	return NaWindow::WndProc(hWnd, message, wParam, lParam);
 }
 
 void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>& results)
@@ -448,7 +468,7 @@ void JsWindow::method_create(V8_FUNCTION_ARGS)
 		pWindow->m_height = args[3]->Int32Value();
 	}
 
-	pWindow->Create();
+	pWindow->Create(JsWindow::WndProc);
 }
 
 // description: move window to x,y, width, height
@@ -568,8 +588,11 @@ void JsWindow::method_alert(V8_FUNCTION_ARGS)
 void JsWindow::method_addControl(V8_FUNCTION_ARGS)
 {
 	NaWindow *pWindow = UnwrapNativeWindow(args.This());
-	NaControl *pControl = new NaControl;
-	Local<Object> obj = WrapObject(args.GetIsolate(), pControl);
+
+	JsControl *pJsControl = new JsControl;
+	pJsControl->m_pNativeControl = new NaControl;
+
+	Local<Object> obj = WrapObject(args.GetIsolate(), pJsControl);
 
 	if (args.Length() < 5)
 	{
@@ -577,7 +600,7 @@ void JsWindow::method_addControl(V8_FUNCTION_ARGS)
 		return;
 	}
 
-	pControl->Create(args, pWindow);
+	pJsControl->Create(args, pWindow);
 
 	V8Wrap::SetReturnValue(args, obj);
 }

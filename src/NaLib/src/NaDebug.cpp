@@ -3,7 +3,7 @@
 
 #define NA_DEBUGOUT_TEMPBUFFER_SIZE	65535
 
-void NaDebug::OutA(const char* pszFormat, ...)
+void NaDebugOutA(const char* pszFormat, ...)
 {
 #if !defined(_DEBUG)
 	return;
@@ -22,7 +22,7 @@ void NaDebug::OutA(const char* pszFormat, ...)
 	OutputDebugStringA(str);
 }
 
-void NaDebug::Out(const wchar_t* pszFormat, ...)
+void NaDebugOut(const wchar_t* pszFormat, ...)
 {
 #if !defined(_DEBUG)
 	return;

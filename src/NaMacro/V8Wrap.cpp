@@ -131,9 +131,9 @@ namespace V8Wrap
 			NaString str;
 			str.Format("Error reading:\n%s", scriptFilePath.c_str());
 
-			NaDebug::Out(L"==========================================\n");
-			NaDebug::Out(str);
-			NaDebug::Out(L"\n==========================================\n");
+			NaDebugOut(L"==========================================\n");
+			NaDebugOut(str);
+			NaDebugOut(L"\n==========================================\n");
 			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 		}
 
@@ -160,9 +160,9 @@ namespace V8Wrap
 				strE = V8Wrap::ReportException(isolate, &try_catch);
 				str.Format(L"Script Compile Error:\n%s", strE.wstr());
 
-				NaDebug::Out(L"==========================================\n");
-				NaDebug::Out(str);
-				NaDebug::Out(L"==========================================\n");
+				NaDebugOut(L"==========================================\n");
+				NaDebugOut(str);
+				NaDebugOut(L"==========================================\n");
 				::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			}
 		}
@@ -183,9 +183,9 @@ namespace V8Wrap
 				strE = V8Wrap::ReportException(isolate, &try_catch);
 				str.Format(L"Script Runtime Error:\n%s", strE.wstr());
 
-				NaDebug::Out(L"==========================================\n");
-				NaDebug::Out(str);
-				NaDebug::Out(L"==========================================\n");
+				NaDebugOut(L"==========================================\n");
+				NaDebugOut(str);
+				NaDebugOut(L"==========================================\n");
 				::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			}
 			return false;
@@ -205,9 +205,9 @@ namespace V8Wrap
 		{
 			NaString str = L"Cannot find main function!";
 
-			NaDebug::Out(L"==========================================\n");
-			NaDebug::Out(str);
-			NaDebug::Out(L"==========================================\n");
+			NaDebugOut(L"==========================================\n");
+			NaDebugOut(str);
+			NaDebugOut(L"==========================================\n");
 			::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 			return false;
 		}
@@ -230,9 +230,9 @@ namespace V8Wrap
 					strE = V8Wrap::ReportException(isolate, &try_catch);
 					str.Format(L"Script Exception Occurred:\n%s", strE.wstr());
 
-					NaDebug::Out(L"==========================================\n");
-					NaDebug::Out(str);
-					NaDebug::Out(L"==========================================\n");
+					NaDebugOut(L"==========================================\n");
+					NaDebugOut(str);
+					NaDebugOut(L"==========================================\n");
 					::MessageBox(nullptr, str.wstr(), nullptr, MB_OK);
 				}
 				return false;

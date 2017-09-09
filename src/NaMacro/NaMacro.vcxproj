@@ -136,6 +136,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BasicModule.cpp" />
+    <ClCompile Include="JsControl.cpp" />
     <ClCompile Include="JsImage.cpp" />
     <ClCompile Include="JsProcess.cpp" />
     <ClCompile Include="JsWindow.cpp" />
@@ -158,6 +159,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BasicModule.h" />
+    <ClInclude Include="JsControl.h" />
     <ClInclude Include="JsImage.h" />
     <ClInclude Include="JsProcess.h" />
     <ClInclude Include="JsWindow.h" />

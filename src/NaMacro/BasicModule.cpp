@@ -93,7 +93,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	{
 		// Create Timer Window
 		s_pTimerWindow = new NaWindow(NULL, NA_WINDOW_INTERNAL);
-		s_pTimerWindow->Create();
+		s_pTimerWindow->Create(JsWindow::WndProc);
 	}
 
 	// Must in Init() not in Create()
@@ -187,6 +187,11 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 	}
 }
 
+bool NaBasicModule::IncludeBase(NaString strBase, NaString strUrl)
+{
+	return false;
+}
+
 // description: Include external source file
 // syntax:		include(filename);
 void NaBasicModule::method_include(V8_FUNCTION_ARGS)
@@ -214,23 +219,26 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		// GetScriptName Unicode Issue:
 		// Wrong Conversion if Special character included.
 		//
-		NaDebug::Out(L"================================================\n");
-		NaDebug::Out(L"Include src: %s\n", wstr);
-		NaDebug::Out(L"Include base: %s\n", strBase.wstr());
+		NaDebugOut(L"================================================\n");
+		NaDebugOut(L"Include src: %s\n", wstr);
+		NaDebugOut(L"Include base: %s\n", strBase.wstr());
 
 		NaString strUrl(wstr);
 		NaUrl url;
 		url.SetBase(strBase);
 		url.SetUrl(strUrl);
 
+		// #TODO
+		//IncludeBase(strBase, strUrl);
+
 		NaString strFullUrl(url.GetFullUrl());
-		NaDebug::Out(L"Include full: %s\n", strFullUrl.wstr());
+		NaDebugOut(L"Include full: %s\n", strFullUrl.wstr());
 
 		script_source = V8Wrap::ReadFile(isolate, strFullUrl.cstr());
 		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
 		if (script_source.IsEmpty())
 		{
-			NaDebug::Out(L"Error reading '%s'\n", strFullUrl.wstr());
+			NaDebugOut(L"Error reading '%s'\n", strFullUrl.wstr());
 
 			// TODO ThrowException
 			return;
@@ -246,7 +254,7 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 				if (V8Wrap::g_bReportExceptions)
 					V8Wrap::ReportException(isolate, &try_catch);
 
-				NaDebug::Out(L"included script is empty!\n");
+				NaDebugOut(L"included script is empty!\n");
 				return;
 			}
 		}
@@ -333,7 +341,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 				String::Utf8Value method_string_value(method_string);
 				strMethod = (*method_string_value);
 
-				NaDebug::Out(L"Method: %ls\n", strMethod.wstr());
+				NaDebugOut(L"Method: %ls\n", strMethod.wstr());
 			}
 
 			// Body
@@ -344,7 +352,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 				String::Utf8Value body_string_value(body_string);
 				strBody = (*body_string_value);
 
-				NaDebug::Out(L"Body: %ls\n", strBody.wstr());
+				NaDebugOut(L"Body: %ls\n", strBody.wstr());
 			}
 
 			// #TODO implement

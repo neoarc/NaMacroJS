@@ -20,16 +20,16 @@ NaWindow::NaWindow(HWND hWnd, NaWindowTypes enType)
 	m_clientWidth = 0;
 	m_clientHeight = 0;
 
-	//NaDebug::Out(L"NaWindow(): 0x%08x, %d\n", this, enType);
+	//NaDebugOut(L"NaWindow(): 0x%08x, %d\n", this, enType);
 }
 
 NaWindow::~NaWindow()
 {
-	//NaDebug::Out(L"~NaWindow(): 0x%08x\n", this);
+	//NaDebugOut(L"~NaWindow(): 0x%08x\n", this);
 }
 
 // description: native create method
-HWND NaWindow::Create()
+HWND NaWindow::Create(WNDPROC Proc)
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -43,7 +43,10 @@ HWND NaWindow::Create()
 		//WndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);
 		WndClass.hIcon = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAIN_ICON));
 		WndClass.hInstance = hInstance;
-		WndClass.lpfnWndProc = NaWindow::WndProc;
+		if (Proc)
+			WndClass.lpfnWndProc = Proc;
+		else
+			WndClass.lpfnWndProc = NaWindow::WndProc;
 		WndClass.lpszClassName = NA_WINDOW_CLASS;
 		WndClass.lpszMenuName = NULL;
 		WndClass.style = CS_HREDRAW | CS_VREDRAW;
@@ -238,15 +241,6 @@ LRESULT CALLBACK NaWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARA
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		return 0;
-	case WM_COMMAND:
-		{
-			HWND hControlWnd = (HWND)lParam;
-			int nCode = HIWORD(wParam);
-
-			Isolate *isolate = Isolate::GetCurrent();
-			NaControl::OnCommand(isolate, hControlWnd, nCode);
-		}
-		break;
 	}
 
 	return DefWindowProc(hWnd, message, wParam, lParam);
@@ -264,7 +258,7 @@ BOOL CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam)
 	GetWindowText(hWnd, buf, nLen);
 	wchar_t *buf2 = new wchar_t[1024];
 	RealGetWindowClass(hWnd, buf2, 1024);
-	NaDebug::Out(L"EnumWindowsProc: %s / %s\n", buf, buf2);
+	NaDebugOut(L"EnumWindowsProc: %s / %s\n", buf, buf2);
 
 	NaWindow::FindWindowsInfo *pInfo = (NaWindow::FindWindowsInfo*)lParam;
 

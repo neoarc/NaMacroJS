@@ -20,6 +20,9 @@ public:
 	static std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> s_mapTimeoutCallback;
 	static int s_nTimerID;
 
+	// method helper
+	static bool IncludeBase(NaString strBase, NaString strUrl);
+
 	// accessors
 	DEFINE_CLASS_ACCESSOR_RO(pcname);
 	DEFINE_CLASS_ACCESSOR_RO(username);

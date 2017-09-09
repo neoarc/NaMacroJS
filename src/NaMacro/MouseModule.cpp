@@ -82,7 +82,7 @@ void NaMouseModule::get_x(Local<String> /*name*/, const PropertyCallbackInfo<Val
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	V8Wrap::SetReturnValue(info, pt.x);
+	v8SetReturnForInfo(pt.x);
 }
 
 // description: x setter 
@@ -101,7 +101,7 @@ void NaMouseModule::get_y(Local<String> /*name*/, const PropertyCallbackInfo<Val
 	POINT pt;
 	::GetCursorPos(&pt);
 
-	V8Wrap::SetReturnValue(info, pt.y);
+	v8SetReturnForInfo(pt.y);
 }
 
 // description: y setter 

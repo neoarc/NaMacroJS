@@ -176,7 +176,7 @@ void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 		strNaScript += str;
 	}
 
-	V8Wrap::SetReturnValue(args, strNaScript.data());
+	v8SetReturnForArgs(strNaScript.data());
 }
 
 // description: text to speech

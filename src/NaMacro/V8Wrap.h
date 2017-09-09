@@ -3,6 +3,10 @@
 #include <NaLib/NaString.h>
 #include <NaLib/NaUrl.h>
 
+#define	v8SetReturnNull				V8Wrap::NullReturnValue
+#define	v8SetReturnForArgs(v)		V8Wrap::SetReturnValue(args, v)
+#define	v8SetReturnForInfo(v)		V8Wrap::SetReturnValue(info, v)
+
 namespace V8Wrap 
 {
 	using namespace v8;

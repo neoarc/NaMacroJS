@@ -72,7 +72,7 @@ void JsImage::get_width(V8_GETTER_ARGS)
 		nWidth = pImage->m_rc.right - pImage->m_rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, nWidth);
+	v8SetReturnForInfo(nWidth);
 }
 
 void JsImage::set_width(V8_SETTER_ARGS)
@@ -99,7 +99,7 @@ void JsImage::get_height(V8_GETTER_ARGS)
 		nHeight = pImage->m_rc.bottom - pImage->m_rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, nHeight);
+	v8SetReturnForInfo(nHeight);
 }
 
 void JsImage::set_height(V8_SETTER_ARGS)
@@ -137,12 +137,11 @@ void JsImage::method_constructor(V8_FUNCTION_ARGS)
 		JsImage *pJsImage = new JsImage();
 		pJsImage->m_pNativeImage = NaImage::Load(strFullPath.wstr());
 		Local<Object> obj = WrapObject(args.GetIsolate(), pJsImage);
-
-		V8Wrap::SetReturnValue(args, obj);
+		v8SetReturnForArgs(obj);
 		return;
 	}
 
-	V8Wrap::NullReturnValue(args);
+	v8SetReturnNull(args);
 }
 
 // description: get pixel from image buffer
@@ -153,14 +152,14 @@ void JsImage::method_getPixel(V8_FUNCTION_ARGS)
 	if (pImage == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
 	if (args.Length() < 2)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
@@ -169,7 +168,7 @@ void JsImage::method_getPixel(V8_FUNCTION_ARGS)
 	auto color = pImage->GetPixel(x, y);
 
 	// return
-	V8Wrap::SetReturnValue(args, (int)color);
+	v8SetReturnForArgs((int)color);
 }
 
 // description: find image(argument) from image(this)
@@ -179,19 +178,19 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	NaImage *pImageThis = UnwrapNativeImage(args.This());
 	if (pImageThis == nullptr)
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
 	if (args.Length() < 1)
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
 	if (!args[0]->IsObject())
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -199,7 +198,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	NaImage *pImageFind = UnwrapNativeImage(objFind);
 	if (pImageFind == nullptr)
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -215,7 +214,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	if (pt.x == -1 || pt.y == -1)
 	{
 		// not found!
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -233,7 +232,7 @@ void JsImage::method_findImage(V8_FUNCTION_ARGS)
 	);
 
 	// return
-	V8Wrap::SetReturnValue(args, objRet);
+	v8SetReturnForArgs(objRet);
 }
 
 // description: reset image buffer
@@ -243,11 +242,11 @@ void JsImage::method_reset(V8_FUNCTION_ARGS)
 	NaImage *pImage = UnwrapNativeImage(args.This());
 	if (pImage == nullptr)
 	{
-		V8Wrap::SetReturnValue(args, false);
+		v8SetReturnForArgs(false);
 		return;
 	}
 	
-	V8Wrap::SetReturnValue(args, true);
+	v8SetReturnForArgs(true);
 }
 
 // description: save image buffer to file
@@ -257,12 +256,12 @@ void JsImage::method_save(V8_FUNCTION_ARGS)
 	NaImage *pImage = UnwrapNativeImage(args.This());
 	if (pImage == nullptr || args.Length() < 1)
 	{
-		V8Wrap::SetReturnValue(args, false);
+		v8SetReturnForArgs(false);
 		return;
 	}
 
 	String::Value strV8(args[0]);
 	bool bRet = pImage->Save((wchar_t*)*strV8);
 
-	V8Wrap::SetReturnValue(args, bRet);
+	v8SetReturnForArgs(bRet);
 }

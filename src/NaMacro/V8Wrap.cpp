@@ -312,7 +312,6 @@ namespace V8Wrap
 		Local<Value> _prop_value = obj->Get(_prop_name);
 
 		return _prop_value;
-		
 	}
 	
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue)

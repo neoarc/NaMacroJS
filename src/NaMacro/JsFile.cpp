@@ -21,9 +21,7 @@ NaFile * JsFile::UnwrapNativeFile(Local<Object> obj)
 {
 	JsFile* pJsFile = static_cast<JsFile*>(UnwrapObject(obj));
 	if (pJsFile && pJsFile->m_pNativeFile)
-	{
 		return pJsFile->m_pNativeFile;
-	}
 
 	return nullptr;
 }
@@ -59,9 +57,7 @@ void JsFile::get_name(V8_GETTER_ARGS)
 	
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
-	{
-		V8Wrap::SetReturnValue(info, pFile->m_strName.wstr());
-	}
+		v8SetReturnForInfo(pFile->m_strName.wstr());
 }
 
 void JsFile::set_name(V8_SETTER_ARGS)
@@ -80,9 +76,7 @@ void JsFile::get_exist(V8_GETTER_ARGS)
 
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
-	{
-		V8Wrap::SetReturnValue(info, pFile->IsExist());
-	}
+		v8SetReturnForInfo(pFile->IsExist());
 }
 
 // description: constructor function
@@ -122,12 +116,11 @@ void JsFile::method_constructor(V8_FUNCTION_ARGS)
 		pJsFile->m_pNativeFile = NaFile::Load(strFullPath.wstr(), strMode.cstr());
 
 		Local<Object> obj = WrapObject(isolate, pJsFile);
-
-		args.GetReturnValue().Set(obj);
+		v8SetReturnForArgs(obj);
 		return;
 	}
 
-	V8Wrap::NullReturnValue(args);
+	v8SetReturnNull(args);
 }
 
 // description: read file
@@ -137,20 +130,19 @@ void JsFile::method_read(V8_FUNCTION_ARGS)
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
-		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
 	if (pFile->m_hFile == nullptr)
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
 	// #TODO smart pointer?
 	auto buf = pFile->Read();
-	V8Wrap::SetReturnValue(args, buf);
+	v8SetReturnForArgs(buf);
 	
 	delete[] buf;
 }
@@ -162,14 +154,13 @@ void JsFile::method_write(V8_FUNCTION_ARGS)
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr || args.Length() < 1)
 	{
-		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
 	if (pFile->m_hFile == nullptr)
 	{
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -177,8 +168,7 @@ void JsFile::method_write(V8_FUNCTION_ARGS)
 	NaString str((wchar_t*)*strV8);
 	auto ret = pFile->Write(str);
 
-	// return
-	V8Wrap::SetReturnValue(args, (int)ret);
+	v8SetReturnForArgs((int)ret);
 }
 
 // description: close file
@@ -188,13 +178,11 @@ void JsFile::method_close(V8_FUNCTION_ARGS)
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
-		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
 	pFile->Close();
 
-	// return
-	V8Wrap::SetReturnValue(args, true);
+	v8SetReturnForArgs(true);
 }

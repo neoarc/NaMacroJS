@@ -46,7 +46,7 @@ Source: "bin_src\Addon\*"; DestDir: "{app}\Addon"; Flags: ignoreversion recurses
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]
-; nsj file association
+; njs file association
 ;   ref: http://www.jrsoftware.org/isfaq.php#assoc
 Root: HKCR; Subkey: ".njs"; ValueType: string; ValueName: ""; ValueData: "NaMacroJS"; Flags: uninsdeletevalue
 Root: HKCR; Subkey: "NaMacroJS"; ValueType: string; ValueName: ""; ValueData: "NaMacroJS script file"; Flags: uninsdeletekey

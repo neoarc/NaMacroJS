@@ -12,17 +12,16 @@
 #include <NaLib/NaNotifyWindow.h>
 #include <NaLib/NaCurl.h>
 #include <NaLib/NaImage.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
 #include "NaMacroCommon.h"
 #include "V8Wrap.h"
 
-#include "NaWindow.h"
-#include "NaControl.h"
-
 #include "JsFile.h"
 #include "JsWindow.h"
 #include "JsImage.h"
-#include "JSProcess.h"
+#include "JsProcess.h"
 
 NaWindow* NaBasicModule::s_pTimerWindow = NULL;
 std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
@@ -119,7 +118,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
-		V8Wrap::SetReturnValue(info, pcname);
+		v8SetReturnForInfo(pcname);
 }
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
@@ -128,7 +127,7 @@ void NaBasicModule::get_username(V8_GETTER_ARGS)
 
 	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
-		V8Wrap::SetReturnValue(info, username);
+		v8SetReturnForInfo(username);
 }
 
 void NaBasicModule::Release()
@@ -371,7 +370,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 	//new Promise();
 
 	// #TODO change return value to Promise object (from string)
-	V8Wrap::SetReturnValue(args, strRet.wstr());
+	v8SetReturnForArgs(strRet.wstr());
 }
 
 // description: show MessageBox with message
@@ -388,7 +387,7 @@ void NaBasicModule::method_alert(V8_FUNCTION_ARGS)
 		args.Length() >= 3 ? nType : MB_OK
 		);
 
-	V8Wrap::SetReturnValue(args, nRet);
+	v8SetReturnForArgs(nRet);
 }
 
 // description: show MessageBox with message
@@ -415,7 +414,7 @@ void NaBasicModule::method_confirm(V8_FUNCTION_ARGS)
 		break;
 	}
 
-	V8Wrap::SetReturnValue(args, bRet);
+	v8SetReturnForArgs(bRet);
 }
 
 // description: show MessageBox with message
@@ -434,7 +433,7 @@ void NaBasicModule::method_prompt(V8_FUNCTION_ARGS)
 			args.Length() >= 3 ? (const wchar_t*)*default_string : L""
 		);
 
-	V8Wrap::SetReturnValue(args, strRet.cstr());
+	v8SetReturnForArgs(strRet.cstr());
 }
 
 // description: suspends the excution script
@@ -469,7 +468,7 @@ void NaBasicModule::method_setInterval(V8_FUNCTION_ARGS)
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		V8Wrap::SetReturnValue(args, nTimerID);
+		v8SetReturnForArgs(nTimerID);
 	}
 }
 
@@ -513,7 +512,7 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		V8Wrap::SetReturnValue(args, nTimerID);
+		v8SetReturnForArgs(nTimerID);
 	}
 }
 
@@ -537,7 +536,7 @@ void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetWindow(x, y);
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	V8Wrap::SetReturnValue(args, result);
+	v8SetReturnForArgs(result);
 }
 
 // description: get active window
@@ -550,7 +549,7 @@ void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetActiveWindow();
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	V8Wrap::SetReturnValue(args, result);
+	v8SetReturnForArgs(result);
 }
 
 // description: find windows which contains specific text
@@ -563,7 +562,7 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 
 	JsWindow::FindWindows(isolate, (const wchar_t*)*str, results);
 
-	V8Wrap::SetReturnValue(args, results);
+	v8SetReturnForArgs(results);
 }
 
 // description: find processes which contains specific name
@@ -576,7 +575,7 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 
 	JsProcess::FindProcesses(isolate, (const wchar_t*)*str, results);
 
-	V8Wrap::SetReturnValue(args, results);
+	v8SetReturnForArgs(results);
 }
 
 // description:
@@ -584,7 +583,7 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 void NaBasicModule::method_findTrays(V8_FUNCTION_ARGS)
 {
 	// Not Impl
-	V8Wrap::SetReturnValue(args, L"NotImplemented");
+	v8SetReturnForArgs(L"NotImplemented");
 }
 
 // description: Execute external process
@@ -670,5 +669,5 @@ void NaBasicModule::method_executeSync(V8_FUNCTION_ARGS)
 	GetExitCodeProcess(info.hProcess, &dwExitCode);
 
 	// implement return value
-	V8Wrap::SetReturnValue(args, (int)dwExitCode);
+	v8SetReturnForArgs((int)dwExitCode);
 }

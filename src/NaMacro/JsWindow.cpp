@@ -5,10 +5,10 @@
 
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaNotifyWindow.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
 #include "BasicModule.h"
-#include "NaControl.h"
-#include "NaWindow.h"
 
 #include "JsControl.h"
 
@@ -69,9 +69,8 @@ void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>
 
 	// Wrap HWND to V8Object
 	int nIndex = 0;
-	for_each(info.foundlist.begin(), info.foundlist.end(),
-		[&](HWND h)
-		{
+	for (const HWND h: info.foundlist)
+	{
 		JsWindow *pJsWindow = new JsWindow();
 		pJsWindow->m_pNativeWindow = NaWindow::GetWindow(h);
 
@@ -79,8 +78,7 @@ void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>
 
 		// Fill V8Object Array
 		results->Set(nIndex++, obj);
-		}
-	);
+	};
 }
 
 Local<ObjectTemplate> JsWindow::MakeObjectTemplate(Isolate * isolate)
@@ -132,7 +130,7 @@ void JsWindow::get_x(V8_GETTER_ARGS)
 		pWindow->m_x = rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_x);
+	v8SetReturnForInfo(pWindow->m_x);
 }
 
 void JsWindow::set_x(V8_SETTER_ARGS)
@@ -159,7 +157,7 @@ void JsWindow::get_y(V8_GETTER_ARGS)
 		pWindow->m_y = rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_y);
+	v8SetReturnForInfo(pWindow->m_y);
 }
 
 void JsWindow::set_y(V8_SETTER_ARGS)
@@ -186,7 +184,7 @@ void JsWindow::get_width(V8_GETTER_ARGS)
 		pWindow->m_width = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_width);
+	v8SetReturnForInfo(pWindow->m_width);
 }
 
 void JsWindow::set_width(V8_SETTER_ARGS)
@@ -213,7 +211,7 @@ void JsWindow::get_height(V8_GETTER_ARGS)
 		pWindow->m_height = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_height);
+	v8SetReturnForInfo(pWindow->m_height);
 }
 
 void JsWindow::set_height(V8_SETTER_ARGS)
@@ -240,7 +238,7 @@ void JsWindow::get_clientWidth(V8_GETTER_ARGS)
 		pWindow->m_clientWidth = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_clientWidth);
+	v8SetReturnForInfo(pWindow->m_clientWidth);
 }
 
 // description: client height property getter
@@ -255,7 +253,7 @@ void JsWindow::get_clientHeight(V8_GETTER_ARGS)
 		pWindow->m_clientHeight = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pWindow->m_clientHeight);
+	v8SetReturnForInfo(pWindow->m_clientHeight);
 }
 
 // description: class property getter/setter
@@ -267,7 +265,7 @@ void JsWindow::get_class(V8_GETTER_ARGS)
 	if (pWindow)
 	{
 		auto strClass = pWindow->GetClass();
-		V8Wrap::SetReturnValue(info, strClass.wstr());
+		v8SetReturnForInfo(strClass.wstr());
 	}
 }
 
@@ -280,7 +278,7 @@ void JsWindow::get_text(V8_GETTER_ARGS)
 	if (pWindow)
 	{
 		auto strText = pWindow->GetText();
-		V8Wrap::SetReturnValue(info, strText.wstr());
+		v8SetReturnForInfo(strText.wstr());
 	}
 }
 
@@ -304,11 +302,9 @@ void JsWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	bool bVisible = false;
 	if (pWindow)
-	{
 		bVisible = pWindow->IsVisible();
-	}
 
-	V8Wrap::SetReturnValue(info, bVisible);
+	v8SetReturnForInfo(bVisible);
 }
 
 void JsWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -332,7 +328,7 @@ void JsWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>
 	if (pWindow)
 		bTopmost = pWindow->IsTopmost();
 
-	V8Wrap::SetReturnValue(info, bTopmost);
+	v8SetReturnForInfo(bTopmost);
 }
 
 void JsWindow::set_topmost(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -352,13 +348,9 @@ void JsWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>&
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
-	{
-		V8Wrap::SetReturnValue(info, (int)pWindow->m_hWnd);
-	}
+		v8SetReturnForInfo((int)pWindow->m_hWnd);
 	else
-	{
-		V8Wrap::NullReturnValue(info);
-	}
+		v8SetReturnNull(info);
 }
 
 void JsWindow::set_handle(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -367,9 +359,7 @@ void JsWindow::set_handle(Local<String> name, Local<Value> value, const Property
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
-	{
 		pWindow->SetHandle((HWND)value->Int32Value());
-	}
 }
 
 // description: state property getter/setter
@@ -384,19 +374,19 @@ void JsWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& 
 		switch(nState)
 		{
 		case SW_MAXIMIZE:
-			V8Wrap::SetReturnValue(info, "maximized");
+			v8SetReturnForInfo("maximized");
 			break;
 		case SW_NORMAL:
-			V8Wrap::SetReturnValue(info, "normal");
+			v8SetReturnForInfo("normal");
 			break;
 		case SW_MINIMIZE:
-			V8Wrap::SetReturnValue(info, "minimized");
+			v8SetReturnForInfo("minimized");
 			break;
 		}
 	}
 	else
 	{
-		V8Wrap::NullReturnValue(info);
+		v8SetReturnNull(info);
 	}
 }
 
@@ -445,7 +435,7 @@ void JsWindow::method_constructor(V8_FUNCTION_ARGS)
 	}
 
 	// #TODO SetReturnValueAsObject
-	V8Wrap::SetReturnValue(args, obj);
+	v8SetReturnForArgs(obj);
 }
 
 // description: create a new window handle
@@ -580,7 +570,7 @@ void JsWindow::method_alert(V8_FUNCTION_ARGS)
 		args.Length() >= 3 ? nType : MB_OK
 		);
 
-	V8Wrap::SetReturnValue(args, nRet);
+	v8SetReturnForArgs(nRet);
 }
 
 // description: add control object on window
@@ -601,6 +591,5 @@ void JsWindow::method_addControl(V8_FUNCTION_ARGS)
 	}
 
 	pJsControl->Create(args, pWindow);
-
-	V8Wrap::SetReturnValue(args, obj);
+	v8SetReturnForArgs(obj);
 }

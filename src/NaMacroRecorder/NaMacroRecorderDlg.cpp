@@ -179,12 +179,8 @@ void CNaMacroRecorderDlg::OnClose()
 	// TODO
 
 	// Clear action record
-	std::vector<ActionRecord*>::iterator it;
-	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
-	{
-		delete *it;
-		it = m_vecActionRecords.erase(it);
-	}
+	for (ActionRecord* r: m_vecActionRecords)
+		delete r;
 	m_vecActionRecords.clear();
 
 	CDialogEx::OnClose();
@@ -612,13 +608,8 @@ void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
 	recordedJs += L"}\n";
 	WRITE_BUFFER;
 
-	// Clear record
-	std::vector<ActionRecord*>::iterator it;
-	for (it = m_vecActionRecords.begin(); it != m_vecActionRecords.end(); )
-	{
-		delete *it;
-		it = m_vecActionRecords.erase(it);
-	}
+	for (ActionRecord* r: m_vecActionRecords)
+		delete r;
 	m_vecActionRecords.clear();
 
 	file.Close();

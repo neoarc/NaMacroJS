@@ -19,7 +19,7 @@ TEST_CASE("NaCurl.Get", "[.]")
 	NaCurl curl;
 	curl.SetCallback([&](size_t added)
 	{
-		NaDebug::Out(L"Downloaded: %ld (chunk: %d)\n", curl.m_lDownloaded, added);
+		NaDebugOut(L"Downloaded: %ld (chunk: %d)\n", curl.m_lDownloaded, added);
 	});
 
 	char *outBuf = nullptr;

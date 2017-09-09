@@ -38,18 +38,16 @@ void JsProcess::FindProcesses(Isolate * isolate, const wchar_t * name, Local<Arr
 
 	// Wrap HANDLE to V8Object
 	int nIndex = 0;
-	for_each(info.foundlist.begin(), info.foundlist.end(), 
-		[&](HANDLE h)
-		{
-			JsProcess *pJsProcess = new JsProcess();
-			pJsProcess->m_pNativeProcess = NaProcess::GetProcess(h);
+	for (const HANDLE h: info.foundlist)
+	{
+		JsProcess *pJsProcess = new JsProcess();
+		pJsProcess->m_pNativeProcess = NaProcess::GetProcess(h);
 
-			Local<Value> obj = JsProcess::WrapObject(isolate, pJsProcess);
+		Local<Value> obj = JsProcess::WrapObject(isolate, pJsProcess);
 
-			// Fill V8Object Array
-			results->Set(nIndex++, obj);
-		}
-	);
+		// Fill V8Object Array
+		results->Set(nIndex++, obj);
+	}
 }
 
 Local<ObjectTemplate> JsProcess::MakeObjectTemplate(Isolate * isolate)
@@ -81,9 +79,7 @@ void JsProcess::get_name(V8_GETTER_ARGS)
 	
 	auto pProcess = UnwrapNativeProcess(info.This());
 	if (pProcess)
-	{
-		V8Wrap::SetReturnValue(info, pProcess->m_strName.wstr());
-	}
+		v8SetReturnForInfo(pProcess->m_strName.wstr());
 }
 
 void JsProcess::set_name(V8_SETTER_ARGS)
@@ -124,12 +120,11 @@ void JsProcess::method_constructor(V8_FUNCTION_ARGS)
 		//pJsProcess->m_pNativeProcess = NaProcess::Load(strFullPath.wstr(), strMode.cstr());
 
 		Local<Object> obj = WrapObject(isolate, pJsProcess);
-
-		V8Wrap::SetReturnValue(args, obj);
+		v8SetReturnForArgs(obj);
 		return;
 	}
 
-	V8Wrap::NullReturnValue(args);
+	v8SetReturnNull(args);
 }
 
 void JsProcess::method_terminate(V8_FUNCTION_ARGS)
@@ -138,12 +133,12 @@ void JsProcess::method_terminate(V8_FUNCTION_ARGS)
 	if (pProcess == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
 	pProcess->Terminate();
 
 	// return
-	V8Wrap::SetReturnValue(args, true);
+	v8SetReturnForArgs(true);
 }

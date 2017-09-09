@@ -1,6 +1,6 @@
 #pragma once
 
-#include <NaLib/NaString.h>
+#include "NaString.h"
 
 #include <Windows.h>
 

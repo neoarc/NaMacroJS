@@ -1,8 +1,5 @@
 #pragma once
 
-#include "JsObjectBase.h"
-#include "V8Wrap.h"
-
 #include <map>
 
 #include "NaWindow.h"

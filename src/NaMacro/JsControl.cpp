@@ -3,11 +3,11 @@
 
 #include <NaLib/NaDebug.h>
 #include <NaLib/NaImage.h>
+#include <NaLib/NaWindow.h>
+#include <NaLib/NaControl.h>
 
-#include "NaWindow.h"
 #include "JsImage.h"
 
-#include "NaControl.h"
 
 Global<ObjectTemplate> JsControl::s_JsControlTemplate;
 std::map<HWND, Persistent<Function, CopyablePersistentTraits<Function>>> JsControl::s_mapControlCallback;
@@ -175,7 +175,7 @@ void JsControl::get_x(V8_GETTER_ARGS)
 		pControl->m_x = rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_x);
+	v8SetReturnForInfo(pControl->m_x);
 }
 
 void JsControl::set_x(V8_SETTER_ARGS)
@@ -202,7 +202,7 @@ void JsControl::get_y(V8_GETTER_ARGS)
 		pControl->m_y = rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_y);
+	v8SetReturnForInfo(pControl->m_y);
 }
 
 void JsControl::set_y(V8_SETTER_ARGS)
@@ -229,7 +229,7 @@ void JsControl::get_width(V8_GETTER_ARGS)
 		pControl->m_width = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_width);
+	v8SetReturnForInfo(pControl->m_width);
 }
 
 void JsControl::set_width(V8_SETTER_ARGS)
@@ -256,7 +256,7 @@ void JsControl::get_height(V8_GETTER_ARGS)
 		pControl->m_height = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_height);
+	v8SetReturnForInfo(pControl->m_height);
 }
 
 void JsControl::set_height(V8_SETTER_ARGS)
@@ -280,7 +280,7 @@ void JsControl::get_text(V8_GETTER_ARGS)
 	if (pControl)
 	{
 		auto strText = pControl->GetText();
-		V8Wrap::SetReturnValue(info, strText.wstr());
+		v8SetReturnForInfo(strText.wstr());
 	}
 }
 
@@ -304,11 +304,9 @@ void JsControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	bool bVisible = false;
 	if (pControl)
-	{
 		bVisible = pControl->IsVisible();
-	}
 
-	V8Wrap::SetReturnValue(info, bVisible);
+	v8SetReturnForInfo(bVisible);
 }
 
 void JsControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -406,7 +404,7 @@ void JsControl::get_callback(Local<String> name, const PropertyCallbackInfo<Valu
 	UNUSED_PARAMETER(name);
 
 	// #TODO Impl
-	V8Wrap::SetReturnValue(info, L"NotImplemented");
+	v8SetReturnForInfo(L"NotImplemented");
 }
 
 void JsControl::set_callback(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -442,9 +440,9 @@ void JsControl::method_focus(V8_FUNCTION_ARGS)
 	{
 		pControl->SetFocus();
 
-		V8Wrap::SetReturnValue(args, true);
+		v8SetReturnForArgs(true);
 		return;
 	}
 
-	V8Wrap::SetReturnValue(args, false);
+	v8SetReturnForArgs(false);
 }

@@ -58,7 +58,7 @@ void NaScreenModule::get_width(V8_GETTER_ARGS)
 
 	int metrics = GetSystemMetrics(SM_CXSCREEN);
 
-	V8Wrap::SetReturnValue(info, metrics);
+	v8SetReturnForInfo(metrics);
 }
 
 // description: height property getter
@@ -68,7 +68,7 @@ void NaScreenModule::get_height(V8_GETTER_ARGS)
 
 	int metrics = GetSystemMetrics(SM_CYSCREEN);
 
-	V8Wrap::SetReturnValue(info, metrics);
+	v8SetReturnForInfo(metrics);
 }
 
 // description: capture screen area to image object
@@ -78,7 +78,7 @@ void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 	if (args.Length() < 4)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
@@ -94,7 +94,7 @@ void NaScreenModule::method_capture(V8_FUNCTION_ARGS)
 	auto image_obj = JsImage::WrapObject(isolate, pJsImage);
 
 	// return
-	V8Wrap::SetReturnValue(args, image_obj);
+	v8SetReturnForArgs(image_obj);
 }
 
 // description: find specific color from area
@@ -106,7 +106,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	if (args.Length() < 1)
 	{
 		// error
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -136,7 +136,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	if (pt.x == -1 || pt.y == -1)
 	{
 		// error
-		V8Wrap::NullReturnValue(args);
+		v8SetReturnNull(args);
 		return;
 	}
 
@@ -152,7 +152,7 @@ void NaScreenModule::method_findColor(V8_FUNCTION_ARGS)
 	);
 
 	// return
-	V8Wrap::SetReturnValue(args, info_obj);
+	v8SetReturnForArgs(info_obj);
 }
 
 // description: get piyel color from point x,y
@@ -162,7 +162,7 @@ void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 	if (args.Length() < 2)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		v8SetReturnForArgs(-1);
 		return;
 	}
 
@@ -195,7 +195,7 @@ void NaScreenModule::method_getPixel(V8_FUNCTION_ARGS)
 	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
 
 	// return
-	V8Wrap::SetReturnValue(args, (int)color);
+	v8SetReturnForArgs((int)color);
 }
 
 // description: change aero mode to on/off
@@ -233,6 +233,6 @@ void NaScreenModule::method_setAero(V8_FUNCTION_ARGS)
 		hr = DwmEnableComposition(DWM_EC_ENABLECOMPOSITION);
 	*/
 
-	V8Wrap::SetReturnValue(args, SUCCEEDED(hr));
+	v8SetReturnForArgs(SUCCEEDED(hr));
 	return;
 }

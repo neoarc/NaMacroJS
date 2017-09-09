@@ -3,8 +3,9 @@
 #include "V8Wrap.h"
 #include "ModuleBase.h"
 
-#include "NaWindow.h"
 #include <map>
+
+class NaWindow;
 
 class NaBasicModule : public ModuleBase
 {

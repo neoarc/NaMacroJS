@@ -88,7 +88,7 @@
       </IgnoreAllDefaultLibraries>
       <FixedBaseAddress>false</FixedBaseAddress>
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4098,4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -125,6 +125,7 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalOptions>/SAFESEH:NO /ignore:4098,4099 %(AdditionalOptions)</AdditionalOptions>
     </Link>
     <PostBuildEvent>
       <Command>copy_dlls_to_output_dir.bat $(Configuration)</Command>
@@ -145,12 +146,10 @@
     <ClCompile Include="ExtModule.cpp" />
     <ClCompile Include="KeyboardModule.cpp" />
     <ClCompile Include="MouseModule.cpp" />
-    <ClCompile Include="NaControl.cpp" />
     <ClCompile Include="JsFile.cpp" />
     <ClCompile Include="NaMacro.cpp" />
     <ClCompile Include="ModuleBase.cpp" />
     <ClCompile Include="JsObjectBase.cpp" />
-    <ClCompile Include="NaWindow.cpp" />
     <ClCompile Include="ScreenModule.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -168,12 +167,10 @@
     <ClInclude Include="ExtModule.h" />
     <ClInclude Include="KeyboardModule.h" />
     <ClInclude Include="MouseModule.h" />
-    <ClInclude Include="NaControl.h" />
     <ClInclude Include="JsFile.h" />
     <ClInclude Include="NaMacro.h" />
     <ClInclude Include="ModuleBase.h" />
     <ClInclude Include="JsObjectBase.h" />
-    <ClInclude Include="NaWindow.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="ScreenModule.h" />
     <ClInclude Include="stdafx.h" />

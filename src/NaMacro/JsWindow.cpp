@@ -69,9 +69,8 @@ void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>
 
 	// Wrap HWND to V8Object
 	int nIndex = 0;
-	for_each(info.foundlist.begin(), info.foundlist.end(),
-		[&](HWND h)
-		{
+	for (const HWND h: info.foundlist)
+	{
 		JsWindow *pJsWindow = new JsWindow();
 		pJsWindow->m_pNativeWindow = NaWindow::GetWindow(h);
 
@@ -79,8 +78,7 @@ void JsWindow::FindWindows(Isolate * isolate, const wchar_t * name, Local<Array>
 
 		// Fill V8Object Array
 		results->Set(nIndex++, obj);
-		}
-	);
+	};
 }
 
 Local<ObjectTemplate> JsWindow::MakeObjectTemplate(Isolate * isolate)

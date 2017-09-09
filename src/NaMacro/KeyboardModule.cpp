@@ -24,16 +24,13 @@ void NaKeyboardModule::Init(Isolate *isolate, Local<ObjectTemplate>& /*global_te
 
 void NaKeyboardModule::Release()
 {
-	std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
-	it = s_mapKeyEventCallback.begin();
-	for (; it != NaKeyboardModule::s_mapKeyEventCallback.end(); it++)
+	for (auto it: s_mapKeyEventCallback)
 	{
-		HotkeyKey key = it->first;
+		HotkeyKey key = it.first;
 		::UnregisterHotKey(NULL, key.index);
 	}
 
 	// TODO check Clear Persistent?
-
 	NaKeyboardModule::s_mapKeyEventCallback.clear();
 }
 
@@ -201,11 +198,9 @@ void NaKeyboardModule::method_on(V8_FUNCTION_ARGS)
 	int nModifier = 0;
 	if (args[1]->IsNull())
 	{
-		std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
-		it = s_mapKeyEventCallback.begin();
-		for (; it != NaKeyboardModule::s_mapKeyEventCallback.end(); it++)
+		for (auto element: NaKeyboardModule::s_mapKeyEventCallback)
 		{
-			HotkeyKey key = it->first;
+			HotkeyKey key = element.first;
 			if (key.keycode == nKeycode &&
 				key.modifier == nModifier)
 			{
@@ -218,7 +213,8 @@ void NaKeyboardModule::method_on(V8_FUNCTION_ARGS)
 						//DebugBreak();
 					}
 				}
-				NaKeyboardModule::s_mapKeyEventCallback.erase(it);
+
+				NaKeyboardModule::s_mapKeyEventCallback.erase(element.first);
 				break;
 			}
 		}

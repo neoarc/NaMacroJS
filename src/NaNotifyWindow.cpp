@@ -75,7 +75,7 @@ void NaNotifyWindow::Create(NaString strMessage, NaString strTitle)
 		NULL // _In_opt_ LPVOID    lpParam
 	);
 
-	NaDebug::Out(L"NaNotifyWindow::Create, 0x%08x (parent: 0x%08x)\n", hWnd, s_hMasterWindow);
+	NaDebugOut(L"NaNotifyWindow::Create, 0x%08x (parent: 0x%08x)\n", hWnd, s_hMasterWindow);
 	SetWindowLongPtr(hWnd, GWLP_USERDATA, (LONG_PTR)this);
 	ShowWindow(hWnd, SW_SHOW);
 

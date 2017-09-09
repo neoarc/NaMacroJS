@@ -1,7 +1,7 @@
 #pragma once
 
-#define NaDebugOut	NaDebug::Out
-#define NaDebugOutA	NaDebug::OutA
+#define NaDebugOut		NaDebug::Out
+#define NaDebugOutA		NaDebug::OutA
 
 namespace NaDebug
 {

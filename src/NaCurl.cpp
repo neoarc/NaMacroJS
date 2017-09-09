@@ -40,7 +40,7 @@ NaCurl::~NaCurl()
 
 NaString NaCurl::Post(NaString strUrl, NaString strBody)
 {
-	NaDebug::Out(L"URL: %ls\n", strUrl.wstr());
+	NaDebugOut(L"URL: %ls\n", strUrl.wstr());
 
 	// Add some option to the easy handle
 	m_pCurlEasy->add<CURLOPT_URL>(strUrl.cstr());
@@ -85,9 +85,9 @@ NaString NaCurl::Post(NaString strUrl, NaString strBody)
 
 	NaString strRet = cstr;
 	if (strRet.GetLength() > 80)
-		NaDebug::Out(L"RET: %ls ...(skip)\n", strRet.Left(80).wstr());
+		NaDebugOut(L"RET: %ls ...(skip)\n", strRet.Left(80).wstr());
 	else
-		NaDebug::Out(L"RET: %ls\n", strRet.wstr());
+		NaDebugOut(L"RET: %ls\n", strRet.wstr());
 
 	return strRet;
 }
@@ -97,7 +97,7 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 	if (strBody.GetLength() == 0)
 		return L"";
 
-	NaDebug::Out(L"URL: %ls\n", strUrl.wstr());
+	NaDebugOut(L"URL: %ls\n", strUrl.wstr());
 
 	// Add some option to the easy handle
 	m_pCurlEasy->add<CURLOPT_URL>(strUrl.cstr());
@@ -127,16 +127,16 @@ NaString NaCurl::Put(NaString strUrl, NaString strBody)
 
 	NaString strRet = cstr;
 	if (strRet.GetLength() > 80)
-		NaDebug::Out(L"RET: %ls ...(skip)\n", strRet.Left(80).wstr());
+		NaDebugOut(L"RET: %ls ...(skip)\n", strRet.Left(80).wstr());
 	else
-		NaDebug::Out(L"RET: %ls\n", strRet.wstr());
+		NaDebugOut(L"RET: %ls\n", strRet.wstr());
 
 	return strRet;
 }
 
 bool NaCurl::Get(NaString strUrl, char **outBuf, long &lSize)
 {
-	NaDebug::Out(L"URL: %ls\n", strUrl.wstr());
+	NaDebugOut(L"URL: %ls\n", strUrl.wstr());
 
 	// Add some option to the easy handle
 	m_pCurlEasy->add<CURLOPT_URL>(strUrl.cstr());

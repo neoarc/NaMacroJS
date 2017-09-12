@@ -36,7 +36,10 @@ char * NaFile::Read()
 
 size_t NaFile::Write(NaString & str)
 {
-	return fwrite(str.cstr(), str.GetLength(), 1, m_hFile);
+	auto c = str.cstr();
+	auto len = strlen(c);
+
+	return fwrite(c, len, 1, m_hFile);
 }
 
 void NaFile::Close()

@@ -1,7 +1,4 @@
-//
-// Find image
-// 2017.01.21 neoarc (neoarcturus@gmail.com)
-//
+
 function main() {
   test();
 }

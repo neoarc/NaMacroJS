@@ -244,3 +244,4 @@ LineCounter.ini
 /src/_NaLib/
 /Output/Release-Win32
 /Output/Debug-Win32
+/scripts/Addon/config-*.json

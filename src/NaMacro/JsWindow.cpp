@@ -123,7 +123,7 @@ Local<ObjectTemplate> JsWindow::MakeObjectTemplate(Isolate * isolate)
 // description: x property getter/setter
 void JsWindow::get_x(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -137,7 +137,7 @@ void JsWindow::get_x(V8_GETTER_ARGS)
 
 void JsWindow::set_x(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -150,7 +150,7 @@ void JsWindow::set_x(V8_SETTER_ARGS)
 // description: y property getter/setter
 void JsWindow::get_y(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -164,7 +164,7 @@ void JsWindow::get_y(V8_GETTER_ARGS)
 
 void JsWindow::set_y(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -177,7 +177,7 @@ void JsWindow::set_y(V8_SETTER_ARGS)
 // description: width property getter/setter
 void JsWindow::get_width(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -191,7 +191,7 @@ void JsWindow::get_width(V8_GETTER_ARGS)
 
 void JsWindow::set_width(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -204,7 +204,7 @@ void JsWindow::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void JsWindow::get_height(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -218,7 +218,7 @@ void JsWindow::get_height(V8_GETTER_ARGS)
 
 void JsWindow::set_height(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -231,7 +231,7 @@ void JsWindow::set_height(V8_SETTER_ARGS)
 // description: client width property getter
 void JsWindow::get_clientWidth(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -246,7 +246,7 @@ void JsWindow::get_clientWidth(V8_GETTER_ARGS)
 // description: client height property getter
 void JsWindow::get_clientHeight(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -261,7 +261,7 @@ void JsWindow::get_clientHeight(V8_GETTER_ARGS)
 // description: class property getter/setter
 void JsWindow::get_class(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -274,7 +274,7 @@ void JsWindow::get_class(V8_GETTER_ARGS)
 // description: text property getter/setter
 void JsWindow::get_text(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -286,7 +286,7 @@ void JsWindow::get_text(V8_GETTER_ARGS)
 
 void JsWindow::set_text(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -299,7 +299,7 @@ void JsWindow::set_text(V8_SETTER_ARGS)
 // description: visible property getter/setter
 void JsWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	bool bVisible = false;
@@ -313,7 +313,7 @@ void JsWindow::get_visible(Local<String> name, const PropertyCallbackInfo<Value>
 
 void JsWindow::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	// get window object(this)
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
@@ -325,7 +325,7 @@ void JsWindow::set_visible(Local<String> name, Local<Value> value, const Propert
 // description: topmost property getter/setter
 void JsWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	bool bTopmost = false;
@@ -337,7 +337,7 @@ void JsWindow::get_topmost(Local<String> name, const PropertyCallbackInfo<Value>
 
 void JsWindow::set_topmost(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	bool bTopmost = value->BooleanValue();
@@ -348,7 +348,7 @@ void JsWindow::set_topmost(Local<String> name, Local<Value> value, const Propert
 // description: handle property getter/setter
 void JsWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -363,7 +363,7 @@ void JsWindow::get_handle(Local<String> name, const PropertyCallbackInfo<Value>&
 
 void JsWindow::set_handle(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -375,7 +375,7 @@ void JsWindow::set_handle(Local<String> name, Local<Value> value, const Property
 // description: state property getter/setter
 void JsWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)
@@ -402,7 +402,7 @@ void JsWindow::get_state(Local<String> name, const PropertyCallbackInfo<Value>& 
 
 void JsWindow::set_state(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaWindow *pWindow = UnwrapNativeWindow(info.This());
 	if (pWindow)

@@ -54,7 +54,7 @@ Local<Object> NaScreenModule::GetScreenObject(Isolate * isolate)
 // description: width property getter
 void NaScreenModule::get_width(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	int metrics = GetSystemMetrics(SM_CXSCREEN);
 
@@ -64,7 +64,7 @@ void NaScreenModule::get_width(V8_GETTER_ARGS)
 // description: height property getter
 void NaScreenModule::get_height(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	int metrics = GetSystemMetrics(SM_CYSCREEN);
 

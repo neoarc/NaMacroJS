@@ -114,7 +114,7 @@ LRESULT NaNotifyWindow::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM l
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
 				0, 0, nWidth, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
-			UNUSED_VARIABLE(hCaption);
+			UNUSED(hCaption);
 
 			HWND hMessage = CreateWindow(L"Static", pThis->m_strMessage.wstr(),
 				WS_VISIBLE | WS_CHILD | SS_CENTER,

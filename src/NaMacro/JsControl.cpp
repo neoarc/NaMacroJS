@@ -166,7 +166,7 @@ Local<ObjectTemplate> JsControl::MakeObjectTemplate(Isolate * isolate)
 // description: x property getter/setter
 void JsControl::get_x(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -180,7 +180,7 @@ void JsControl::get_x(V8_GETTER_ARGS)
 
 void JsControl::set_x(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -193,7 +193,7 @@ void JsControl::set_x(V8_SETTER_ARGS)
 // description: y property getter/setter
 void JsControl::get_y(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -207,7 +207,7 @@ void JsControl::get_y(V8_GETTER_ARGS)
 
 void JsControl::set_y(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -220,7 +220,7 @@ void JsControl::set_y(V8_SETTER_ARGS)
 // description: width property getter/setter
 void JsControl::get_width(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -234,7 +234,7 @@ void JsControl::get_width(V8_GETTER_ARGS)
 
 void JsControl::set_width(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -247,7 +247,7 @@ void JsControl::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void JsControl::get_height(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -261,7 +261,7 @@ void JsControl::get_height(V8_GETTER_ARGS)
 
 void JsControl::set_height(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -274,7 +274,7 @@ void JsControl::set_height(V8_SETTER_ARGS)
 // description: text property getter/setter
 void JsControl::get_text(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -286,7 +286,7 @@ void JsControl::get_text(V8_GETTER_ARGS)
 
 void JsControl::set_text(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	if (pControl)
@@ -299,7 +299,7 @@ void JsControl::set_text(V8_SETTER_ARGS)
 // description: visible property getter/setter
 void JsControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaControl *pControl = UnwrapNativeControl(info.This());
 	bool bVisible = false;
@@ -313,7 +313,7 @@ void JsControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 
 void JsControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	// get window object(this)
 	Local<Object> obj = info.This();
@@ -326,7 +326,7 @@ void JsControl::set_visible(Local<String> name, Local<Value> value, const Proper
 // description: parent property getter
 void JsControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	Isolate *isolate = info.GetIsolate();
 
@@ -339,7 +339,7 @@ void JsControl::get_parent(Local<String> name, const PropertyCallbackInfo<Value>
 // description: image property getter/setter
 void JsControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	Isolate *isolate = info.GetIsolate();
 
@@ -351,7 +351,7 @@ void JsControl::get_image(Local<String> name, const PropertyCallbackInfo<Value>&
 
 void JsControl::set_image(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	Isolate *isolate = info.GetIsolate();
 	Local<Object> obj = info.This();
@@ -403,7 +403,7 @@ void JsControl::set_image(Local<String> name, Local<Value> value, const Property
 // description: callback property getter/setter
 void JsControl::get_callback(Local<String> name, const PropertyCallbackInfo<Value>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	// #TODO Impl
 	V8Wrap::SetReturnValue(info, L"NotImplemented");
@@ -411,7 +411,7 @@ void JsControl::get_callback(Local<String> name, const PropertyCallbackInfo<Valu
 
 void JsControl::set_callback(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	// get control object(this)
 	Local<Object> obj = info.This();

@@ -77,7 +77,7 @@ Local<ObjectTemplate> JsProcess::MakeObjectTemplate(Isolate * isolate)
 // description: name property getter/setter
 void JsProcess::get_name(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 	
 	auto pProcess = UnwrapNativeProcess(info.This());
 	if (pProcess)
@@ -88,9 +88,9 @@ void JsProcess::get_name(V8_GETTER_ARGS)
 
 void JsProcess::set_name(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
-	UNUSED_PARAMETER(info);
+	UNUSED(name);
+	UNUSED(value);
+	UNUSED(info);
 
 	// Not Impl
 }
@@ -98,7 +98,7 @@ void JsProcess::set_name(V8_SETTER_ARGS)
 // description: exist property getter
 void JsProcess::get_exist(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	auto pProcess = UnwrapNativeProcess(info.This());
 	if (pProcess)

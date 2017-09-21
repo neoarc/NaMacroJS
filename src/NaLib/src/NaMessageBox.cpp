@@ -92,7 +92,7 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				WS_VISIBLE | WS_CHILD | SS_CENTER,
 				10, 10, nWidth - 20, 26,
 				hWnd, 0, GetModuleHandle(NULL), NULL);
-			UNUSED_VARIABLE(hStatic);
+			UNUSED(hStatic);
 
 			pThis->m_hEdit = CreateWindow(L"Edit", pThis->m_strRet.wstr(),
 				WS_VISIBLE | WS_CHILD | WS_BORDER | WS_TABSTOP | ES_LEFT | ES_AUTOHSCROLL,
@@ -104,13 +104,13 @@ LRESULT NaMessageBox::WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPa
 				WS_VISIBLE | WS_CHILD | WS_TABSTOP | BS_PUSHBUTTON | BS_DEFPUSHBUTTON,
 				42, nHeight - 40, 88, 26,
 				hWnd, (HMENU)IDOK, GetModuleHandle(NULL), NULL);
-			UNUSED_VARIABLE(hBtnOK);
+			UNUSED(hBtnOK);
 
 			HWND hBtnCancel = CreateWindow(L"Button", L"Cancel",
 				WS_VISIBLE | WS_CHILD | WS_TABSTOP,
 				138, nHeight - 40, 88, 26,
 				hWnd, (HMENU)IDCANCEL, GetModuleHandle(NULL), NULL);
-			UNUSED_VARIABLE(hBtnCancel);
+			UNUSED(hBtnCancel);
 
 			::SetFocus(pThis->m_hEdit);
 		}

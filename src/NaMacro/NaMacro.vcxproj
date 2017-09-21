@@ -61,7 +61,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\NaLib\include;..\NaLib\src\CurlLib\include;..\NaLib\src\CurlLib\include\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;$(SolutionDir)\src\NaLib\include;$(SolutionDir)\src\NaLib\src\CurlLib\include;$(SolutionDir)\src\NaLib\src\CurlLib\include\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>CURL_STATICLIB;USE_V8;V8_IMMINENT_DEPRECATION_WARNINGS;_CRT_SECURE_NO_DEPRECATE;_CRT_NONSTDC_NO_DEPRECATE;_USING_V110_SDK71_;_HAS_EXCEPTIONS=0;V8_TARGET_ARCH_IA32;WIN32;V8_DEPRECATION_WARNINGS;V8_I18N_SUPPORT;V8_USE_EXTERNAL_STARTUP_DATA;U_USING_ICU_NAMESPACE=0;U_STATIC_IMPLEMENTATION;ENABLE_DISASSEMBLER;V8_ENABLE_CHECKS;OBJECT_PRINT;VERIFY_HEAP;DEBUG;TRACE_MAPS;ENABLE_HANDLE_ZAPPING;ENABLE_SLOW_DCHECKS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
@@ -105,7 +105,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <WarningLevel>Level4</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;..\NaLib\include;..\NaLib\src\CurlLib\include;..\NaLib\src\CurlLib\include\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\include\libplatform;$(SolutionDir)\src\NaLib\include;$(SolutionDir)\src\NaLib\src\CurlLib\include;$(SolutionDir)\src\NaLib\src\CurlLib\include\curl;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>

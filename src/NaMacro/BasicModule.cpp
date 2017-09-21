@@ -115,7 +115,7 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 
 void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
@@ -124,7 +124,7 @@ void NaBasicModule::get_pcname(V8_GETTER_ARGS)
 
 void NaBasicModule::get_username(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
@@ -521,7 +521,7 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 // syntax:		exit()
 void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
 {
-	UNUSED_PARAMETER(args);
+	UNUSED(args);
 	NaMacroCommon::g_bExit = true;
 }
 

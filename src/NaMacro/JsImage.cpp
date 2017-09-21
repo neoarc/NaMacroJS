@@ -63,7 +63,7 @@ Local<ObjectTemplate> JsImage::MakeObjectTemplate(Isolate * isolate)
 // description: width property getter/setter
 void JsImage::get_width(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
 	int nWidth = 0;
@@ -77,8 +77,8 @@ void JsImage::get_width(V8_GETTER_ARGS)
 
 void JsImage::set_width(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
+	UNUSED(name);
+	UNUSED(value);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
 	if (pImage)
@@ -90,7 +90,7 @@ void JsImage::set_width(V8_SETTER_ARGS)
 // description: height property getter/setter
 void JsImage::get_height(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
 	int nHeight = 0;
@@ -104,8 +104,8 @@ void JsImage::get_height(V8_GETTER_ARGS)
 
 void JsImage::set_height(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
+	UNUSED(name);
+	UNUSED(value);
 
 	NaImage *pImage = UnwrapNativeImage(info.This());
 	if (pImage)
@@ -247,6 +247,13 @@ void JsImage::method_reset(V8_FUNCTION_ARGS)
 		return;
 	}
 	
+	JsImage* pJsImage = static_cast<JsImage*>(UnwrapObject(args.This()));
+	if (pJsImage && pJsImage->m_pNativeImage)
+	{
+		delete pJsImage->m_pNativeImage;
+		pJsImage->m_pNativeImage = nullptr;
+	}
+
 	V8Wrap::SetReturnValue(args, true);
 }
 

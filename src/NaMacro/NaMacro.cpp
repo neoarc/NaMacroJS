@@ -29,10 +29,19 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 		std::string defaultScriptPath = std::string(NaUrl::GetMyDocumentDirectory().cstr());
 		defaultScriptPath += "\\NaMacroJS\\NaMacro.njs";
 
-		std::string scriptPath = (__argc > 1) ? __argv[1] : defaultScriptPath;
-		Local<String> scriptSource = V8Wrap::ReadScript(isolate, scriptPath);
-		if (scriptSource.IsEmpty())
-			return 1;
+		// #TODO argument parser
+		std::string scriptPath;
+		Local<String> scriptSource;
+		for (int i=1; i<__argc; i++)
+		{
+			if (__argv[i] && __argv[i][0] == L'-')
+				continue;
+
+			scriptPath = (__argc > i) ? __argv[i] : defaultScriptPath;
+			scriptSource = V8Wrap::ReadScript(isolate, scriptPath);
+			if (scriptSource.IsEmpty())
+				return 1;
+		}
 
 		// Create a template for the global object.
 		Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);

@@ -55,7 +55,7 @@ Local<ObjectTemplate> JsFile::MakeObjectTemplate(Isolate * isolate)
 // description: name property getter/setter
 void JsFile::get_name(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 	
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
@@ -66,9 +66,9 @@ void JsFile::get_name(V8_GETTER_ARGS)
 
 void JsFile::set_name(V8_SETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
-	UNUSED_PARAMETER(value);
-	UNUSED_PARAMETER(info);
+	UNUSED(name);
+	UNUSED(value);
+	UNUSED(info);
 
 	// Not Impl
 }
@@ -76,7 +76,7 @@ void JsFile::set_name(V8_SETTER_ARGS)
 // description: exist property getter
 void JsFile::get_exist(V8_GETTER_ARGS)
 {
-	UNUSED_PARAMETER(name);
+	UNUSED(name);
 
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)

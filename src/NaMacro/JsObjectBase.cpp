@@ -29,7 +29,7 @@ int JsObjectBase::Release()
 {
 	if (--m_nRef == 0)
 	{
-//		MakeWeak();
+		m_Persistent.Reset();
 		delete this;
 		return 0;
 	}
@@ -79,7 +79,7 @@ Local<Object> JsObjectBase::WrapObject(Isolate *isolate, JsObjectBase * pObject)
 	pObject->m_Persistent.Reset(isolate, result);
 
 	// #FIXME: open this after complete v8 on nuget
-//	pObject->MakeWeak();
+	pObject->MakeWeak();
 
 	// Return the result through the current handle scope.  Since each
 	// of these handles will go away when the handle scope is deleted
@@ -97,20 +97,18 @@ JsObjectBase * JsObjectBase::UnwrapObject(Local<Object> obj)
 }
 
 // #FIXME: open this after complete v8 on nuget
-// void NaObject::MakeWeak()
-// {
-// 	m_Persistent.SetWeak(this, WeakCallback);
-// 	m_Persistent.MarkIndependent();
-// }
+void JsObjectBase::MakeWeak()
+{
+	m_Persistent.SetWeak(this, WeakCallback, WeakCallbackType::kParameter);
+	m_Persistent.MarkIndependent();
+}
 
 // #FIXME: open this after complete v8 on nuget
-// void NaObject::WeakCallback(
-// 	const v8::WeakCallbackData<v8::Object, NaObject>& data
-// 	)
-// {
-// 	NaObject *pObject = data.GetParameter();
-// 	if (pObject)
-// 	{
-// 		pObject->Release();
-// 	}
-// }
+void JsObjectBase::WeakCallback(const v8::WeakCallbackInfo<JsObjectBase>& data)
+{
+	JsObjectBase *pObject = data.GetParameter();
+	if (pObject)
+	{
+		pObject->Release();
+	}
+}

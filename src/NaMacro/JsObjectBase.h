@@ -21,10 +21,10 @@ public:
 	static JsObjectBase* UnwrapObject(Local<Object> obj);
 
 	// #FIXME: open this after complete v8 on nuget
-//	virtual void MakeWeak();
-// 	static void WeakCallback(
-// 		const v8::WeakCallbackData<v8::Object, NaObject>& data
-// 		//Persistent<Value> obj, void *pData
-// 		);
+	virtual void MakeWeak();
+	static void WeakCallback(
+		const v8::WeakCallbackInfo<JsObjectBase>& data
+		//Persistent<Value> obj, void *pData
+		);
 };
 

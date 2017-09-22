@@ -7,13 +7,16 @@ function test() {
   consoleWindow.visible = true;
 
   // Find image from whole screen
-  let cnt = 100;
+  let cnt = 1000;
   ///*
   for (var i=0; i<cnt; i++) {
       var img = system.screen.capture(0, 0, system.screen.width, system.screen.height);
+      //img.reset();
       img = null;
   }
-  //gc();
+
+  // need command line parameter: --dispose-gc
+  gc();
   //*/
 
   /*

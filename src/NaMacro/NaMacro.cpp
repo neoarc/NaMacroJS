@@ -17,7 +17,8 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 {
 	Platform* platform = V8Wrap::Initialize();
 
-	//SetFlagsFromCommandLine(&argc, argv, true);
+	v8::V8::SetFlagsFromCommandLine(&__argc, __argv, true);
+
 	{
 		Isolate* isolate = V8Wrap::CreateNewIsolate();
 		Isolate::Scope _is(isolate);

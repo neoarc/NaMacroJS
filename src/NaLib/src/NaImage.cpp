@@ -190,9 +190,10 @@ NaImage* NaImage::CaptureScreen(int x, int y, int width, int height)
 	::SelectObject(pImage->m_hMemoryDC, hOldBitmap);
 
 	// TODO must delete
+
 	//::DeleteDC(pImage->m_hMemoryDC);
 
-	//::ReleaseDC(NaScreenModule::GetDesktopHWND(), hDC);
+	::ReleaseDC(NaDesktop::GetHWND(), hDC);
 
 	pImage->m_rc.left = x;
 	pImage->m_rc.top = y;

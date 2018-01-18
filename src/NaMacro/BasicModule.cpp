@@ -187,13 +187,55 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 	}
 }
 
-bool NaBasicModule::IncludeBase(NaString strBase, NaString strUrl)
+bool NaBasicModule::IncludeBase(V8_FUNCTION_ARGS, NaString strFullPath)
 {
+	Isolate *isolate = args.GetIsolate();
+	Local<Context> context = isolate->GetCurrentContext();
+
+	Local<String> script_source;
+	MaybeLocal<String> script_name;
+
+	script_source = V8Wrap::ReadFile(isolate, strFullPath.cstr());
+	script_name = String::NewFromUtf8(isolate, strFullPath.cstr(), NewStringType::kNormal);
+	if (script_source.IsEmpty())
+	{
+		NaDebugOut(L"Error reading '%s'\n", strFullPath.wstr());
+
+		// TODO ThrowException
+		return false;
+	}
+
+	Local<Script> script;
+	{
+		TryCatch try_catch(isolate);
+		ScriptOrigin origin(script_name.ToLocalChecked());
+		Script::Compile(context, script_source, &origin).ToLocal(&script);
+		if (script.IsEmpty())
+		{
+			if (V8Wrap::g_bReportExceptions)
+				V8Wrap::ReportException(isolate, &try_catch);
+
+			NaDebugOut(L"included script is empty!\n");
+			return false;
+		}
+	}
+
+	{
+		TryCatch try_catch(isolate);
+		script->Run(context);
+		if (try_catch.HasCaught())
+		{
+			if (V8Wrap::g_bReportExceptions)
+				V8Wrap::ReportException(isolate, &try_catch);
+			return true;
+		}
+	}
+
 	return false;
 }
 
 // description: Include external source file
-// syntax:		include(filename);
+// syntax:		include(filename[, filename2[, filename3 ...]]);
 void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
@@ -206,6 +248,12 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 
 		String::Value arg_value(args[i]);
 		wchar_t *wstr = (wchar_t*)(*arg_value);
+
+		// #TODO 4-phase include trying
+		// 1. Based on Script path
+		// 2. Based on NaMacro.exe path
+		// 3. Based on Running path (current path)
+		// 4. Based on NaMacro's install path
 
 		// converting relative path
 		Local<StackTrace> stack_trace = StackTrace::CurrentStackTrace(isolate, 1, StackTrace::kScriptName);
@@ -228,47 +276,15 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 		url.SetBase(strBase);
 		url.SetUrl(strUrl);
 
-		// #TODO
-		//IncludeBase(strBase, strUrl);
+		NaString strFullPath(url.GetFullUrl());
+		NaDebugOut(L"Include full: %s\n", strFullPath.wstr());
 
-		NaString strFullUrl(url.GetFullUrl());
-		NaDebugOut(L"Include full: %s\n", strFullUrl.wstr());
-
-		script_source = V8Wrap::ReadFile(isolate, strFullUrl.cstr());
-		script_name = String::NewFromUtf8(isolate, strFullUrl.cstr(), NewStringType::kNormal);
-		if (script_source.IsEmpty())
-		{
-			NaDebugOut(L"Error reading '%s'\n", strFullUrl.wstr());
-
-			// TODO ThrowException
-			return;
-		}
-
-		Local<Script> script;
-		{
-			TryCatch try_catch(isolate);
-			ScriptOrigin origin(script_name.ToLocalChecked());
-			Script::Compile(context, script_source, &origin).ToLocal(&script);
-			if (script.IsEmpty())
-			{
-				if (V8Wrap::g_bReportExceptions)
-					V8Wrap::ReportException(isolate, &try_catch);
-
-				NaDebugOut(L"included script is empty!\n");
-				return;
-			}
-		}
-
-		{
-			TryCatch try_catch(isolate);
-			script->Run(context);
-			if (try_catch.HasCaught())
-			{
-				if (V8Wrap::g_bReportExceptions)
-					V8Wrap::ReportException(isolate, &try_catch);
-				return;
-			}
-		}
+		IncludeBase(args, strFullPath);
+		/*
+		// #TODO this is to-do code for 4-phase
+		if (IncludeBase(args, strFullPath) == true)
+			break;
+		*/
 	}
 }
 

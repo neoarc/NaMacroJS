@@ -21,7 +21,7 @@ public:
 	static int s_nTimerID;
 
 	// method helper
-	static bool IncludeBase(NaString strBase, NaString strUrl);
+	static bool IncludeBase(V8_FUNCTION_ARGS, NaString strFullPath);
 
 	// accessors
 	DEFINE_CLASS_ACCESSOR_RO(pcname);

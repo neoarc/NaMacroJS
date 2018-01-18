@@ -8,8 +8,8 @@ function main()
 
     var ret = fetch(url, {
 		method: "POST",
-		body: "FetchTest from NaMacro"
-		//body: "NaMacro¿¡¼­ Å×½ºÆ®" // #FIXME
+		//body: "FetchTest from NaMacro"
+		body: "í•œê¸€?" // #FIXME
 	});
 
 	// TODO

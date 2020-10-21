@@ -570,7 +570,7 @@ void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
 			newJs.Format(L"%s%s.%s(%d); // '%s'\n",
 				STR_TAB, VAR_KEYBOARD,
 				(ar->enType == ACTION_KEYDOWN) ? L"down" : L"up", kar->nKeyCode,
-				GetKeyName(kar->nKeyCode)
+				(LPCWSTR)GetKeyName(kar->nKeyCode)
 			);
 			recordedJs += newJs;
 		}
@@ -584,7 +584,7 @@ void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
 				recordedJs += L"\n";
 
 				newJs.Format(L"%s// Window: %s (Class: %s)\n",
-					STR_TAB, war->strText, war->strClass);
+					STR_TAB, (LPCWSTR)war->strText, (LPCWSTR)war->strClass);
 				recordedJs += newJs;
 
 				newJs.Format(L"%s// Position: %d, %d (%d x %d)\n",
@@ -598,7 +598,7 @@ void CNaMacroRecorderDlg::SaveRecordToNaMacroScript(IN CString filename)
 			if (IsUseRelativeCoord())
 			{
 				newJs.Format(L"%s%s = _findFirstWindow('%s');\n",
-					STR_TAB, VAR_WINDOW, war->strText
+					STR_TAB, VAR_WINDOW, (LPCWSTR)war->strText
 				);
 				recordedJs += newJs;
 			}
@@ -889,7 +889,7 @@ void CNaMacroRecorderDlg::LoadConfig(CString & strId, CString & strVal)
 	*/
 	else
 	{
-		TRACE(L"Invalid Config Property: %s\n", strId);
+		TRACE(L"Invalid Config Property: %s\n", (LPCWSTR)strId);
 	}
 }
 

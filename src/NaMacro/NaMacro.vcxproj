@@ -90,6 +90,7 @@
       <FixedBaseAddress>false</FixedBaseAddress>
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
       <AdditionalOptions>/SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <PreBuildEvent>
       <Command>
@@ -127,6 +128,7 @@
       <IgnoreSpecificDefaultLibraries>
       </IgnoreSpecificDefaultLibraries>
       <AdditionalLibraryDirectories>$(IntDir)..\;$(SolutionDir)\packages\v8-v140-x86.5.6.326.55\lib\$(Configuration)</AdditionalLibraryDirectories>
+      <UACExecutionLevel>RequireAdministrator</UACExecutionLevel>
     </Link>
     <PostBuildEvent>
       <Command>copy_dlls_to_output_dir.bat $(Configuration)</Command>

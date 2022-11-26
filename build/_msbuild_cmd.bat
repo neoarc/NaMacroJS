@@ -11,7 +11,7 @@ set SLN=%1
 set CONFIG=%2
 
 set PLATFORM=Win32
-set TOOLSET=v140
+set TOOLSET=v143
 
 echo.
 echo.
@@ -27,7 +27,10 @@ echo ########################################################################
 echo.
 echo.
 
-set VCVARSALL_BAT=%VS140COMNTOOLS:Common7\Tools\=VC\vcvarsall.bat%
+::set VCVARSALL_BAT=%VS143COMNTOOLS:Common7\Tools\=VC\vcvarsall.bat%
+@call _find_vcvarsall.bat
+@call _vcvarsall.bat
+@echo VCVARSALL_BAT = %VCVARSALL_BAT%
 call "%VCVARSALL_BAT%" x86
 
 set CFG=/property:Configuration=%CONFIG%

@@ -328,7 +328,7 @@ void CNaMacroRecorderDlg::StopRecord()
 	}
 	*/
 
-	namespace fs = std::experimental::filesystem;
+	namespace fs = std::filesystem;
 	NaString defaultSaveDir = NaUrl::GetMyDocumentDirectory().wstr();
 	defaultSaveDir += L"\\NaMacroJS";
 	if (!fs::exists(defaultSaveDir.wstr()))

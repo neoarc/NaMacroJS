@@ -200,7 +200,15 @@ void NaMouseModule::method_wheelDown(V8_FUNCTION_ARGS)
 	if (args.Length() >= 2)
 		method_move(args);
 
-	// TODO implement
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_WHEEL;
+	// A positive value indicates that the wheel was rotated forward, away from the user;
+	// a negative value indicates that the wheel was rotated backward, toward the user.
+	// One wheel click is defined as WHEEL_DELTA, which is 120.
+	input.mi.mouseData = (DWORD)-WHEEL_DELTA;
+	::SendInput(1, &input, sizeof(INPUT));
 }
 
 // description: 
@@ -209,7 +217,15 @@ void NaMouseModule::method_wheelUp(V8_FUNCTION_ARGS)
 	if (args.Length() >= 2)
 		method_move(args);
 
-	// TODO implement
+	INPUT input;
+	ZeroMemory(&input, sizeof(INPUT));
+	input.type = INPUT_MOUSE;
+	input.mi.dwFlags = MOUSEEVENTF_WHEEL;
+	// A positive value indicates that the wheel was rotated forward, away from the user;
+	// a negative value indicates that the wheel was rotated backward, toward the user.
+	// One wheel click is defined as WHEEL_DELTA, which is 120.
+	input.mi.mouseData = (DWORD)WHEEL_DELTA; 
+	::SendInput(1, &input, sizeof(INPUT));
 }
 
 // description: 

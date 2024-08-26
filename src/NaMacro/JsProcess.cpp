@@ -60,13 +60,13 @@ Local<ObjectTemplate> JsProcess::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind file methods
-#define ADD_PROCESS_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_PROCESS_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
+#define ADD_PROCESS_PROPERTY(_prop)	ADD_OBJ_PROPERTY(templ, _prop);
+#define ADD_PROCESS_PROPERTY_RO(_prop)	ADD_OBJ_PROPERTY_RO(templ, _prop);
 #define ADD_PROCESS_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_PROCESS_ACCESSOR(name);
-	ADD_PROCESS_ACCESSOR_RO(exist);
+	ADD_PROCESS_PROPERTY(name);
+	ADD_PROCESS_PROPERTY_RO(exist);
 
 	// methods
 	ADD_PROCESS_METHOD(terminate);
@@ -82,7 +82,7 @@ void JsProcess::get_name(V8_GETTER_ARGS)
 	auto pProcess = UnwrapNativeProcess(info.This());
 	if (pProcess)
 	{
-		V8Wrap::SetReturnValue(info, pProcess->m_strName.wstr());
+		V8_PROP_RET(pProcess->m_strName.wstr());
 	}
 }
 
@@ -113,7 +113,7 @@ void JsProcess::get_exist(V8_GETTER_ARGS)
 	}
 }
 
-void JsProcess::method_constructor(V8_FUNCTION_ARGS)
+void JsProcess::method_constructor(V8_METHOD_ARGS)
 {
 	if (args.Length() >= 1)
 	{
@@ -125,25 +125,25 @@ void JsProcess::method_constructor(V8_FUNCTION_ARGS)
 
 		Local<Object> obj = WrapObject(isolate, pJsProcess);
 
-		V8Wrap::SetReturnValue(args, obj);
+		V8_METHOD_RET(obj);
 		return;
 	}
 
 	V8Wrap::NullReturnValue(args);
 }
 
-void JsProcess::method_terminate(V8_FUNCTION_ARGS)
+void JsProcess::method_terminate(V8_METHOD_ARGS)
 {
 	auto pProcess = UnwrapNativeProcess(args.This());
 	if (pProcess == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		V8_METHOD_RET(-1);
 		return;
 	}
 
 	pProcess->Terminate();
 
 	// return
-	V8Wrap::SetReturnValue(args, true);
+	V8_METHOD_RET(true);
 }

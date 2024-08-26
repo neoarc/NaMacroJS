@@ -72,7 +72,7 @@
       <ExceptionHandling>false</ExceptionHandling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4189;4100;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <OmitDefaultLibName>false</OmitDefaultLibName>
       <TreatWarningAsError>true</TreatWarningAsError>
@@ -113,7 +113,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <DisableSpecificWarnings>4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4189;4100;4996;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -139,39 +139,44 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BasicModule.cpp" />
+    <ClCompile Include="JsGlobalCommon.cpp" />
     <ClCompile Include="JsControl.cpp" />
     <ClCompile Include="JsImage.cpp" />
     <ClCompile Include="JsProcess.cpp" />
     <ClCompile Include="JsWindow.cpp" />
+    <ClCompile Include="NaKeyboard.cpp" />
     <ClCompile Include="NaMacroCommon.cpp" />
+    <ClCompile Include="NaMouse.cpp" />
+    <ClCompile Include="NaScreen.cpp" />
     <ClCompile Include="V8Wrap.cpp" />
-    <ClCompile Include="ExtModule.cpp" />
-    <ClCompile Include="KeyboardModule.cpp" />
-    <ClCompile Include="MouseModule.cpp" />
+    <ClCompile Include="JsGlobalExternal.cpp" />
+    <ClCompile Include="JsKeyboard.cpp" />
+    <ClCompile Include="JsMouse.cpp" />
     <ClCompile Include="NaControl.cpp" />
     <ClCompile Include="JsFile.cpp" />
     <ClCompile Include="NaMacro.cpp" />
-    <ClCompile Include="ModuleBase.cpp" />
     <ClCompile Include="JsObjectBase.cpp" />
     <ClCompile Include="NaWindow.cpp" />
-    <ClCompile Include="ScreenModule.cpp" />
+    <ClCompile Include="JsScreen.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BasicModule.h" />
+    <ClInclude Include="JsGlobalCommon.h" />
     <ClInclude Include="JsControl.h" />
     <ClInclude Include="JsImage.h" />
     <ClInclude Include="JsProcess.h" />
     <ClInclude Include="JsWindow.h" />
+    <ClInclude Include="NaKeyboard.h" />
     <ClInclude Include="NaMacroCommon.h" />
+    <ClInclude Include="NaMouse.h" />
+    <ClInclude Include="NaScreen.h" />
     <ClInclude Include="V8Wrap.h" />
-    <ClInclude Include="ExtModule.h" />
-    <ClInclude Include="KeyboardModule.h" />
-    <ClInclude Include="MouseModule.h" />
+    <ClInclude Include="JsGlobalExternal.h" />
+    <ClInclude Include="JsKeyboard.h" />
+    <ClInclude Include="JsMouse.h" />
     <ClInclude Include="NaControl.h" />
     <ClInclude Include="JsFile.h" />
     <ClInclude Include="NaMacro.h" />
@@ -179,12 +184,10 @@
     <ClInclude Include="JsObjectBase.h" />
     <ClInclude Include="NaWindow.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="ScreenModule.h" />
+    <ClInclude Include="JsScreen.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Output\Debug\NaMacro.js" />
-    <None Include="..\Output\Release\NaMacro.js" />
     <None Include="packages.config" />
     <None Include="res\NaMacro.rc2" />
   </ItemGroup>

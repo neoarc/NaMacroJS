@@ -3,7 +3,7 @@
 #include "V8Wrap.h"
 #include "ModuleBase.h"
 
-class NaMouseModule : public ModuleBase
+class JsMouse : public ModuleBase
 {
 public:
 	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
@@ -12,8 +12,8 @@ public:
 	Local<Object> GetMouseObject(Isolate *isolate);
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(x);
-	DEFINE_CLASS_ACCESSOR(y);
+	DEFINE_CLASS_PROPERTY(x);
+	DEFINE_CLASS_PROPERTY(y);
 
 	// methods
 	DEFINE_CLASS_METHOD(move);

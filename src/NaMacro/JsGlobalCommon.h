@@ -6,7 +6,7 @@
 #include "NaWindow.h"
 #include <map>
 
-class NaBasicModule : public ModuleBase
+class JsGlobalCommon : public ModuleBase
 {
 public:
 	virtual void Create(Isolate *isolate, Local<ObjectTemplate>& global_template);
@@ -21,11 +21,11 @@ public:
 	static int s_nTimerID;
 
 	// method helper
-	static bool IncludeBase(V8_FUNCTION_ARGS, NaString strFullPath);
+	static bool IncludeBase(V8_METHOD_ARGS, NaString strFullPath);
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR_RO(pcname);
-	DEFINE_CLASS_ACCESSOR_RO(username);
+	DEFINE_CLASS_PROPERTY_RO(pcname);
+	DEFINE_CLASS_PROPERTY_RO(username);
 
 	// methods
 	DEFINE_CLASS_METHOD(include);

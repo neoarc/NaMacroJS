@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "ExtModule.h"
+#include "JsGlobalExternal.h"
 
 #include <fstream>
 #include <iostream>
@@ -8,37 +8,37 @@
 
 using namespace std;
 
-bool NaExtModule::s_bInitTTS = false;
-vector<ISpVoice*> NaExtModule::s_vecVoices;
+bool JaGlobalExternal::s_bInitTTS = false;
+vector<ISpVoice*> JaGlobalExternal::s_vecVoices;
 
-void NaExtModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void JaGlobalExternal::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 	// methods
 	ADD_GLOBAL_METHOD(convGMacroToNaMacro);
 	ADD_GLOBAL_METHOD(ttsSpeak);
 }
 
-void NaExtModule::Init(Isolate * /*isolate*/, Local<ObjectTemplate>& /*global_template*/)
+void JaGlobalExternal::Init(Isolate * /*isolate*/, Local<ObjectTemplate>& /*global_template*/)
 {
 	// TODO make extapi object
 	// TODO bind apis to extapi object
 }
 
-void NaExtModule::Release()
+void JaGlobalExternal::Release()
 {
-	if (NaExtModule::s_bInitTTS == true) 
+	if (JaGlobalExternal::s_bInitTTS == true) 
 	{
 		for_each(s_vecVoices.begin(), s_vecVoices.end(),
 			[&](ISpVoice* v) { v->Release(); } );
 
-		NaExtModule::s_vecVoices.clear();
+		JaGlobalExternal::s_vecVoices.clear();
 		::CoUninitialize();
 	}
 }
 
 // description: Convert GMacro data to NaMacro script
 // syntax:		convGMacroToNaMacro(filename)
-void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
+void JaGlobalExternal::method_convGMacroToNaMacro(V8_METHOD_ARGS)
 {
 	printf("ConvGMacroToNaMacro\n");
 
@@ -178,17 +178,17 @@ void NaExtModule::method_convGMacroToNaMacro(V8_FUNCTION_ARGS)
 		}
 	);
 
-	V8Wrap::SetReturnValue(args, strNaScript.data());
+	V8_METHOD_RET(strNaScript.data());
 }
 
 // description: text to speech
 // syntax:		ttsSpeak(text, [async=false])
-void NaExtModule::method_ttsSpeak(V8_FUNCTION_ARGS)
+void JaGlobalExternal::method_ttsSpeak(V8_METHOD_ARGS)
 {
-	if (NaExtModule::s_bInitTTS == false)
+	if (JaGlobalExternal::s_bInitTTS == false)
 	{
 		CoInitialize(0);
-		NaExtModule::s_bInitTTS = true;
+		JaGlobalExternal::s_bInitTTS = true;
 	}
 
 	ISpVoice *pVoice = NULL;
@@ -214,6 +214,6 @@ void NaExtModule::method_ttsSpeak(V8_FUNCTION_ARGS)
 
 		hr = pVoice->Speak(pwcsName, dwFlag, NULL);
 
-		NaExtModule::s_vecVoices.push_back(pVoice);
+		JaGlobalExternal::s_vecVoices.push_back(pVoice);
 	}
 }

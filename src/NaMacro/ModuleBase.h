@@ -5,11 +5,11 @@
 class ModuleBase
 {
 public:
-	ModuleBase();
-	~ModuleBase();
+	ModuleBase() {}
+	~ModuleBase() {}
 
-	virtual void Create(Isolate *isolate, Local<ObjectTemplate>& global_template);
-	virtual void Init(Isolate *isolate, Local<ObjectTemplate>& global_template);
-	virtual void Release();
+	virtual void Create(Isolate* isolate, Local<ObjectTemplate>& global_template) { UNUSED(isolate); UNUSED(global_template); }
+	virtual void Init(Isolate* isolate, Local<ObjectTemplate>& global_template) { UNUSED(isolate); UNUSED(global_template); }
+	virtual void Release() {}
 };
 

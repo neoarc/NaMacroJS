@@ -4,8 +4,8 @@
 #include <Windows.h>
 #include <lmcons.h>
 
-#include "BasicModule.h"
-#include "KeyboardModule.h"
+#include "JsGlobalCommon.h"
+#include "JsKeyboard.h"
 
 namespace NaMacroCommon 
 {
@@ -25,10 +25,10 @@ namespace NaMacroCommon
 			switch (msg.message)
 			{
 			case WM_HOTKEY:
-				NaKeyboardModule::OnHotkey(isolate, msg.wParam, msg.lParam);
+				JsKeyboard::OnHotkey(isolate, msg.wParam, msg.lParam);
 				break;
 			case WM_TIMER:
-				NaBasicModule::OnTimer(isolate, (int)msg.wParam);
+				JsGlobalCommon::OnTimer(isolate, (int)msg.wParam);
 				break;
 			}
 

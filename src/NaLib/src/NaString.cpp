@@ -69,7 +69,7 @@ const NaString& NaString::operator+=(const wchar_t* lpsz)
 	if (m_pBuf == nullptr || m_nLen == 0)
 		SetBuf(lpsz);
 	else
-		Format(L"%ls%ls", (wchar_t*)m_pBuf, lpsz);
+		Format(L"%s%s", (wchar_t*)m_pBuf, lpsz);
 	return *this;
 }
 
@@ -78,7 +78,7 @@ const NaString& NaString::operator+=(const NaString& str)
 	if (m_pBuf == nullptr || m_nLen == 0)
 		SetBuf(str.wstr());
 	else
-		Format(L"%ls%ls", (wchar_t*)m_pBuf, str.wstr());
+		Format(L"%s%s", (wchar_t*)m_pBuf, str.wstr());
 	return *this;
 }
 
@@ -415,7 +415,7 @@ const NaString & NaString::AppendFormat(const wchar_t* fmt, ...)
 #endif
 	va_end(arglist);
 
-	Format(L"%ls%ls", (wchar_t*)m_pBuf, buf);
+	Format(L"%s%s", (wchar_t*)m_pBuf, buf);
 	return *this;
 }
 
@@ -500,7 +500,7 @@ int NaString::ConvertWCharToChar(const wchar_t* wstr, char** str)
 	size_t szTest = wcstombs(*str, wstr, nChars);
 	*((char*)(*str) + nChars) = '\0';
 
-	//NaDebugOut(L"* ConvWCharToChar\n* (1) %ls\n", wstr);
+	//NaDebugOut(L"* ConvWCharToChar\n* (1) %s\n", wstr);
 	//printf("* (2) %s\n", *str);
 #endif
 

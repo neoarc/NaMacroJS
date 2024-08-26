@@ -25,8 +25,8 @@ public:
 	static Global<ObjectTemplate> s_JsImageTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(width);
-	DEFINE_CLASS_ACCESSOR(height);
+	DEFINE_CLASS_PROPERTY(width);
+	DEFINE_CLASS_PROPERTY(height);
 
 	// methods
 	DEFINE_CLASS_METHOD(constructor);

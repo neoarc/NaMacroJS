@@ -3,7 +3,7 @@
 #include "V8Wrap.h"
 #include "ModuleBase.h"
 
-class NaScreenModule : public ModuleBase
+class JsScreen : public ModuleBase
 {
 public:
 	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
@@ -12,8 +12,8 @@ public:
 	Local<Object> GetScreenObject(Isolate *isolate);
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR_RO(width);
-	DEFINE_CLASS_ACCESSOR_RO(height);
+	DEFINE_CLASS_PROPERTY_RO(width);
+	DEFINE_CLASS_PROPERTY_RO(height);
 
 	// methods
 	DEFINE_CLASS_METHOD(capture);

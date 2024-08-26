@@ -36,13 +36,13 @@ Local<ObjectTemplate> JsFile::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind file methods
-#define ADD_FILE_ACCESSOR(_prop)	ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_FILE_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
+#define ADD_FILE_PROPERTY(_prop)	ADD_OBJ_PROPERTY(templ, _prop);
+#define ADD_FILE_PROPERTY_RO(_prop)	ADD_OBJ_PROPERTY_RO(templ, _prop);
 #define ADD_FILE_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_FILE_ACCESSOR(name);
-	ADD_FILE_ACCESSOR_RO(exist);
+	ADD_FILE_PROPERTY(name);
+	ADD_FILE_PROPERTY_RO(exist);
 
 	// methods
 	ADD_FILE_METHOD(read);
@@ -60,7 +60,7 @@ void JsFile::get_name(V8_GETTER_ARGS)
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
 	{
-		V8Wrap::SetReturnValue(info, pFile->m_strName.wstr());
+		V8_PROP_RET(pFile->m_strName.wstr());
 	}
 }
 
@@ -81,13 +81,13 @@ void JsFile::get_exist(V8_GETTER_ARGS)
 	auto pFile = UnwrapNativeFile(info.This());
 	if (pFile)
 	{
-		V8Wrap::SetReturnValue(info, pFile->IsExist());
+		V8_PROP_RET(pFile->IsExist());
 	}
 }
 
 // description: constructor function
 // syntax:		new Window([x, y[, width, height]]) : windowObj
-void JsFile::method_constructor(V8_FUNCTION_ARGS)
+void JsFile::method_constructor(V8_METHOD_ARGS)
 {
 	if (args.Length() >= 1)
 	{
@@ -132,13 +132,13 @@ void JsFile::method_constructor(V8_FUNCTION_ARGS)
 
 // description: read file
 // syntax:		fileObj.read() : string
-void JsFile::method_read(V8_FUNCTION_ARGS)
+void JsFile::method_read(V8_METHOD_ARGS)
 {
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		V8_METHOD_RET(-1);
 		return;
 	}
 
@@ -150,20 +150,20 @@ void JsFile::method_read(V8_FUNCTION_ARGS)
 
 	// #TODO smart pointer?
 	auto buf = pFile->Read();
-	V8Wrap::SetReturnValue(args, buf);
+	V8_METHOD_RET(buf);
 	
 	delete[] buf;
 }
 
 // description: write file
 // syntax:		fileObj.write(text);
-void JsFile::method_write(V8_FUNCTION_ARGS)
+void JsFile::method_write(V8_METHOD_ARGS)
 {
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr || args.Length() < 1)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		V8_METHOD_RET(-1);
 		return;
 	}
 
@@ -178,23 +178,23 @@ void JsFile::method_write(V8_FUNCTION_ARGS)
 	auto ret = pFile->Write(str);
 
 	// return
-	V8Wrap::SetReturnValue(args, (int)ret);
+	V8_METHOD_RET((int)ret);
 }
 
 // description: close file
 // syntax:		fileObj.close()
-void JsFile::method_close(V8_FUNCTION_ARGS)
+void JsFile::method_close(V8_METHOD_ARGS)
 {
 	auto pFile = UnwrapNativeFile(args.This());
 	if (pFile == nullptr)
 	{
 		// error
-		V8Wrap::SetReturnValue(args, -1);
+		V8_METHOD_RET(-1);
 		return;
 	}
 
 	pFile->Close();
 
 	// return
-	V8Wrap::SetReturnValue(args, true);
+	V8_METHOD_RET(true);
 }

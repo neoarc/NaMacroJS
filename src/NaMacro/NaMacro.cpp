@@ -46,7 +46,7 @@ int __stdcall WinMain(HINSTANCE /*hInstance*/, HINSTANCE /*hPrevInstance*/, char
 
 		// Create a template for the global object.
 		Local<ObjectTemplate> global_template = ObjectTemplate::New(isolate);
-		V8Wrap::CreateDefaultModules(isolate, global_template);
+		V8Wrap::CreateDefaultObjects(isolate, global_template);
 
 		// Enter the newly created execution environment.
 		Local<Context> context = Context::New(isolate, NULL, global_template);

@@ -25,7 +25,7 @@ JsControl::~JsControl()
 }
 
 // description: create function called by parent
-void JsControl::Create(V8_FUNCTION_ARGS, NaWindow *pParent)
+void JsControl::Create(V8_METHOD_ARGS, NaWindow *pParent)
 {
 	NaControl *pControl = m_pNativeControl;
 
@@ -142,20 +142,20 @@ Local<ObjectTemplate> JsControl::MakeObjectTemplate(Isolate * isolate)
 	templ->SetInternalFieldCount(1);
 
 	// bind control methods
-#define ADD_CONTROL_ACCESSOR(_prop)		ADD_OBJ_ACCESSOR(templ, _prop);
-#define ADD_CONTROL_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(templ, _prop);
+#define ADD_CONTROL_PROPERTY(_prop)		ADD_OBJ_PROPERTY(templ, _prop);
+#define ADD_CONTROL_PROPERTY_RO(_prop)	ADD_OBJ_PROPERTY_RO(templ, _prop);
 #define ADD_CONTROL_METHOD(_js_func)	ADD_TEMPLATE_METHOD(templ, _js_func);
 
 	// accessor
-	ADD_CONTROL_ACCESSOR(x);
-	ADD_CONTROL_ACCESSOR(y);
-	ADD_CONTROL_ACCESSOR(width);
-	ADD_CONTROL_ACCESSOR(height);
-	ADD_CONTROL_ACCESSOR(text);
-	ADD_CONTROL_ACCESSOR(visible);
-	ADD_CONTROL_ACCESSOR_RO(parent);
-	ADD_CONTROL_ACCESSOR(image);
-	ADD_CONTROL_ACCESSOR(callback);
+	ADD_CONTROL_PROPERTY(x);
+	ADD_CONTROL_PROPERTY(y);
+	ADD_CONTROL_PROPERTY(width);
+	ADD_CONTROL_PROPERTY(height);
+	ADD_CONTROL_PROPERTY(text);
+	ADD_CONTROL_PROPERTY(visible);
+	ADD_CONTROL_PROPERTY_RO(parent);
+	ADD_CONTROL_PROPERTY(image);
+	ADD_CONTROL_PROPERTY(callback);
 
 	// methods
 	ADD_CONTROL_METHOD(focus);
@@ -175,7 +175,7 @@ void JsControl::get_x(V8_GETTER_ARGS)
 		pControl->m_x = rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_x);
+	V8_PROP_RET(pControl->m_x);
 }
 
 void JsControl::set_x(V8_SETTER_ARGS)
@@ -202,7 +202,7 @@ void JsControl::get_y(V8_GETTER_ARGS)
 		pControl->m_y = rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_y);
+	V8_PROP_RET(pControl->m_y);
 }
 
 void JsControl::set_y(V8_SETTER_ARGS)
@@ -229,7 +229,7 @@ void JsControl::get_width(V8_GETTER_ARGS)
 		pControl->m_width = rc.right - rc.left;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_width);
+	V8_PROP_RET(pControl->m_width);
 }
 
 void JsControl::set_width(V8_SETTER_ARGS)
@@ -256,7 +256,7 @@ void JsControl::get_height(V8_GETTER_ARGS)
 		pControl->m_height = rc.bottom - rc.top;
 	}
 
-	V8Wrap::SetReturnValue(info, pControl->m_height);
+	V8_PROP_RET(pControl->m_height);
 }
 
 void JsControl::set_height(V8_SETTER_ARGS)
@@ -280,7 +280,7 @@ void JsControl::get_text(V8_GETTER_ARGS)
 	if (pControl)
 	{
 		auto strText = pControl->GetText();
-		V8Wrap::SetReturnValue(info, strText.wstr());
+		V8_PROP_RET(strText.wstr());
 	}
 }
 
@@ -308,7 +308,7 @@ void JsControl::get_visible(Local<String> name, const PropertyCallbackInfo<Value
 		bVisible = pControl->IsVisible();
 	}
 
-	V8Wrap::SetReturnValue(info, bVisible);
+	V8_PROP_RET(bVisible);
 }
 
 void JsControl::set_visible(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -406,7 +406,7 @@ void JsControl::get_callback(Local<String> name, const PropertyCallbackInfo<Valu
 	UNUSED(name);
 
 	// #TODO Impl
-	V8Wrap::SetReturnValue(info, L"NotImplemented");
+	V8_PROP_RET(L"NotImplemented");
 }
 
 void JsControl::set_callback(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info)
@@ -435,16 +435,16 @@ void JsControl::set_callback(Local<String> name, Local<Value> value, const Prope
 
 // description: set focus to control
 // syntax:		controlObj.focus();
-void JsControl::method_focus(V8_FUNCTION_ARGS)
+void JsControl::method_focus(V8_METHOD_ARGS)
 {
 	NaControl *pControl = UnwrapNativeControl(args.This());
 	if (pControl)
 	{
 		pControl->SetFocus();
 
-		V8Wrap::SetReturnValue(args, true);
+		V8_METHOD_RET(true);
 		return;
 	}
 
-	V8Wrap::SetReturnValue(args, false);
+	V8_METHOD_RET(false);
 }

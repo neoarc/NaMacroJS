@@ -13,11 +13,11 @@
 
 #include "NaMacro.h"
 
-#include "BasicModule.h"
-#include "ExtModule.h"
-#include "MouseModule.h"
-#include "KeyboardModule.h"
-#include "ScreenModule.h"
+#include "JsGlobalCommon.h"
+#include "JsGlobalExternal.h"
+#include "JsMouse.h"
+#include "JsKeyboard.h"
+#include "JsScreen.h"
 
 using namespace std;
 
@@ -67,7 +67,7 @@ namespace V8Wrap
 		delete p;
 	}
 
-	void CreateDefaultModules(Isolate* isolate, Local<ObjectTemplate>& global_template)
+	void CreateDefaultObjects(Isolate* isolate, Local<ObjectTemplate>& global_template)
 	{
 		// Create Default Modules (Register FunctionTemplate)
 
@@ -77,11 +77,11 @@ namespace V8Wrap
 			pModule->Create(isolate, global_template); \
 			g_ModuleList.push_back(pModule);
 
-		CREATE_MODULE(NaBasicModule);
-		CREATE_MODULE(NaExtModule);
-		CREATE_MODULE(NaMouseModule);
-		CREATE_MODULE(NaKeyboardModule);
-		CREATE_MODULE(NaScreenModule);
+		CREATE_MODULE(JsGlobalCommon);
+		CREATE_MODULE(JaGlobalExternal);
+		CREATE_MODULE(JsMouse);
+		CREATE_MODULE(JsKeyboard);
+		CREATE_MODULE(JsScreen);
 	}
 
 	void InitModules(Isolate* isolate, Local<ObjectTemplate>& global_template)

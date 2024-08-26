@@ -13,7 +13,7 @@ public:
 	JsControl();
 	~JsControl();
 
-	void Create(V8_FUNCTION_ARGS, NaWindow *pParent);
+	void Create(V8_METHOD_ARGS, NaWindow *pParent);
 	void Destroy();
 
 	// member
@@ -32,15 +32,15 @@ public:
 	static Global<ObjectTemplate> s_JsControlTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(x);
-	DEFINE_CLASS_ACCESSOR(y);
-	DEFINE_CLASS_ACCESSOR(width);
-	DEFINE_CLASS_ACCESSOR(height);
-	DEFINE_CLASS_ACCESSOR(text);
-	DEFINE_CLASS_ACCESSOR(visible);
-	DEFINE_CLASS_ACCESSOR_RO(parent);
-	DEFINE_CLASS_ACCESSOR(image);
-	DEFINE_CLASS_ACCESSOR(callback);
+	DEFINE_CLASS_PROPERTY(x);
+	DEFINE_CLASS_PROPERTY(y);
+	DEFINE_CLASS_PROPERTY(width);
+	DEFINE_CLASS_PROPERTY(height);
+	DEFINE_CLASS_PROPERTY(text);
+	DEFINE_CLASS_PROPERTY(visible);
+	DEFINE_CLASS_PROPERTY_RO(parent);
+	DEFINE_CLASS_PROPERTY(image);
+	DEFINE_CLASS_PROPERTY(callback);
 
 	// methods
 	DEFINE_CLASS_METHOD(focus);

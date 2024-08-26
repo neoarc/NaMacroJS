@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "BasicModule.h"
+#include "JsGlobalCommon.h"
 
 #include <iostream>
 #include <string>
@@ -24,12 +24,12 @@
 #include "JsImage.h"
 #include "JSProcess.h"
 
-NaWindow* NaBasicModule::s_pTimerWindow = NULL;
-std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapIntervalCallback;
-std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> NaBasicModule::s_mapTimeoutCallback;
-int NaBasicModule::s_nTimerID = 1; // begin from 0 causes hard to store variable
+NaWindow* JsGlobalCommon::s_pTimerWindow = NULL;
+std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> JsGlobalCommon::s_mapIntervalCallback;
+std::map<int, Persistent<Function, CopyablePersistentTraits<Function>>> JsGlobalCommon::s_mapTimeoutCallback;
+int JsGlobalCommon::s_nTimerID = 1; // begin from 0 causes hard to store variable
 
-void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
+void JsGlobalCommon::Create(Isolate * isolate, Local<ObjectTemplate>& global_template)
 {
 	// Global methods
 	ADD_GLOBAL_METHOD(include);
@@ -52,7 +52,7 @@ void NaBasicModule::Create(Isolate * isolate, Local<ObjectTemplate>& global_temp
 	ADD_GLOBAL_METHOD(findTrays);
 }
 
-void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_template*/)
+void JsGlobalCommon::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_template*/)
 {
 	// add global object
 	Local<Object> global = isolate->GetCurrentContext()->Global();
@@ -101,37 +101,37 @@ void NaBasicModule::Init(Isolate * isolate, Local<ObjectTemplate>& /*global_temp
 	HandleScope handle_scope(isolate);
 	Local<Object> system_obj = V8Wrap::GetSystemObject(isolate);
 
-#define ADD_SYSTEM_ACCESSOR_RO(_prop)	ADD_OBJ_ACCESSOR_RO(system_obj, _prop);
+#define ADD_SYSTEM_PROPERTY_RO(_prop)	ADD_OBJ_PROPERTY_RO(system_obj, _prop);
 #define ADD_SYSTEM_METHOD(_js_func)		ADD_OBJ_METHOD(system_obj, _js_func);
 
 	// system accessors
-	ADD_SYSTEM_ACCESSOR_RO(pcname);
-	ADD_SYSTEM_ACCESSOR_RO(username);
+	ADD_SYSTEM_PROPERTY_RO(pcname);
+	ADD_SYSTEM_PROPERTY_RO(username);
 
 	// system methods
 	ADD_SYSTEM_METHOD(execute);
 	ADD_SYSTEM_METHOD(executeSync);
 }
 
-void NaBasicModule::get_pcname(V8_GETTER_ARGS)
+void JsGlobalCommon::get_pcname(V8_GETTER_ARGS)
 {
 	UNUSED(name);
 
 	const auto pcname = NaMacroCommon::GetSystemInfoStringByAPI(GetComputerName);
 	if (!pcname.empty())
-		V8Wrap::SetReturnValue(info, pcname);
+		V8_PROP_RET(pcname);
 }
 
-void NaBasicModule::get_username(V8_GETTER_ARGS)
+void JsGlobalCommon::get_username(V8_GETTER_ARGS)
 {
 	UNUSED(name);
 
 	const auto username = NaMacroCommon::GetSystemInfoStringByAPI(GetUserName);
 	if (!username.empty())
-		V8Wrap::SetReturnValue(info, username);
+		V8_PROP_RET(username);
 }
 
-void NaBasicModule::Release()
+void JsGlobalCommon::Release()
 {
 	// Destroy Console Window
 
@@ -145,11 +145,11 @@ void NaBasicModule::Release()
 	}
 }
 
-void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
+void JsGlobalCommon::OnTimer(Isolate *isolate, int nTimerID)
 {
 	std::map <int, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
-	it = NaBasicModule::s_mapIntervalCallback.find(nTimerID);
-	if (it != NaBasicModule::s_mapIntervalCallback.end())
+	it = JsGlobalCommon::s_mapIntervalCallback.find(nTimerID);
+	if (it != JsGlobalCommon::s_mapIntervalCallback.end())
 	{
 		Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
 		Local<Function> callback = Local<Function>::New(isolate, percy);
@@ -165,8 +165,8 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 		}
 	}
 
-	it = NaBasicModule::s_mapTimeoutCallback.find(nTimerID);
-	if (it != NaBasicModule::s_mapTimeoutCallback.end())
+	it = JsGlobalCommon::s_mapTimeoutCallback.find(nTimerID);
+	if (it != JsGlobalCommon::s_mapTimeoutCallback.end())
 	{
 		Persistent<Function, CopyablePersistentTraits<Function>> percy = it->second;
 		Local<Function> callback = Local<Function>::New(isolate, percy);
@@ -181,13 +181,13 @@ void NaBasicModule::OnTimer(Isolate *isolate, int nTimerID)
 			);
 		}
 
-		::KillTimer(NaBasicModule::s_pTimerWindow->m_hWnd, nTimerID);
+		::KillTimer(JsGlobalCommon::s_pTimerWindow->m_hWnd, nTimerID);
 
-		NaBasicModule::s_mapIntervalCallback.erase(nTimerID);
+		JsGlobalCommon::s_mapIntervalCallback.erase(nTimerID);
 	}
 }
 
-bool NaBasicModule::IncludeBase(V8_FUNCTION_ARGS, NaString strFullPath)
+bool JsGlobalCommon::IncludeBase(V8_METHOD_ARGS, NaString strFullPath)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Context> context = isolate->GetCurrentContext();
@@ -236,7 +236,7 @@ bool NaBasicModule::IncludeBase(V8_FUNCTION_ARGS, NaString strFullPath)
 
 // description: Include external source file
 // syntax:		include(filename[, filename2[, filename3 ...]]);
-void NaBasicModule::method_include(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_include(V8_METHOD_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	Local<Context> context = isolate->GetCurrentContext();
@@ -290,7 +290,7 @@ void NaBasicModule::method_include(V8_FUNCTION_ARGS)
 
 // description: Print message to console
 // syxtax:		print(message)
-void NaBasicModule::method_print(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_print(V8_METHOD_ARGS)
 {
 	bool first = true;
 	for (int i = 0; i < args.Length(); i++)
@@ -312,7 +312,7 @@ void NaBasicModule::method_print(V8_FUNCTION_ARGS)
 
 // description: Notify message via notify window
 // syntax:		notify(message)
-void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_notify(V8_METHOD_ARGS)
 {
 	String::Value message(args[0]);
 	NaString strMessage((wchar_t*)*message);
@@ -329,7 +329,7 @@ void NaBasicModule::method_notify(V8_FUNCTION_ARGS)
 
 // description: Fetch API
 // syntax:		fetch(url[, parameter]) : Promise
-void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_fetch(V8_METHOD_ARGS)
 {
 	auto *isolate = args.GetIsolate();
 	isolate; // not used
@@ -357,7 +357,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 				String::Utf8Value method_string_value(method_string);
 				strMethod = (*method_string_value);
 
-				NaDebugOut(L"Method: %ls\n", strMethod.wstr());
+				NaDebugOut(L"Method: %s\n", strMethod.wstr());
 			}
 
 			// Body
@@ -368,7 +368,7 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 				String::Utf8Value body_string_value(body_string);
 				strBody = (*body_string_value);
 
-				NaDebugOut(L"Body: %ls\n", strBody.wstr());
+				NaDebugOut(L"Body: %s\n", strBody.wstr());
 			}
 
 			// #TODO implement
@@ -387,12 +387,12 @@ void NaBasicModule::method_fetch(V8_FUNCTION_ARGS)
 	//new Promise();
 
 	// #TODO change return value to Promise object (from string)
-	V8Wrap::SetReturnValue(args, strRet.wstr());
+	V8_METHOD_RET(strRet.wstr());
 }
 
 // description: show MessageBox with message
 // syntax:		alert(message, title, type)
-void NaBasicModule::method_alert(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_alert(V8_METHOD_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -404,12 +404,12 @@ void NaBasicModule::method_alert(V8_FUNCTION_ARGS)
 		args.Length() >= 3 ? nType : MB_OK
 		);
 
-	V8Wrap::SetReturnValue(args, nRet);
+	V8_METHOD_RET(nRet);
 }
 
 // description: show MessageBox with message
 // syntax:		confirm(message, title)
-void NaBasicModule::method_confirm(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_confirm(V8_METHOD_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -431,12 +431,12 @@ void NaBasicModule::method_confirm(V8_FUNCTION_ARGS)
 		break;
 	}
 
-	V8Wrap::SetReturnValue(args, bRet);
+	V8_METHOD_RET(bRet);
 }
 
 // description: show MessageBox with message
 // syntax:		prompt(message, title[, defaultmessage])
-void NaBasicModule::method_prompt(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_prompt(V8_METHOD_ARGS)
 {
 	String::Value msg(args[0]);
 	String::Value title(args[1]);
@@ -450,13 +450,13 @@ void NaBasicModule::method_prompt(V8_FUNCTION_ARGS)
 			args.Length() >= 3 ? (const wchar_t*)*default_string : L""
 		);
 
-	V8Wrap::SetReturnValue(args, strRet.cstr());
+	V8_METHOD_RET(strRet.cstr());
 }
 
 // description: suspends the excution script
 // syntax:		sleep(time)
 // param(time):	time interval in milliseconds
-void NaBasicModule::method_sleep(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_sleep(V8_METHOD_ARGS)
 {
 	int nTime = args[0]->Int32Value();
 
@@ -465,7 +465,7 @@ void NaBasicModule::method_sleep(V8_FUNCTION_ARGS)
 
 // description:
 // syntax:		setInterval(interval, callback_function) : timer_id
-void NaBasicModule::method_setInterval(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_setInterval(V8_METHOD_ARGS)
 {
 	if (args.Length() < 2)
 		return;
@@ -474,42 +474,42 @@ void NaBasicModule::method_setInterval(V8_FUNCTION_ARGS)
 	Local<Object> callback = args[1]->ToObject();
 	if (callback->IsFunction())
 	{
-		int nTimerID = NaBasicModule::s_nTimerID++;
+		int nTimerID = JsGlobalCommon::s_nTimerID++;
 		::SetTimer(s_pTimerWindow->m_hWnd, nTimerID, nTime, NULL);
 
 		Isolate *isolate = args.GetIsolate();
 		Local<Function> callback_func = Local<Function>::Cast(args[1]);
 		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
 
-		NaBasicModule::s_mapIntervalCallback.insert(
+		JsGlobalCommon::s_mapIntervalCallback.insert(
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		V8Wrap::SetReturnValue(args, nTimerID);
+		V8_METHOD_RET(nTimerID);
 	}
 }
 
 // description:
 // syntax:		clearInterval(timer_id)
-void NaBasicModule::method_clearInterval(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_clearInterval(V8_METHOD_ARGS)
 {
 	if (args.Length() < 1)
 		return;
 
 	int nTimerID = args[0]->Int32Value();
 	std::map <int, Persistent<Function, CopyablePersistentTraits<Function>>>::iterator it;
-	it = NaBasicModule::s_mapIntervalCallback.find(nTimerID);
-	if (it != NaBasicModule::s_mapIntervalCallback.end())
+	it = JsGlobalCommon::s_mapIntervalCallback.find(nTimerID);
+	if (it != JsGlobalCommon::s_mapIntervalCallback.end())
 	{
-		::KillTimer(NaBasicModule::s_pTimerWindow->m_hWnd, nTimerID);
+		::KillTimer(JsGlobalCommon::s_pTimerWindow->m_hWnd, nTimerID);
 
-		NaBasicModule::s_mapIntervalCallback.erase(nTimerID);
+		JsGlobalCommon::s_mapIntervalCallback.erase(nTimerID);
 	}
 }
 
 // description:
 // syntax:
-void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_setTimeout(V8_METHOD_ARGS)
 {
 	if (args.Length() < 2)
 		return;
@@ -518,24 +518,24 @@ void NaBasicModule::method_setTimeout(V8_FUNCTION_ARGS)
 	Local<Object> callback = args[1]->ToObject();
 	if (callback->IsFunction())
 	{
-		int nTimerID = NaBasicModule::s_nTimerID++;
+		int nTimerID = JsGlobalCommon::s_nTimerID++;
 		::SetTimer(s_pTimerWindow->m_hWnd, nTimerID, nTime, NULL);
 
 		Isolate *isolate = args.GetIsolate();
 		Local<Function> callback_func = Local<Function>::Cast(args[1]);
 		Persistent<Function, CopyablePersistentTraits<Function>> percy(isolate, callback_func);
 
-		NaBasicModule::s_mapTimeoutCallback.insert(
+		JsGlobalCommon::s_mapTimeoutCallback.insert(
 			std::pair<int, Persistent<Function, CopyablePersistentTraits<Function>>>(nTimerID, percy)
 		);
 
-		V8Wrap::SetReturnValue(args, nTimerID);
+		V8_METHOD_RET(nTimerID);
 	}
 }
 
 // description: exit current event loop
 // syntax:		exit()
-void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_exit(V8_METHOD_ARGS)
 {
 	UNUSED(args);
 	NaMacroCommon::g_bExit = true;
@@ -543,7 +543,7 @@ void NaBasicModule::method_exit(V8_FUNCTION_ARGS)
 
 // description: pick a window from point
 // syntax:		getWindow(x, y) : window object
-void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_getWindow(V8_METHOD_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	int x = args[0]->Int32Value();
@@ -553,12 +553,12 @@ void NaBasicModule::method_getWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetWindow(x, y);
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	V8Wrap::SetReturnValue(args, result);
+	V8_METHOD_RET(result);
 }
 
 // description: get active window
 // syntax:		getActiveWindow() : window object
-void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_getActiveWindow(V8_METHOD_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 
@@ -566,12 +566,12 @@ void NaBasicModule::method_getActiveWindow(V8_FUNCTION_ARGS)
 	pJsWindow->m_pNativeWindow = NaWindow::GetActiveWindow();
 	Local<Object> result = JsWindow::WrapObject(isolate, pJsWindow);
 
-	V8Wrap::SetReturnValue(args, result);
+	V8_METHOD_RET(result);
 }
 
 // description: find windows which contains specific text
 // syntax:		findWindows(text)
-void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_findWindows(V8_METHOD_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	String::Value str(args[0]);
@@ -579,12 +579,12 @@ void NaBasicModule::method_findWindows(V8_FUNCTION_ARGS)
 
 	JsWindow::FindWindows(isolate, (const wchar_t*)*str, results);
 
-	V8Wrap::SetReturnValue(args, results);
+	V8_METHOD_RET(results);
 }
 
 // description: find processes which contains specific name
 // syntax:		findProcesses(text)
-void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_findProcesses(V8_METHOD_ARGS)
 {
 	Isolate *isolate = args.GetIsolate();
 	String::Value str(args[0]);
@@ -592,20 +592,20 @@ void NaBasicModule::method_findProcesses(V8_FUNCTION_ARGS)
 
 	JsProcess::FindProcesses(isolate, (const wchar_t*)*str, results);
 
-	V8Wrap::SetReturnValue(args, results);
+	V8_METHOD_RET(results);
 }
 
 // description:
 // syntax:
-void NaBasicModule::method_findTrays(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_findTrays(V8_METHOD_ARGS)
 {
 	// Not Impl
-	V8Wrap::SetReturnValue(args, L"NotImplemented");
+	V8_METHOD_RET(L"NotImplemented");
 }
 
 // description: Execute external process
 // syntax:		system.execute(exefile_path[, arguments[, is_show]])
-void NaBasicModule::method_execute(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_execute(V8_METHOD_ARGS)
 {
 	String::Value exepath(args[0]);
 	NaString strExePath((wchar_t*)*exepath);
@@ -644,7 +644,7 @@ void NaBasicModule::method_execute(V8_FUNCTION_ARGS)
 
 // description: Execute external process and return exit code
 // syntax:		system.executeSync(exefile_path[, arguments[, is_show]])
-void NaBasicModule::method_executeSync(V8_FUNCTION_ARGS)
+void JsGlobalCommon::method_executeSync(V8_METHOD_ARGS)
 {
 	String::Value exepath(args[0]);
 	NaString strExePath((wchar_t*)*exepath);
@@ -686,5 +686,5 @@ void NaBasicModule::method_executeSync(V8_FUNCTION_ARGS)
 	GetExitCodeProcess(info.hProcess, &dwExitCode);
 
 	// implement return value
-	V8Wrap::SetReturnValue(args, (int)dwExitCode);
+	V8_METHOD_RET((int)dwExitCode);
 }

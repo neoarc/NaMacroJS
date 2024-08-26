@@ -25,8 +25,8 @@ public:
 	static Global<ObjectTemplate> s_JsFileTemplate;
 
 	// accessors
-	DEFINE_CLASS_ACCESSOR(name);
-	DEFINE_CLASS_ACCESSOR_RO(exist);
+	DEFINE_CLASS_PROPERTY(name);
+	DEFINE_CLASS_PROPERTY_RO(exist);
 
 	// methods
 	DEFINE_CLASS_METHOD(constructor);

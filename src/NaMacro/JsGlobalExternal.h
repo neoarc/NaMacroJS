@@ -9,7 +9,7 @@
 #include "sphelper.h"
 #include "spuihelp.h"
 
-class NaExtModule : public ModuleBase
+class JaGlobalExternal : public ModuleBase
 {
 public:
 	virtual void Create(Isolate *isolate, Local<ObjectTemplate>& global_template);

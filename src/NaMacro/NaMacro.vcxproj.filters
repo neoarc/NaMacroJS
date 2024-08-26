@@ -13,29 +13,11 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
-    <Filter Include="Resource Files\Release">
-      <UniqueIdentifier>{c0bbc88b-27d1-4816-ab5f-4bfbce14b924}</UniqueIdentifier>
+    <Filter Include="JsObjects">
+      <UniqueIdentifier>{c2ef343e-8a7e-49f8-af4d-9b7c1f39f134}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files\Debug">
-      <UniqueIdentifier>{9ae96669-e1f9-45ed-8929-1f8c3790b53c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Module">
-      <UniqueIdentifier>{37a8ed54-ad40-4eaf-8f6a-8979cd413166}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Module">
-      <UniqueIdentifier>{e1c57263-c55e-4062-9587-a04231423c36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\NaObjects">
-      <UniqueIdentifier>{9c24ac98-f245-440b-8c63-dd485d45dada}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\JsObjects">
-      <UniqueIdentifier>{13a82fe8-d713-4e47-93cb-028f1c5476bc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\JsObjects">
-      <UniqueIdentifier>{b2cea7e1-b4fc-46c2-915e-68cc37dcac46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\NaObjects">
-      <UniqueIdentifier>{c19fa0a3-dc73-4d1b-93d7-eee0d438f369}</UniqueIdentifier>
+    <Filter Include="NaObjects">
+      <UniqueIdentifier>{b6ee5c4b-62ec-411e-843b-03c2eed864af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -45,53 +27,59 @@
     <ClCompile Include="NaMacro.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BasicModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="ExtModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="KeyboardModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenModule.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="ModuleBase.cpp">
-      <Filter>Source Files\Module</Filter>
-    </ClCompile>
-    <ClCompile Include="NaWindow.cpp">
-      <Filter>Source Files\NaObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="NaControl.cpp">
-      <Filter>Source Files\NaObjects</Filter>
-    </ClCompile>
     <ClCompile Include="V8Wrap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="NaMacroCommon.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JsControl.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
     <ClCompile Include="JsFile.cpp">
-      <Filter>Source Files\JsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="JsObjectBase.cpp">
-      <Filter>Source Files\JsObjects</Filter>
-    </ClCompile>
-    <ClCompile Include="JsWindow.cpp">
-      <Filter>Source Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
     </ClCompile>
     <ClCompile Include="JsImage.cpp">
-      <Filter>Source Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsMouse.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsObjectBase.cpp">
+      <Filter>JsObjects</Filter>
     </ClCompile>
     <ClCompile Include="JsProcess.cpp">
-      <Filter>Source Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
     </ClCompile>
-    <ClCompile Include="JsControl.cpp">
-      <Filter>Source Files\JsObjects</Filter>
+    <ClCompile Include="JsWindow.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaControl.cpp">
+      <Filter>NaObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaWindow.cpp">
+      <Filter>NaObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsKeyboard.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsGlobalExternal.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsScreen.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="JsGlobalCommon.cpp">
+      <Filter>JsObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaScreen.cpp">
+      <Filter>NaObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaMouse.cpp">
+      <Filter>NaObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="NaKeyboard.cpp">
+      <Filter>NaObjects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,32 +89,8 @@
     <ClInclude Include="NaMacro.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BasicModule.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="ExtModule.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="KeyboardModule.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="MouseModule.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="ScreenModule.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
-    <ClInclude Include="ModuleBase.h">
-      <Filter>Header Files\Module</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="NaWindow.h">
-      <Filter>Header Files\NaObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="NaControl.h">
-      <Filter>Header Files\NaObjects</Filter>
     </ClInclude>
     <ClInclude Include="V8Wrap.h">
       <Filter>Header Files</Filter>
@@ -134,32 +98,59 @@
     <ClInclude Include="NaMacroCommon.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="JsObjectBase.h">
-      <Filter>Header Files\JsObjects</Filter>
+    <ClInclude Include="JsControl.h">
+      <Filter>JsObjects</Filter>
     </ClInclude>
     <ClInclude Include="JsFile.h">
-      <Filter>Header Files\JsObjects</Filter>
-    </ClInclude>
-    <ClInclude Include="JsWindow.h">
-      <Filter>Header Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
     </ClInclude>
     <ClInclude Include="JsImage.h">
-      <Filter>Header Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsObjectBase.h">
+      <Filter>JsObjects</Filter>
     </ClInclude>
     <ClInclude Include="JsProcess.h">
-      <Filter>Header Files\JsObjects</Filter>
+      <Filter>JsObjects</Filter>
     </ClInclude>
-    <ClInclude Include="JsControl.h">
-      <Filter>Header Files\JsObjects</Filter>
+    <ClInclude Include="JsWindow.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaControl.h">
+      <Filter>NaObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaWindow.h">
+      <Filter>NaObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsMouse.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsKeyboard.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsGlobalExternal.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsScreen.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="JsGlobalCommon.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="ModuleBase.h">
+      <Filter>JsObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaScreen.h">
+      <Filter>NaObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaMouse.h">
+      <Filter>NaObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="NaKeyboard.h">
+      <Filter>NaObjects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Output\Debug\NaMacro.js">
-      <Filter>Resource Files\Debug</Filter>
-    </None>
-    <None Include="..\Output\Release\NaMacro.js">
-      <Filter>Resource Files\Release</Filter>
-    </None>
     <None Include="packages.config" />
     <None Include="res\NaMacro.rc2">
       <Filter>Resource Files</Filter>

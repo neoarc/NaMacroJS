@@ -13,7 +13,7 @@ namespace V8Wrap
 	Isolate* CreateNewIsolate();
 	void TearDown(Platform* platform);
 
-	void CreateDefaultModules(Isolate* isolate, Local<ObjectTemplate>& global_template);
+	void CreateDefaultObjects(Isolate* isolate, Local<ObjectTemplate>& global_template);
 	void InitModules(Isolate* isolate, Local<ObjectTemplate>& global_template);
 	void ReleaseModules();
 
@@ -53,7 +53,7 @@ namespace V8Wrap
 // Macro Defines 
 //------------------------------------------------------------------------------
 
-#define V8_FUNCTION_ARGS  const FunctionCallbackInfo<Value>& args
+#define V8_METHOD_ARGS  const FunctionCallbackInfo<Value>& args
 #define V8_GETTER_ARGS	  Local<String> name, const PropertyCallbackInfo<Value>& info
 #define V8_SETTER_ARGS	  Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info
 
@@ -93,27 +93,38 @@ namespace V8Wrap
 		FunctionTemplate::New(isolate, method_##_js_func)->GetFunction() \
 	);
 
-#define ADD_OBJ_ACCESSOR(_obj, _property) \
+#define ADD_OBJ_PROPERTY(_obj, _property) \
 	_obj->SetAccessor( \
 	String::NewFromUtf8(isolate, #_property, NewStringType::kInternalized).ToLocalChecked(), \
 	get_##_property, set_##_property);
 
 // RO = ReadOnly (No Setter)
-#define ADD_OBJ_ACCESSOR_RO(_obj, _property) \
+#define ADD_OBJ_PROPERTY_RO(_obj, _property) \
 	_obj->SetAccessor( \
 	String::NewFromUtf8(isolate, #_property, NewStringType::kInternalized).ToLocalChecked(), \
 	get_##_property, nullptr);
 
-#define DEFINE_CLASS_ACCESSOR_RO(_property) \
+#define DEFINE_CLASS_PROPERTY_RO(_property) \
 	static void get_##_property(Local<String> name, const PropertyCallbackInfo<Value>& info);
 
-#define DEFINE_CLASS_ACCESSOR(_property) \
+#define DEFINE_CLASS_PROPERTY(_property) \
 	static void get_##_property(Local<String> name, const PropertyCallbackInfo<Value>& info); \
 	static void set_##_property(Local<String> name, Local<Value> value, const PropertyCallbackInfo<void>& info);
 
-#define DEFINE_CLASS_METHOD(_method)  static void method_##_method(V8_FUNCTION_ARGS);
-#define DEFINE_GLOBAL_METHOD(_method)        void method_##_method(V8_FUNCTION_ARGS);
+#define DEFINE_CLASS_METHOD(_method)  static void method_##_method(V8_METHOD_ARGS);
+#define DEFINE_GLOBAL_METHOD(_method)        void method_##_method(V8_METHOD_ARGS);
 
 #define ADD_GLOBAL_METHOD(_js_func)			   ADD_TEMPLATE_METHOD(global_template, _js_func);
 #define ADD_GLOBAL_METHOD2(_js_func, _c_func)  ADD_TEMPLATE_METHOD2(global_template, _js_func, _c_func);
 
+#define V8_STRING(_str) \
+	String::NewFromUtf8(isolate, _str, NewStringType::kNormal).ToLocalChecked()
+
+#define V8_INT(_int) \
+	Integer::New(isolate, _int)
+
+#define V8_PROP_RET(_value) \
+	V8Wrap::SetReturnValue(info, _value)
+
+#define V8_METHOD_RET(_value) \
+	V8Wrap::SetReturnValue(args, _value)

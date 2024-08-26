@@ -18,7 +18,7 @@ public:
 	}
 };
 
-class NaKeyboardModule : public ModuleBase
+class JsKeyboard : public ModuleBase
 {
 public:
 	virtual void Init(Isolate *isolate, Local<ObjectTemplate> &global_template);
@@ -26,11 +26,6 @@ public:
 
 	Local<Object> GetKeyboardObject(Isolate *isolate);
 	
-	// static
-	static int GetKeycodeFromChar(wchar_t ch);
-	static void KeyDown(int code);
-	static void KeyUp(int code);
-
 	// for global hotkey event
 	static std::map <HotkeyKey, Persistent<Function, CopyablePersistentTraits<Function>>> s_mapKeyEventCallback;
 	static void OnHotkey(Isolate *isolate, WPARAM wParam, LPARAM lParam);

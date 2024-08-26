@@ -88,6 +88,8 @@ if (!_GlobalContext.ImageBot) {
         {
             var filename = names[i];
             var img = new Image(this.image_path + filename + ".bmp");
+            if (img.width == 0 || img.height == 0)
+                 img = new Image('./' + ar[i] + '.png');
             img._id = filename;
             objects[i] = img;
             objects[filename] = img;

@@ -42,7 +42,7 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Files]
 Source: "bin_src\*.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "bin_src\*.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "bin_src\Addon\*"; DestDir: "{app}\Addon"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "bin_src\scripts\*"; DestDir: "{app}\scripts"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Registry]

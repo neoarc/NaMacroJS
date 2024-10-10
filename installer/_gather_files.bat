@@ -42,7 +42,7 @@ call :copy_file %outputDir%\NaMacroRecorder.exe %binSrcDir%
 :gather_scripts
 echo . & echo %0: to %binSrcDir%
 
-xcopy ..\scripts %binSrcDir%\scruots /ieyf
+xcopy ..\scripts %binSrcDir%\scripts /ieyf
 if %ERRORLEVEL% neq 0 ( pause )
 @exit /b %ERRORLEVEL%
 

@@ -8,7 +8,7 @@ set thisScriptFileName=%~nx0
 
 :main
 call ..\make_version.h.bat
-set innoSetupCompiler=c:\Program Files (x86)\Inno Setup 5\ISCC.exe
+set innoSetupCompiler=c:\Program Files (x86)\Inno Setup 6\ISCC.exe
 "%innoSetupCompiler%" _NaMacroJS-setup.iss
 
 :end

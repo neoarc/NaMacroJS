@@ -14,6 +14,7 @@ call build.bat
 cd ..\installer
 call _gather_files.bat
 call _compile_setup.bat
+if "%ERRORLEVEL%" neq "0" pause
 
 :end
 popd

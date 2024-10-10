@@ -245,3 +245,4 @@ LineCounter.ini
 /Output/Release-Win32
 /Output/Debug-Win32
 /scripts/Addon/config-*.json
+/build/_vcvarsall.bat

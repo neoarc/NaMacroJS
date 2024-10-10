@@ -308,8 +308,7 @@ namespace V8Wrap
 		Local<String> _prop_name = String::NewFromUtf8(isolate, strPropName.cstr(), NewStringType::kNormal).ToLocalChecked();
 		Local<Value> _prop_value = obj->Get(_prop_name);
 
-		return _prop_value;
-		
+		return _prop_value;		
 	}
 	
 	void SetReturnValueAsNull(ReturnValue<Value> returnValue)

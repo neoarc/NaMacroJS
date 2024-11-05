@@ -86,7 +86,7 @@ void JsMouse::get_x(Local<String> /*name*/, const PropertyCallbackInfo<Value>& i
 void JsMouse::set_x(Local<String> /*name*/, Local<Value> value, const PropertyCallbackInfo<void>& /*info*/)
 {
 	auto pos = NaMouse::GetPosition();
-	NaMouse::SetPosition(pos.x, value->Int32Value());	
+	NaMouse::SetPosition(value->Int32Value(), pos.y);
 }
 
 void JsMouse::get_y(Local<String> /*name*/, const PropertyCallbackInfo<Value>& info)
@@ -98,7 +98,7 @@ void JsMouse::get_y(Local<String> /*name*/, const PropertyCallbackInfo<Value>& i
 void JsMouse::set_y(Local<String> /*name*/, Local<Value> value, const PropertyCallbackInfo<void>& /*info*/)
 {
 	auto pos = NaMouse::GetPosition();
-	NaMouse::SetPosition(pos.y, value->Int32Value());
+	NaMouse::SetPosition(pos.x, value->Int32Value());
 }
 
 void JsMouse::method_move(V8_METHOD_ARGS)

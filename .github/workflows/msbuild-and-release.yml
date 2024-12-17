@@ -44,11 +44,35 @@ jobs:
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
       
     # 4. 빌드 아티팩트 저장
-    - name: Archive Build Artifacts
+    #- name: Archive Build Artifacts
+    #  uses: actions/upload-artifact@v3
+    #  with:
+    #    name: Build
+    #    path: output\Release
+
+    # 4. 배치 스크립트 복사
+    #- name: Prepare Scripts
+    #  run: |
+    #    mkdir scripts
+    #    copy MAKE_SETUP.bat scripts\
+    #    copy _gather_files.bat scripts\
+    #    copy _compile_setup.bat scripts\
+    #    copy _download_inno_setup.bat scripts\
+        
+    # 4. Inno Setup 설치
+    - name: Install Inno Setup
+      run: choco install innosetup --no-progress --yes
+      
+    # 6. 인스톨러 생성
+    - name: Run MAKE_SETUP
+      run: installer\MAKE_SETUP.bat
+
+    # 7. 빌드된 인스톨러 저장
+    - name: Archive Installer
       uses: actions/upload-artifact@v3
       with:
-        name: Build
-        path: output\Release
+        name: Installer
+        path: installer\bin\*.exe
         
   release:
     runs-on: windows-latest
@@ -64,8 +88,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            output\Release\*.exe
-            output\Release\*.dll
+            installer\bin\*.exe
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}

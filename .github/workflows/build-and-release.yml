@@ -1,8 +1,9 @@
 name: Build And Release
 
-on:
+on: # release job의 on 설정 변경
   push:
-    branches: [ "master" ]
+    tags:
+      - '*' # 모든 태그 푸시에 대해 실행
 
 env:
   SOLUTION_FILE_PATH: ./NaMacro.sln
@@ -41,10 +42,6 @@ jobs:
   release:
     needs: build
     runs-on: windows-latest
-    on: # release job의 on 설정 변경
-      push:
-        tags:
-          - '*' # 모든 태그 푸시에 대해 실행
 
     steps:
       - name: Checkout repository

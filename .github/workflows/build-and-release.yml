@@ -37,6 +37,26 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
+    # 2. Git Revision Count로 태그 생성
+    - name: Generate Version Tag
+      id: version
+      run: |
+        # Git 커밋 수 가져오기
+        REVISION_COUNT=$(git rev-list --count HEAD)
+        VERSION="v1.0.$REVISION_COUNT"  # 원하는 형식으로 버전 생성
+        echo "Generated version: $VERSION"
+        echo "tag=$VERSION" >> $GITHUB_ENV
+
+    # 3. 새 태그를 생성하고 원격 저장소로 푸시
+    - name: Push Version Tag
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag ${{ env.tag }}  # 새 태그 생성
+        git push origin ${{ env.tag }}  # 원격으로 푸시
+        
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
@@ -67,13 +87,15 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: NaMacroJS-installer
-          
+
+      - name: Debug Artifact Directory
+        run: dir D:\a\NaMacroJS\NaMacroJS
+        
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
-            NaMacroJS-installer
-            installer\output\NaMacroJS-setup.exe
+            NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}

@@ -45,8 +45,8 @@ jobs:
         $revisionCount = git rev-list --count HEAD
         $version = "v1.0.$revisionCount"
         echo "Generated version: $version"
-        echo "::set-output name=tag::$version"
-        echo "tag=$version" >> $env:GITHUB_ENV
+        # echo "::set-output name=tag::$version"  # Output에 태그 저장
+        echo "tag=$version" >> $env:GITHUB_ENV  # 환경 변수로 저장
       shell: pwsh
       
     # 3. 새 태그를 생성하고 원격 저장소로 푸시
@@ -99,7 +99,7 @@ jobs:
           artifacts: |
             NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.build.outputs.tag }}
-          name: Release ${{ needs.build.outputs.tag }} - $(date +'%Y%m%d')
+          tag: ${{ env.tag }}  # 환경 변수로 저장된 태그 사용
+          name: Release ${{ env.tag }} - $(date +'%Y%m%d')
           body: |
-            Automatically generated release for version ${{ needs.build.outputs.tag }}.
+            Automatically generated release for version ${{ env.tag }}.

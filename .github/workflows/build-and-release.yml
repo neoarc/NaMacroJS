@@ -13,34 +13,38 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-        
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v1.0.2
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-    - name: Restore NuGet packages
-      run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-      
-    - name: Build
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
-        
-    - name: Install Inno Setup
-      run: choco install innosetup --no-progress --yes
-      
-    - name: Run MAKE_SETUP
-      run: installer\MAKE_SETUP.bat
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v1.0.2
 
-    - name: Archive Installer
-      uses: actions/upload-artifact@v3
-      with:
-        name: NaMacroJS-installer
-        path: installer\output\NaMacroJS-setup.exe
-        
+      - name: Restore NuGet packages
+        run: nuget restore ${{env.SOLUTION_FILE_PATH}}
+
+      - name: Build
+        run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+
+      - name: Install Inno Setup
+        run: choco install innosetup --no-progress --yes
+
+      - name: Run MAKE_SETUP
+        run: installer\MAKE_SETUP.bat
+
+      - name: Archive Installer
+        uses: actions/upload-artifact@v3
+        with:
+          name: NaMacroJS-installer
+          path: installer\output\NaMacroJS-setup.exe
+
   release:
-    runs-on: windows-latest
     needs: build
+    runs-on: windows-latest
+    on: # release job의 on 설정 변경
+      push:
+        tags:
+          - '*' # 모든 태그 푸시에 대해 실행
 
     steps:
       - name: Checkout repository
@@ -51,23 +55,23 @@ jobs:
         with:
           name: NaMacroJS-installer
 
-      - name: Generate Release Tag
+      - name: Generate Release Tag # 이 부분은 필요 없어짐
         id: generate_tag
-        run: echo "TAG_NAME=v$(date +'%Y%m%d')" >> $GITHUB_ENV
+        # run: echo "TAG_NAME=v$(date +'%Y%m%d')" >> $GITHUB_ENV
 
-      - name: Create Git Tag
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git tag ${{ env.TAG_NAME }}
-          git push origin ${{ env.TAG_NAME }}
+      - name: Create Git Tag # 이 부분은 필요 없어짐
+        # run: |
+        #  git config user.name "github-actions"
+        #  git config user.email "github-actions@github.com"
+        #  git tag ${{ env.TAG_NAME }}
+        #  git push origin ${{ env.TAG_NAME }}
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
           artifacts: NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
-          name: Release ${{ env.TAG_NAME }}
-          tag: ${{ env.TAG_NAME }}
+          name: Release ${{ github.ref_name }} # 태그 이름 사용
+          tag: ${{ github.ref_name }} # 태그 이름 사용
           body: |
             Automatically generated release.

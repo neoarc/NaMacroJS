@@ -38,30 +38,7 @@ jobs:
     - name: Restore NuGet packages
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
-
-    - name: Generate Version Tag
-      id: version
-      run: |
-        $revisionCount = git rev-list --count HEAD
-        $version = "v1.0.$revisionCount"
-        echo "Generated version: $version"
-        # echo "::set-output name=tag::$version"  # Output에 태그 저장
-        echo "tag=$version" >> $env:GITHUB_ENV  # 환경 변수로 저장
-      shell: pwsh
-
-    - name: Debug Tag Value
-      run: |
-        echo "Tag: ${{ env.tag }}"
       
-    - name: Push Version Tag
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: |
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag ${{ env.tag }}  # 새 태그 생성
-        git push origin ${{ env.tag }}  # 원격으로 푸시
-        
     - name: Build
       working-directory: ${{env.GITHUB_WORKSPACE}}
       # Add additional options to the MSBuild command line here (like platform or verbosity level).
@@ -85,10 +62,6 @@ jobs:
     needs: build
 
     steps:
-      - name: Debug Tag Value
-        run: |
-          echo "Tag: ${{ env.tag }}"
-        
       - name: Checkout repository
         uses: actions/checkout@v3
       
@@ -106,7 +79,6 @@ jobs:
           artifacts: |
             NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.tag }}  # 환경 변수로 저장된 태그 사용
-          name: Release ${{ env.tag }} - $(date +'%Y%m%d')
+          name: Release $(date +'%Y%m%d')
           body: |
-            Automatically generated release for version ${{ env.tag }}.
+            Automatically generated release.

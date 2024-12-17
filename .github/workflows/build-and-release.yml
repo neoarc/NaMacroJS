@@ -48,8 +48,11 @@ jobs:
         # echo "::set-output name=tag::$version"  # Output에 태그 저장
         echo "tag=$version" >> $env:GITHUB_ENV  # 환경 변수로 저장
       shell: pwsh
+
+    - name: Debug Tag Value
+      run: |
+        echo "Tag: ${{ env.tag }}"
       
-    # 3. 새 태그를 생성하고 원격 저장소로 푸시
     - name: Push Version Tag
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -82,6 +85,10 @@ jobs:
     needs: build
 
     steps:
+      - name: Debug Tag Value
+        run: |
+          echo "Tag: ${{ env.tag }}"
+        
       - name: Checkout repository
         uses: actions/checkout@v3
       

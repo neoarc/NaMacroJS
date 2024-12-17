@@ -3,7 +3,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: MSBuild
+name: Build And Release
 
 on:
   push:
@@ -43,37 +43,31 @@ jobs:
       # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
       run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
         
-    # Inno Setup 설치
     - name: Install Inno Setup
       run: choco install innosetup --no-progress --yes
       
-    # 인스톨러 생성
     - name: Run MAKE_SETUP
       run: installer\MAKE_SETUP.bat
 
-    # 빌드된 인스톨러 저장
     - name: Archive Installer
       uses: actions/upload-artifact@v3
       with:
-        name: installer
+        name: NaMacroJS-installer
         path: installer\output\NaMacroJS-setup.exe
         
   release:
     runs-on: windows-latest
-    needs: build  # build job 완료 후 실행
+    needs: build
 
     steps:
-      # 리포지토리 클론
       - name: Checkout repository
         uses: actions/checkout@v3
       
-      # 빌드 아티팩트 다운로드
       - name: Download Build Artifacts
         uses: actions/download-artifact@v3
         with:
-          name: installer
+          name: NaMacroJS-installer
           
-      # 릴리즈 생성
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:

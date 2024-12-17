@@ -72,6 +72,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: |
+            NaMacroJS-installer
             installer\output\NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ github.ref_name }}

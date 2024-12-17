@@ -29,7 +29,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-
+      with:
+        fetch-depth: 0  # 모든 히스토리를 가져옴
+        
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
 

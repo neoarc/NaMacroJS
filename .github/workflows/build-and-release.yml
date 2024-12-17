@@ -37,16 +37,15 @@ jobs:
       working-directory: ${{env.GITHUB_WORKSPACE}}
       run: nuget restore ${{env.SOLUTION_FILE_PATH}}
 
-    # 2. Git Revision Count로 태그 생성
     - name: Generate Version Tag
       id: version
       run: |
-        # Git 커밋 수 가져오기
-        REVISION_COUNT=$(git rev-list --count HEAD)
-        VERSION="v1.0.$REVISION_COUNT"  # 원하는 형식으로 버전 생성
-        echo "Generated version: $VERSION"
-        echo "tag=$VERSION" >> $GITHUB_ENV
-
+        $revisionCount = git rev-list --count HEAD
+        $version = "v1.0.$revisionCount"
+        echo "Generated version: $version"
+        echo "tag=$version" >> $env:GITHUB_ENV
+      shell: pwsh
+      
     # 3. 새 태그를 생성하고 원격 저장소로 푸시
     - name: Push Version Tag
       env:

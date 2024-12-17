@@ -43,6 +43,7 @@ jobs:
         $revisionCount = git rev-list --count HEAD
         $version = "v1.0.$revisionCount"
         echo "Generated version: $version"
+        echo "::set-output name=tag::$version"
         echo "tag=$version" >> $env:GITHUB_ENV
       shell: pwsh
       
@@ -96,7 +97,7 @@ jobs:
           artifacts: |
             NaMacroJS-setup.exe
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag: ${{ needs.build.outputs.tag }}
+          name: Release ${{ needs.build.outputs.tag }} - $(date +'%Y%m%d')
           body: |
-            Automatically generated release for version ${{ github.ref_name }}.     
+            Automatically generated release for version ${{ needs.build.outputs.tag }}.

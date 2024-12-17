@@ -55,17 +55,6 @@ jobs:
         with:
           name: NaMacroJS-installer
 
-      - name: Generate Release Tag # 이 부분은 필요 없어짐
-        id: generate_tag
-        # run: echo "TAG_NAME=v$(date +'%Y%m%d')" >> $GITHUB_ENV
-
-      - name: Create Git Tag # 이 부분은 필요 없어짐
-        # run: |
-        #  git config user.name "github-actions"
-        #  git config user.email "github-actions@github.com"
-        #  git tag ${{ env.TAG_NAME }}
-        #  git push origin ${{ env.TAG_NAME }}
-
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
